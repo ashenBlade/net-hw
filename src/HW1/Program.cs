@@ -14,7 +14,7 @@ namespace HW1
                 return parseResult;
             }
 
-            var result = Calculator.Calculate(operation, val1, val2);
+            var result = Calculator.Calculate(val1, operation, val2);
 
             Console.WriteLine($"{val1}{operation}{val2}={result}");
             return 0;
