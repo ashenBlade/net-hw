@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<SolutionRoot CoveredStatements="0" TotalStatements="39" CoveragePercent="0" ReportType="Xml" DotCoverVersion="2021.2">
-  <SolutionFolder Name="HW1" CoveredStatements="0" TotalStatements="39" CoveragePercent="0">
-    <Project Name="HW1" CoveredStatements="0" TotalStatements="35" CoveragePercent="0">
-      <Namespace Name="HW1" CoveredStatements="0" TotalStatements="35" CoveragePercent="0">
-        <Type Name="Calculator" CoveredStatements="0" TotalStatements="10" CoveragePercent="0">
-          <Method Name="Calculate(int,string,int):int" CoveredStatements="0" TotalStatements="10" CoveragePercent="0" />
+<SolutionRoot CoveredStatements="10" TotalStatements="39" CoveragePercent="26" ReportType="Xml" DotCoverVersion="2021.2">
+  <SolutionFolder Name="HW1" CoveredStatements="10" TotalStatements="39" CoveragePercent="26">
+    <Project Name="HW1" CoveredStatements="6" TotalStatements="35" CoveragePercent="17">
+      <Namespace Name="HW1" CoveredStatements="6" TotalStatements="35" CoveragePercent="17">
+        <Type Name="Calculator" CoveredStatements="6" TotalStatements="10" CoveragePercent="60">
+          <Method Name="Calculate(int,string,int):int" CoveredStatements="6" TotalStatements="10" CoveragePercent="60" />
         </Type>
         <Type Name="Parser" CoveredStatements="0" TotalStatements="16" CoveragePercent="0">
           <Constructor Name="Parser()" CoveredStatements="0" TotalStatements="1" CoveragePercent="0" />
@@ -18,10 +18,10 @@
         </Type>
       </Namespace>
     </Project>
-    <Project Name="HW1.Tests" CoveredStatements="0" TotalStatements="4" CoveragePercent="0">
-      <Namespace Name="HW1.Tests" CoveredStatements="0" TotalStatements="4" CoveragePercent="0">
-        <Type Name="UnitTest1" CoveredStatements="0" TotalStatements="4" CoveragePercent="0">
-          <Method Name="Calculate_WithSimpleData_ShouldCalculateAsExpected(int,string,int,int):void" CoveredStatements="0" TotalStatements="4" CoveragePercent="0" />
+    <Project Name="HW1.Tests" CoveredStatements="4" TotalStatements="4" CoveragePercent="100">
+      <Namespace Name="HW1.Tests" CoveredStatements="4" TotalStatements="4" CoveragePercent="100">
+        <Type Name="UnitTest1" CoveredStatements="4" TotalStatements="4" CoveragePercent="100">
+          <Method Name="Calculate_WithSimpleData_ShouldCalculateAsExpected(int,string,int,int):void" CoveredStatements="4" TotalStatements="4" CoveragePercent="100" />
         </Type>
       </Namespace>
     </Project>
