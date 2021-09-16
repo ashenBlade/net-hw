@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace HW1
 {
-    class Parser
+    public class Parser
     {
         private static readonly string[] SupportedOperations = { "+", "-", "*", "/" };
         public static int TryParseArguments(string[] args, out int val1, out string operation, out int val2)
