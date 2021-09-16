@@ -1,27 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<SolutionRoot CoveredStatements="10" TotalStatements="39" CoveragePercent="26" ReportType="Xml" DotCoverVersion="2021.2">
-  <SolutionFolder Name="HW1" CoveredStatements="10" TotalStatements="39" CoveragePercent="26">
-    <Project Name="HW1" CoveredStatements="6" TotalStatements="35" CoveragePercent="17">
-      <Namespace Name="HW1" CoveredStatements="6" TotalStatements="35" CoveragePercent="17">
-        <Type Name="Calculator" CoveredStatements="6" TotalStatements="10" CoveragePercent="60">
-          <Method Name="Calculate(int,string,int):int" CoveredStatements="6" TotalStatements="10" CoveragePercent="60" />
+<SolutionRoot CoveredStatements="25" TotalStatements="25" CoveragePercent="100" ReportType="Xml" DotCoverVersion="2021.2">
+  <SolutionFolder Name="src" CoveredStatements="25" TotalStatements="25" CoveragePercent="100">
+    <Project Name="HW1" CoveredStatements="25" TotalStatements="25" CoveragePercent="100">
+      <Namespace Name="HW1" CoveredStatements="25" TotalStatements="25" CoveragePercent="100">
+        <Type Name="Calculator" CoveredStatements="9" TotalStatements="9" CoveragePercent="100">
+          <Method Name="Calculate(int,string,int):int" CoveredStatements="9" TotalStatements="9" CoveragePercent="100" />
         </Type>
-        <Type Name="Parser" CoveredStatements="0" TotalStatements="16" CoveragePercent="0">
-          <Constructor Name="Parser()" CoveredStatements="0" TotalStatements="1" CoveragePercent="0" />
-          <Method Name="TryParseArguments(string[],out int,out string,out int):int" CoveredStatements="0" TotalStatements="15" CoveragePercent="0">
-            <OwnCoverage CoveredStatements="0" TotalStatements="14" CoveragePercent="0" />
-            <AnonymousMethod Name="(string,string):string" CoveredStatements="0" TotalStatements="1" CoveragePercent="0" />
+        <Type Name="Parser" CoveredStatements="16" TotalStatements="16" CoveragePercent="100">
+          <Constructor Name="Parser()" CoveredStatements="1" TotalStatements="1" CoveragePercent="100" />
+          <Method Name="TryParseArguments(string[],out int,out string,out int):int" CoveredStatements="15" TotalStatements="15" CoveragePercent="100">
+            <OwnCoverage CoveredStatements="14" TotalStatements="14" CoveragePercent="100" />
+            <AnonymousMethod Name="(string,string):string" CoveredStatements="1" TotalStatements="1" CoveragePercent="100" />
           </Method>
-        </Type>
-        <Type Name="Program" CoveredStatements="0" TotalStatements="9" CoveragePercent="0">
-          <Method Name="Main(string[]):int" CoveredStatements="0" TotalStatements="9" CoveragePercent="0" />
-        </Type>
-      </Namespace>
-    </Project>
-    <Project Name="HW1.Tests" CoveredStatements="4" TotalStatements="4" CoveragePercent="100">
-      <Namespace Name="HW1.Tests" CoveredStatements="4" TotalStatements="4" CoveragePercent="100">
-        <Type Name="UnitTest1" CoveredStatements="4" TotalStatements="4" CoveragePercent="100">
-          <Method Name="Calculate_WithSimpleData_ShouldCalculateAsExpected(int,string,int,int):void" CoveredStatements="4" TotalStatements="4" CoveragePercent="100" />
         </Type>
       </Namespace>
     </Project>
