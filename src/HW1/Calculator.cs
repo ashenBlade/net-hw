@@ -9,7 +9,6 @@ namespace HW1
                              "+" => val1 + val2,
                              "-" => val1 - val2,
                              "*" => val1 * val2,
-                             ":" => val1 / val2,
                              "/" => val1 / val2,
                              _   => 0
                          };
