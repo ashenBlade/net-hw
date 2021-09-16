@@ -4,7 +4,7 @@ using Xunit;
 
 namespace HW1.Tests
 {
-    public class UnitTest1
+    public class CalculatorTests
     {
         [Theory]
         [InlineData(4, "+", 2, 6)]
