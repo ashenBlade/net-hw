@@ -5,6 +5,10 @@ namespace HW1
 {
     public class Parser
     {
+        public const int SuccessCode = 0;
+        public const int OperandsInvalidErrorCode = 1;
+        public const int OperationNotSupportedErrorCode = 2;
+
         private static readonly string[] SupportedOperations = { "+", "-", "*", "/" };
         public static int TryParseArguments(string[] args, out int val1, out string operation, out int val2)
         {
