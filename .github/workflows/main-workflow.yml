@@ -11,9 +11,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      working-dir: ./src
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -23,15 +20,12 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: ${{ env.working-dir }}
 
     - name: Build
       run: dotnet build --no-restore
-      working-directory: ${{ env.working-dir }}
 
     - name: Test
       run: dotnet test --no-build --verbosity normal
-      working-directory: ${{ env.working-dir }}
 
     - name: Codecov
       uses: codecov/codecov-action@v2.1.0
