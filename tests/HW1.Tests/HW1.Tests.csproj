@@ -20,7 +20,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\HW1\HW1.csproj" />
+      <ProjectReference Include="..\..\src\HW1\HW1.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="obj\**" />
     </ItemGroup>
 
 </Project>
