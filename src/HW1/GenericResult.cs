@@ -6,7 +6,7 @@ namespace HW1
     {
         public T Value { get; private set; }
 
-        protected Result(bool success, string error, T value) : base(success, error)
+        protected Result(bool success, string message, T value) : base(success, message)
         {
             Value = value;
         }

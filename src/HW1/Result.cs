@@ -6,14 +6,14 @@ namespace HW1
     public class Result
     {
         public bool Success { get; private set; }
-        public string Error { get; private set; }
+        public string Message { get; private set; }
         public bool Failure { get; private set; }
 
-        protected Result(bool success, string error)
+        protected Result(bool success, string message)
         {
             Success = success;
             Failure = !success;
-            Error = error;
+            Message = message;
         }
 
         public static Result Fail(string message)

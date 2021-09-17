@@ -17,7 +17,7 @@ namespace HW1.Tests
             var actualCode = Parser.TryParseArguments(expression, out var i, out var s, out var t);
 
             // Assert
-            Assert.Equal(ParsingErrors.None, actualCode);
+            Assert.Equal(ParsingErrors.None, actualCode.Value);
         }
 
         [Theory]
@@ -33,7 +33,7 @@ namespace HW1.Tests
             var actualCode = Parser.TryParseArguments(expression, out var i1, out var str, out var i2);
 
             // Assert
-            Assert.Equal(ParsingErrors.OperandsInvalid, actualCode);
+            Assert.Equal(ParsingErrors.OperandsInvalid, actualCode.Value);
         }
 
         [Theory]
@@ -50,7 +50,7 @@ namespace HW1.Tests
             var actualCode = Parser.TryParseArguments(expression, out var i1, out var str, out var i2);
 
             // Assert
-            Assert.Equal(ParsingErrors.OperationNotSupported, actualCode);
+            Assert.Equal(ParsingErrors.OperationNotSupported, actualCode.Value);
         }
 
         [Theory]
@@ -73,7 +73,7 @@ namespace HW1.Tests
                                                 out var actualRight);
 
             // Assert
-            Assert.Equal(ParsingErrors.None, actualCode);
+            Assert.Equal(ParsingErrors.None, actualCode.Value);
             Assert.Equal(expectedLeft, actualLeft);
             Assert.Equal(expectedOperation, actualOperation);
             Assert.Equal(expectedRight, actualRight);
