@@ -9,9 +9,9 @@ namespace HW1
         static int Main(string[] args)
         {
             var parseResult = Parser.TryParseArguments(args, out var val1, out var operation, out var val2);
-            if (parseResult != 0)
+            if (parseResult != ParsingErrors.None)
             {
-                return parseResult;
+                return (int)parseResult;
             }
 
             var result = Calculator.Calculate(val1, operation, val2);
