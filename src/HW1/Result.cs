@@ -1,3 +1,5 @@
+using System;
+
 namespace HW1
 {
     // From https://habr.com/ru/post/267231/
@@ -19,9 +21,9 @@ namespace HW1
             return new Result(false, message);
         }
 
-        public static Result<T> Ok<T>(T value)
+        public static Result Ok()
         {
-            return new Result<T>(true, string.Empty, value);
+            return new Result(true, string.Empty);
         }
     }
 }
