@@ -2,7 +2,7 @@ namespace HW1
 {
     public class SuccessParsingResult : Result<ParsingErrors>
     {
-        protected SuccessParsingResult()
+        public SuccessParsingResult()
             : base(true, string.Empty, ParsingErrors.None)
         { }
     }
