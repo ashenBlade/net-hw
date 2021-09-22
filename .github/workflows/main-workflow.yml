@@ -24,6 +24,10 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
+    - name: Build Il project
+      run: dotnet build
+      working-directory: src/HW2/
+
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
