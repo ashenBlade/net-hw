@@ -20,5 +20,22 @@ namespace HW2.Tests
             // Assert
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData(2, "7", 3)]
+        [InlineData(2, "_", 10)]
+        [InlineData(90, "x", 3)]
+        [InlineData(3453, "--", -123)]
+        [InlineData(9, "", 3)]
+        public void Calculate_WithInvalidOperation_ShouldReturn0(int val1, string op, int val2)
+        {
+            // Arrange
+
+            // Act
+            var actual = HW2.Calculator.Calculate(val1, op, val2);
+            // Assert
+
+            Assert.Equal(0, actual);
+        }
     }
 }
