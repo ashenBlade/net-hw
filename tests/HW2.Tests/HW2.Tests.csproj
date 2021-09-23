@@ -20,9 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="HW2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\..\src\HW2\bin\Debug\net5.0\Calculator.dll</HintPath>
-      </Reference>
+      <ProjectReference Include="..\..\src\HW2\Calculator.ilproj" />
     </ItemGroup>
+
 
 </Project>
