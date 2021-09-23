@@ -27,7 +27,7 @@
             ret
         }
 
-        .method private bool get_success() cil managed
+        .method public bool get_success() cil managed
         {
             .maxstack 2
             ldarg.0
