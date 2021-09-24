@@ -13,7 +13,7 @@
 .namespace HW2
 {
     .class public ansi auto SuccessParsingResult
-    extends class HW2.Result`1<valuetype HW2.ParsingError>
+    extends class HW2.Result`1<valuetype HW2.ParsingErrors>
     {
         .method public hidebysig rtspecialname specialname void .ctor() cil managed
         {
@@ -21,8 +21,8 @@
             ldarg.0 // this
             ldc.i4.1 // true
             ldsfld string [System.Runtime]System.String::Empty // ""
-            ldc.i4.0 // ParsingError.None
-            call instance void class HW2.Result`1<valuetype HW2.ParsingError>::.ctor(bool, string, !0)
+            ldc.i4.0 // ParsingErrors.None
+            call instance void class HW2.Result`1<valuetype HW2.ParsingErrors>::.ctor(bool, string, !0)
             ret
         }
     }

@@ -13,7 +13,7 @@
 .namespace HW2
 {
     .class public ansi auto OperationNotSupportedResult
-    extends class HW2.Result`1<valuetype HW2.ParsingError>
+    extends class HW2.Result`1<valuetype HW2.ParsingErrors>
     {
         .method public rtspecialname specialname void .ctor() cil managed
         {
@@ -21,8 +21,8 @@
             ldarg.0 // this
             ldc.i4.0 // false
             ldstr "Operation not supported"
-            ldc.i4.2 // ParsingError.None
-            call instance void class HW2.Result`1<valuetype HW2.ParsingError>::.ctor(bool, string, !0)
+            ldc.i4.2 // ParsingErrors.OperationNotSupported
+            call instance void class HW2.Result`1<valuetype HW2.ParsingErrors>::.ctor(bool, string, !0)
             ret
         }
     }
