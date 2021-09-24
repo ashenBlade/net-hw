@@ -1,4 +1,5 @@
 using Xunit;
+using HW2;
 
 namespace HW1.Tests
 {

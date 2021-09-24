@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using Xunit;
 using HW2;
 
@@ -14,14 +13,14 @@ namespace HW2.Tests
         [InlineData(new []{"123", "+", "4"}, 123, "+", 4)]
         public void TryParseArguments_WithValidArguments_ShouldReturn0(string[] args, int exVal1, string exOp, int exVal2)
         {
-            // Arrange
-            var expectedSuccessResultCode = HW2.Parser.Success;
 
+            // Arrange
+            var expectedSuccessResultCode = HW2.ParsingErrors.;
             // Act
             var actualResultCode =
                 HW2.Parser.TryParseArguments(args, out var actualVal1, out var actualOperation, out var actualVal2);
             // Assert
-            Assert.Equal(expectedSuccessResultCode, actualResultCode);
+            Assert.Equal(expectedSuccessResultCode, actualResultCode.Value);
             Assert.Equal(exVal1, actualVal1);
             Assert.Equal(exVal2, actualVal2);
             Assert.Equal(exOp, actualOperation);

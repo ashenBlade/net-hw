@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Calculator\Calculator.ilproj" />
+      <ProjectReference Include="..\..\src\HW2\HW2.ilproj" />
     </ItemGroup>
 
 

@@ -17,6 +17,7 @@ namespace HW2.Tests
             // Act
             var actual = HW2.Calculator.Calculate(val1, op, val2);
 
+
             // Assert
             Assert.Equal(expected, actual);
         }

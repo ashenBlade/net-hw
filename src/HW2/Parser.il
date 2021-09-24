@@ -21,13 +21,15 @@
     .class public auto ansi abstract sealed Parser
     extends [System.Runtime]System.Object
     {
-        .method public static hidebysig int32 TryParseArguments
+        .method public static hidebysig
+            class HW2.Result`1<valuetype HW2.ParsingErrors> TryParseArguments
         (string[] args,
         [out] int32& val1,
         [out] string& operation,
         [out] int32& val2) cil managed
         {
             .maxstack 8
+            .locals([0] class HW2.Result`1<valuetype HW2.ParsingErrors> result)
             ldarg.0
             ldc.i4.0
             ldelem.ref // push args array at index 0 - left operand
@@ -57,7 +59,7 @@
             call bool [HW2]HW2.Parser::IsOperationSupported(string)
             brfalse OPERATION_NOT_SUPPORTED
 
-            ldc.i4.0
+            newobj instance void HW2.SuccessParsingResult::.ctor()
             ret
 
 OPERANDS_INVALID:
@@ -74,7 +76,7 @@ OPERANDS_INVALID:
 
             call string [System.Runtime]System.String::Concat(string, string, string, string)
             call void [System.Console]System.Console::WriteLine(string)
-            ldc.i4.1
+            newobj instance void HW2.OperandsInvalidResult::.ctor()
             ret
 
 OPERATION_NOT_SUPPORTED:
@@ -84,7 +86,7 @@ OPERATION_NOT_SUPPORTED:
             ldstr " operation is not supported!"
             call string [System.Runtime]System.String::Concat(string, string)
             call void [System.Console]System.Console::WriteLine(string)
-            ldc.i4.2
+            newobj instance void HW2.OperationNotSupportedResult::.ctor()
             ret
         }
 

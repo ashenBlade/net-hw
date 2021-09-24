@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\HW1\HW1.csproj" />
+      <ProjectReference Include="..\..\src\HW2\HW2.ilproj" />
     </ItemGroup>
 
     <ItemGroup>
