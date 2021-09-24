@@ -12,8 +12,7 @@
 
 .namespace HW2
 {
-    .class sealed ansi auto public ParsingErrors
-        extends [System.Runtime]System.Enum
+    .class sealed enum public ParsingErrors
     {
         .field public static literal valuetype HW2.ParsingErrors None = int32(0)
         .field public static literal valuetype HW2.ParsingErrors OperandsInvalid = int32(1)

@@ -3,7 +3,10 @@
     .ver 5:0:0:0
     .publickeytoken = (B0 3F 5F 7F 11 D5 0A 3A)
 }
-
+.assembly extern HW1
+{
+    .ver 1:0:0:0
+}
 .assembly extern System.Console
 {
     .ver 4:0:0:0
@@ -22,14 +25,14 @@
     extends [System.Runtime]System.Object
     {
         .method public static hidebysig
-            class HW2.Result`1<valuetype HW2.ParsingErrors> TryParseArguments
+            class HW2.Result`1<valuetype [HW1]HW1.ParsingErrors> TryParseArguments
         (string[] args,
         [out] int32& val1,
         [out] string& operation,
         [out] int32& val2) cil managed
         {
             .maxstack 8
-            .locals([0] class HW2.Result`1<valuetype HW2.ParsingErrors> result)
+            .locals([0] class HW2.Result`1<valuetype [HW1]HW1.ParsingErrors> result)
             ldarg.0
             ldc.i4.0
             ldelem.ref // push args array at index 0 - left operand

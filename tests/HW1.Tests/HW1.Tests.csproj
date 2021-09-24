@@ -20,19 +20,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\HW2\HW2.ilproj" />
+        <Compile Remove="obj\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="obj\**" />
+        <EmbeddedResource Remove="obj\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="obj\**" />
+        <None Remove="obj\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="obj\**" />
+        <ProjectReference Include="..\..\src\HW2\HW2.ilproj"/>
     </ItemGroup>
 
 </Project>

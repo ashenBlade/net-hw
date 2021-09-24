@@ -52,7 +52,7 @@
 
             ldarg.0 // this
             ldarg.3 // 'value'
-            stfld !0 HW2.Result::_value
+            stfld !0 class HW2.Result`1<!0>::_value
 
             ret
         }
