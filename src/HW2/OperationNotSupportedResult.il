@@ -12,7 +12,7 @@
 
 .namespace HW2
 {
-    .class public ansi auto OperationNotSupportedParsingResult
+    .class public ansi auto OperationNotSupportedResult
     extends class HW2.Result`1<valuetype HW2.ParsingError>
     {
         .method public rtspecialname specialname void .ctor() cil managed

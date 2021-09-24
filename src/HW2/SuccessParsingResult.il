@@ -17,7 +17,7 @@
     {
         .method public hidebysig rtspecialname specialname void .ctor() cil managed
         {
-            .maxstack 8
+            .maxstack 3
             ldarg.0 // this
             ldc.i4.1 // true
             ldsfld string [System.Runtime]System.String::Empty // ""

@@ -3,5 +3,6 @@
         <TargetFramework>net5.0</TargetFramework>
         <MicrosoftNetCoreIlasmPackageVersion>5.0.0</MicrosoftNetCoreIlasmPackageVersion>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <RootNamespace>Calculator</RootNamespace>
     </PropertyGroup>
 </Project>

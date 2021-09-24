@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\HW2\Calculator.ilproj" />
+      <ProjectReference Include="..\..\src\Calculator\Calculator.ilproj" />
     </ItemGroup>
 
 

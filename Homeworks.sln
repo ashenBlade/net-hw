@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HW1.Tests", "tests\HW1.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HW2.Tests", "tests\HW2.Tests\HW2.Tests.csproj", "{D1D64D6E-1C35-451B-917D-C4A0AA33CAE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator", "src\HW2\Calculator.ilproj", "{5AEC9028-783F-49E7-BF52-70E164788ECD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HW2", "src\HW2\HW2.ilproj", "{5AEC9028-783F-49E7-BF52-70E164788ECD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 using Xunit;
+using HW2;
 
 namespace HW2.Tests
 {
@@ -15,6 +16,7 @@ namespace HW2.Tests
         {
             // Arrange
             var expectedSuccessResultCode = HW2.Parser.Success;
+
             // Act
             var actualResultCode =
                 HW2.Parser.TryParseArguments(args, out var actualVal1, out var actualOperation, out var actualVal2);
