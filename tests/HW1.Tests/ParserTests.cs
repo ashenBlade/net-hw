@@ -50,7 +50,7 @@ namespace HW1.Tests
             var actualCode = Parser.TryParseArguments(expression, out var i1, out var str, out var i2);
 
             // Assert
-            Assert.Equal(ParsingErrors.OperationNotSupported, actualCode.Value);
+            Assert.Equal(( int )ParsingErrors.OperationNotSupported, ( int )actualCode.Value);
         }
 
         [Theory]
@@ -67,10 +67,10 @@ namespace HW1.Tests
             var expression = new[] { left, operation, right };
 
             // Act
-            var actualCode = Parser.TryParseArguments(expression,
-                                                out var actualLeft,
-                                                out var actualOperation,
-                                                out var actualRight);
+            var actualCode = HW2.Parser.TryParseArguments(expression,
+                                                          out var actualLeft,
+                                                          out var actualOperation,
+                                                          out var actualRight);
 
             // Assert
             Assert.Equal(ParsingErrors.None, actualCode.Value);

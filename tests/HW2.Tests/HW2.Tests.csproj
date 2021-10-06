@@ -20,19 +20,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="obj\**"/>
+      <ProjectReference Include="..\..\src\Calculator\Calculator.ilproj" />
+      <ProjectReference Include="..\..\src\HW2\HW2.ilproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <EmbeddedResource Remove="obj\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="obj\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\HW2\HW2.ilproj"/>
-    </ItemGroup>
 
 </Project>

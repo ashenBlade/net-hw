@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.IL">
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <MicrosoftNetCoreIlasmPackageVersion>5.0.0</MicrosoftNetCoreIlasmPackageVersion>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\HW1\HW1.csproj" />
+    </ItemGroup>
+</Project>
