@@ -8,6 +8,9 @@
 
     <ItemGroup>
         <Compile Include="Calculator.fs"/>
+        <Compile Include="ExpressionArguments.fs"/>
+        <Compile Include="ParsingResult.fs"/>
+        <None Include="Parser.fsx"/>
     </ItemGroup>
 
 </Project>
