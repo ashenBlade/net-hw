@@ -1,5 +1,6 @@
 namespace HW3
 
-type ParsingResult =
-    | Error of code: int
-    | Success of ExpressionArguments
+module Parser =
+    type ParsingResult =
+        | Error of code: int
+        | Success of Parser.ExpressionArguments
