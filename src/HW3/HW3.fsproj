@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Calculator.fs"/>
-        <Compile Include="ExpressionArguments.fs"/>
-        <Compile Include="ParsingResult.fs"/>
-        <None Include="Parser.fsx"/>
+        <Compile Include="Calculator.fs" />
+        <Compile Include="ExpressionArguments.fs" />
+        <Compile Include="ParsingResult.fs" />
+        <Compile Include="Parser.fs" />
     </ItemGroup>
 
 </Project>
