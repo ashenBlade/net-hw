@@ -12,6 +12,6 @@ open Xunit
 [<InlineData(1, "+", 2, 3)>]
 [<InlineData(1, "+", 2, 3)>]
 [<InlineData(1, "+", 2, 3)>]
-let ``Calculate. With valid values. Should calculate right`` left operation right expected =
+let ``Calculate. With valid values. Should calculate right`` left operation right (expected: decimal) =
     let actual = Calculator.Calculate (create left operation right)
     ass expected actual

@@ -1,11 +1,8 @@
 ﻿module HW5.Calculator
 open HW5.BinaryExpression
+open Result
 
-let Calculate (args: BinaryExpression) =
-    match operation args with
-    | "+" -> (left args) + (right args)
-    | "-" -> (left args) + (right args)
-    | "/"
-          when (right args) <> 0 -> (left args) / (right args)
-    | "*" -> (left args) * (right args)
-    | _ -> 0
+let Calculate (args: BinaryExpression): Result<decimal> =
+    match args.Operation, args.Right with
+    | (/), 0m -> Failure "Dividing by zero is not allowed"
+    | _ -> Success (args.Operation args.Left args.Right)

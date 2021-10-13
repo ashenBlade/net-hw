@@ -1,8 +1,8 @@
 module HW5.BinaryExpression
 
-type BinaryExpression = { Left: int
-                          Operation: string
-                          Right: int }
+type BinaryExpression = { Left: decimal
+                          Operation: (decimal -> decimal -> decimal)
+                          Right: decimal }
 let create left operation right = { Left = left
                                     Operation = operation
                                     Right = right }

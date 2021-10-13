@@ -1,16 +1,18 @@
 module HW5.Program
 
 open HW5.Parser
-open HW5.Calculator
 open HW5.Result
 
-let (>=>) x f =
-    match x with
-    | Success s -> f s
-    | Failure -> 0
+open CalculatorBuilder
 
 [<EntryPoint>]
 let main args =
-    let res = TryParseArguments args >=> Calculator.Calculate
-    printfn $"{res}"
+    let result = calculate {
+        let! expression = TryParseArguments args
+        let! result = Calculator.Calculate expression
+        return result
+    }
+    match result with
+    | Success res -> printf $"Result: {res}"
+    | Failure msg -> printf $"Error: {msg}"
     0

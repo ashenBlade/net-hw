@@ -1,32 +1,46 @@
 module HW5.Parser
 open System
+open System.Runtime.InteropServices
 open HW5.BinaryExpression
 open HW5.Result
 
-let TryParseOperand (operand: string): Result<int> =
-    match Int32.TryParse operand with
-    | true, i -> Success i
-    | _ -> Failure
+let getOperandInvalidMessage (operand: string) =
+     $"Operand is invalid: {operand}"
 
-let TryParseOperands (left: string) (right: string): Result<int * int> =
+
+let TryParseOperand (operand: string): Result<decimal> =
+    match Decimal.TryParse operand with
+    | true, i -> Success i
+    | _ -> Failure (getOperandInvalidMessage operand)
+
+let TryParseOperands (left: string) (right: string): Result<decimal * decimal> =
     match TryParseOperand left with
     | Success l -> match TryParseOperand right with
                    | Success r -> Success(l, r)
-                   | Failure -> Failure
-    | Failure -> Failure
+                   | Failure f -> Failure f
+    | Failure f-> Failure f
 
-let supportedOperations = ["+"; "-"; "*"; "/"]
+let supportedOperations = dict ["+", (+)
+                                "-", (-)
+                                "/", (/)
+                                "*", (*)]
 
-let TryParseOperation (op: string): Result<string> =
-    match List.contains op supportedOperations with
-    | true -> Success op
-    | _ -> Failure
+let getOperationNotSupportedMessage (operation: string) =
+    let supportedString = supportedOperations |> Seq.map (fun pair -> pair.Key)
+                                              |> String.concat ", "
+    $"Operation {operation} is not supported\n" +
+    $"Supported operations are {supportedString}"
+
+let TryParseOperation (op: string): Result<decimal -> decimal-> decimal> =
+    match supportedOperations.TryGetValue op with
+    | true, op -> Success op
+    | _ -> Failure (getOperationNotSupportedMessage op)
 
 type TryParseBuilder() =
     member this.Bind(x, f) =
         match x with
         | Success s -> f s
-        | Failure -> Failure
+        | Failure f -> Failure f
 
     member this.Return(x) =
         Success x

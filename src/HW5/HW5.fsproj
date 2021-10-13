@@ -13,6 +13,7 @@
         <Compile Include="Result.fs"/>
         <Compile Include="Parser.fs"/>
         <Compile Include="Calculator.fs"/>
+        <Compile Include="CalculatorBuilder.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>
 
