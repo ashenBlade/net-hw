@@ -20,10 +20,10 @@ let TryParseOperands (left: string) (right: string): Result<decimal * decimal> =
                    | Failure f -> Failure f
     | Failure f-> Failure f
 
-let supportedOperations = dict ["+", (+)
-                                "-", (-)
-                                "/", (/)
-                                "*", (*)]
+let supportedOperations = dict ["+", Operation.Add
+                                "-", Operation.Sub
+                                "/", Operation.Div
+                                "*", Operation.Mul]
 
 let getOperationNotSupportedMessage (operation: string) =
     let supportedString = supportedOperations |> Seq.map (fun pair -> pair.Key)
@@ -31,7 +31,7 @@ let getOperationNotSupportedMessage (operation: string) =
     $"Operation {operation} is not supported\n" +
     $"Supported operations are {supportedString}"
 
-let TryParseOperation (op: string): Result<decimal -> decimal-> decimal> =
+let TryParseOperation (op: string): Result<Operation> =
     match supportedOperations.TryGetValue op with
     | true, op -> Success op
     | _ -> Failure (getOperationNotSupportedMessage op)
