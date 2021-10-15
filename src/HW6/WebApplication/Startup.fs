@@ -1,0 +1,35 @@
+module WebApplication.StartUp
+
+open Microsoft.AspNetCore.Builder
+open Microsoft.Extensions.DependencyInjection
+open Giraffe
+open WebApplication.Calculator
+
+
+let webApp =
+    choose [
+        route "/ping"   >=> text "pong"
+//        route "/"       >=> htmlFile "/pages/index.html"
+        route "/add" >=> someHttpHandler
+        setStatusCode 404 >=> text "Not found!"]
+
+let configureApp (app : IApplicationBuilder) =
+    // Add Giraffe to the ASP.NET Core pipeline
+    app.UseGiraffe webApp
+
+let configureServices (services : IServiceCollection) =
+    // Add Giraffe dependencies
+    services.AddGiraffe() |> ignore
+//
+//[<EntryPoint>]
+//let main _ =
+//    Host.CreateDefaultBuilder()
+//        .ConfigureWebHostDefaults(
+//            fun webHostBuilder ->
+//                webHostBuilder
+//                    .Configure(configureApp)
+//                    .ConfigureServices(configureServices)
+//                    |> ignore)
+//        .Build()
+//        .Run()
+//    0
