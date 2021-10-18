@@ -5,6 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="BinaryOperation.fs"/>
+        <Compile Include="BinaryExpression.fs"/>
         <Compile Include="Calculator.fs"/>
         <Compile Include="Startup.fs"/>
         <Compile Include="Program.fs"/>

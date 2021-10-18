@@ -3,6 +3,7 @@ open Giraffe
 
 [<CLIMutable>]
 type Values = { V1: int
+                Op: string
                 V2: int }
     let someHttpHandler: HttpHandler =
         fun next ctx ->
