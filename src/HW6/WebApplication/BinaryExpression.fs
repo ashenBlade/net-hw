@@ -10,3 +10,7 @@ type BinaryExpression = { Left: decimal
 let left expr = expr.Left
 let right expr = expr.Right
 let operation expr = expr.Operation
+
+let createBinaryExpression left operation right = { Left = left
+                                                    Operation = operation
+                                                    Right = right }

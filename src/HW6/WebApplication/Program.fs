@@ -9,10 +9,11 @@ open WebApplication.Calculator
 
 let webApp =
     choose [
-        route "/ping"   >=> text "pong"
-        route "/add" >=> someHttpHandler
-        route "/" >=> htmlFile "pages/index.html"
-        setStatusCode 404 >=> text "Not found!" ]
+//        route "/ping"   >=> text "pong"
+//        route "/add" >=> someHttpHandler
+//        route "/" >=> calculatorHttpHandler
+//        setStatusCode 404 >=> text "Not found!" ]
+          calculatorHttpHandler ]
 
 let configureApp (app : IApplicationBuilder) =
     // Add Giraffe to the ASP.NET Core pipeline

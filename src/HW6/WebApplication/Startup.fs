@@ -8,9 +8,9 @@ open WebApplication.Calculator
 
 let webApp =
     choose [
-        route "/ping"   >=> text "pong"
+//        route "/ping"   >=> text "pong"
 //        route "/"       >=> htmlFile "/pages/index.html"
-        route "/add" >=> someHttpHandler
+        route "/*" >=> calculatorHttpHandler
         setStatusCode 404 >=> text "Not found!"]
 
 let configureApp (app : IApplicationBuilder) =

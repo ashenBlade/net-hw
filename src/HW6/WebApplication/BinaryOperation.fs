@@ -1,15 +1,50 @@
 module WebApplication.BinaryOperation
 
 
-type BinaryOperation = decimal * decimal -> Result<decimal, string>
+type BinaryOperation = {
+    Operation: decimal * decimal -> Result<decimal, string>
+    Operators: string list
+}
 
-let add: BinaryOperation = fun (a, b) -> Ok (a + b)
+let createOperation (func: decimal * decimal -> Result<decimal, string>) (operators: string list) =
+    {
+        Operation = func
+        Operators = operators
+    }
 
-let sub: BinaryOperation = fun (a, b) -> Ok (a - b)
+let add: BinaryOperation = createOperation (fun (a, b) -> Ok (a + b))
+                               ["+"
+                                "add"
+                                "sum"
+                                "summarize"]
 
-let mul: BinaryOperation = fun (a, b) -> Ok (a * b)
+let sub: BinaryOperation = createOperation (fun (a, b) -> Ok (a - b))
+                               ["-"
+                                "sub"
+                                "subtract"]
 
-let div: BinaryOperation = fun (a, b) ->
-    match b with
-    | 0m -> Error "Can not divide by zero"
-    | _ -> Ok (a / b)
+let mul: BinaryOperation = createOperation (fun (a, b) -> Ok (a * b))
+                               ["*"
+                                "mul"
+                                "multiply"]
+
+let div: BinaryOperation = createOperation (fun (a, b) ->
+                                                 match b with
+                                                 | 0m -> Error "Can not divide by zero"
+                                                 | _ -> Ok (a / b))
+                               ["/"
+                                "div"
+                                "divide"]
+
+let supportedOperations: BinaryOperation list = [ add
+                                                  sub
+                                                  mul
+                                                  div ]
+
+let operationNotSupportedErrorMessage operation =
+    $"Operation {operation} is not supported!";
+
+let tryParseOperation (opString: string): Result<BinaryOperation, string> =
+    match List.tryFind (fun expr -> (List.contains opString expr.Operators)) supportedOperations with
+    | Some expr-> Ok expr
+    | _ -> Error (operationNotSupportedErrorMessage opString)
