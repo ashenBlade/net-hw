@@ -19,7 +19,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Giraffe", "src\HW6\Giraffe\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientC", "src\HW6\ClientC\ClientC.csproj", "{53087B36-86BB-48BA-B208-82C7C81D02F1}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Client", "src\HW6\Client\Client.fsproj", "{78D4E374-C9DA-4D22-9BE0-2422CE6336F6}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ClientF", "src\HW6\ClientF\ClientF.fsproj", "{78D4E374-C9DA-4D22-9BE0-2422CE6336F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
