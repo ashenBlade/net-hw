@@ -1,0 +1,12 @@
+module WebApplication.BinaryExpression
+
+open BinaryOperation
+open WebApplication
+
+type BinaryExpression = { Left: decimal
+                          Operation: BinaryOperation
+                          Right: decimal }
+
+let left expr = expr.Left
+let right expr = expr.Right
+let operation expr = expr.Operation
