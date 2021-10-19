@@ -1,30 +1,36 @@
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using WebApplication;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace HW6.Tests
 {
     public class UnitTest1 : IClassFixture<WebApplicationFactory<StartUp.StartUp>>
     {
-        private readonly ITestOutputHelper _testOutputHelper;
+        private readonly FakeWebHostBuilder _builder;
+        private HttpClient HttpClient => _builder.CreateClient();
 
-        public UnitTest1(ITestOutputHelper testOutputHelper)
+        public UnitTest1()
         {
-            _testOutputHelper = testOutputHelper;
+            _builder = new FakeWebHostBuilder();
         }
 
-        [Fact]
-        public void Test1()
+        private async Task BaseCalculator(string operation, int left, int right, string expected)
         {
-            var x = new WebApplicationFactory<StartUp.StartUp>();
-            var client = x.CreateClient();
-            var msg = new HttpRequestMessage { RequestUri = new Uri("http://localhost:5000/add?v1=12&v2=34") };
+            var msg = new HttpRequestMessage(HttpMethod.Get,
+                                             new Uri($"http://localhost:5001/{operation}?v1={left}&v2={right}"));
+            var response = await HttpClient.SendAsync(msg);
+            var actual = await response.Content.ReadAsStringAsync();
+            Assert.Equal(expected, actual);
+        }
 
-            var answ = client.Send(msg);
-            _testOutputHelper.WriteLine($"{answ.StatusCode}");
+        [Theory]
+        [InlineData(1, 2, "3")]
+        public async Task Add_WithValidArguments_ShouldReturnValidResult(int left, int right, string expected)
+        {
+            await BaseCalculator("add", left, right, expected);
         }
     }
 }
