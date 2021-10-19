@@ -3,9 +3,9 @@ module WebApplication.BinaryExpression
 open BinaryOperation
 open WebApplication
 
-type BinaryExpression = { Left: decimal
+type BinaryExpression = { Left: int
                           Operation: BinaryOperation
-                          Right: decimal }
+                          Right: int }
 
 let left expr = expr.Left
 let right expr = expr.Right

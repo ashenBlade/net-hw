@@ -7,8 +7,8 @@ open WebApplication.BinaryOperation
 open BinaryExpression
 
 [<CLIMutable>]
-type RequestedValues = { V1: decimal
-                         V2: decimal }
+type RequestedValues = { V1: int
+                         V2: int }
 
 module RequestedValues =
     let tryParseInput (values: RequestedValues) (operation: string): Result<BinaryExpression, string> =
@@ -21,7 +21,7 @@ module RequestedValues =
 
 
 
-let calculate (expression: BinaryExpression): Result<decimal, string> =
+let calculate (expression: BinaryExpression): Result<int, string> =
     expression.Operation.Operation (expression.Left, expression.Right)
 
 //let someHttpHandler: HttpHandler =

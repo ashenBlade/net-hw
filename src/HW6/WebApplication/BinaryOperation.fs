@@ -2,11 +2,11 @@ module WebApplication.BinaryOperation
 
 
 type BinaryOperation = {
-    Operation: decimal * decimal -> Result<decimal, string>
+    Operation: int * int -> Result<int, string>
     Operators: string list
 }
 
-let createOperation (func: decimal * decimal -> Result<decimal, string>) (operators: string list) =
+let createOperation (func: int * int -> Result<int, string>) (operators: string list) =
     {
         Operation = func
         Operators = operators
@@ -30,7 +30,7 @@ let mul: BinaryOperation = createOperation (fun (a, b) -> Ok (a * b))
 
 let div: BinaryOperation = createOperation (fun (a, b) ->
                                                  match b with
-                                                 | 0m -> Error "Can not divide by zero"
+                                                 | 0 -> Error "Can not divide by zero"
                                                  | _ -> Ok (a / b))
                                ["/"
                                 "div"
