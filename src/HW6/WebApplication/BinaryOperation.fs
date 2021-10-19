@@ -27,10 +27,10 @@ let mul: BinaryOperation = createOperation (fun (a, b) -> Ok (a * b))
                                ["*"
                                 "mul"
                                 "multiply"]
-
+let divideByZeroErrorMessage = "Can not divide by zero"
 let div: BinaryOperation = createOperation (fun (a, b) ->
                                                  match b with
-                                                 | 0 -> Error "Can not divide by zero"
+                                                 | 0 -> Error divideByZeroErrorMessage
                                                  | _ -> Ok (a / b))
                                ["/"
                                 "div"
