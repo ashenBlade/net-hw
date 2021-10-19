@@ -5,21 +5,24 @@ open Microsoft.Extensions.DependencyInjection
 open Giraffe
 open WebApplication.Calculator
 
+let webApp = choose [ calculatorHttpHandler ]
 
-let webApp =
-    choose [
-//        route "/ping"   >=> text "pong"
-//        route "/"       >=> htmlFile "/pages/index.html"
-        route "/*" >=> calculatorHttpHandler
-        setStatusCode 404 >=> text "Not found!"]
+type StartUp() =
+    class
+        member this.ConfigureServices(services: IServiceCollection) =
+            services.AddGiraffe() |> ignore
 
-let configureApp (app : IApplicationBuilder) =
-    // Add Giraffe to the ASP.NET Core pipeline
-    app.UseGiraffe webApp
+        member this.Configure(app: IApplicationBuilder) =
+            app.UseGiraffe webApp
+    end
 
-let configureServices (services : IServiceCollection) =
-    // Add Giraffe dependencies
-    services.AddGiraffe() |> ignore
+//let configureApp (app: IApplicationBuilder) =
+//    // Add Giraffe to the ASP.NET Core pipeline
+//    app.UseGiraffe webApp
+//
+//let configureServices (services: IServiceCollection) =
+//    // Add Giraffe dependencies
+//    services.AddGiraffe() |> ignore
 //
 //[<EntryPoint>]
 //let main _ =
