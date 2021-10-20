@@ -2,20 +2,19 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
 using WebApplication;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace HW6.Tests
 {
-    public class UnitTest1 : IClassFixture<WebApplicationFactory<StartUp.StartUp>>
+    public class AspNetCalculatorTests
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly FakeWebHostBuilder _builder;
         private HttpClient HttpClient => _builder.CreateClient();
 
-        public UnitTest1(ITestOutputHelper testOutputHelper)
+        public AspNetCalculatorTests(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
             _builder = new FakeWebHostBuilder();
