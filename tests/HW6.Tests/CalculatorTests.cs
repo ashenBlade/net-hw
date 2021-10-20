@@ -1,19 +1,23 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using WebApplication;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace HW6.Tests
 {
     public class UnitTest1 : IClassFixture<WebApplicationFactory<StartUp.StartUp>>
     {
+        private readonly ITestOutputHelper _testOutputHelper;
         private readonly FakeWebHostBuilder _builder;
         private HttpClient HttpClient => _builder.CreateClient();
 
-        public UnitTest1()
+        public UnitTest1(ITestOutputHelper testOutputHelper)
         {
+            _testOutputHelper = testOutputHelper;
             _builder = new FakeWebHostBuilder();
         }
 
@@ -82,6 +86,73 @@ namespace HW6.Tests
         public async Task Div_WithZeroAsRightOperand_ShouldReturnErrorString()
         {
             await BaseCalculator("div", 1, 0, $"\"{BinaryOperation.divideByZeroErrorMessage}\"");
+        }
+
+        [Theory]
+        [InlineData("querty")]
+        [InlineData("o")]
+        [InlineData(".")]
+        public async Task ReturnsErrorMessageWith400Code_WhenLeftValueIsInvalid(string left)
+        {
+            // Arrange
+            var expectedErrorMessage = $"\"Could not parse value '{left}' to type System.Int32.\"";
+            var expectedCode = HttpStatusCode.BadRequest;
+
+            // Act
+            var response = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
+                                                                             $"http://localhost:5001/add?v1={left}&v2=123"));
+            var actualMessage = await response.Content.ReadAsStringAsync();
+            var actualCode = response.StatusCode;
+
+            // Assert
+            Assert.Equal(expectedErrorMessage, actualMessage);
+            Assert.Equal(expectedCode, actualCode);
+        }
+
+        [Theory]
+        [InlineData("qwert")]
+        [InlineData("---")]
+        [InlineData("O")]
+        [InlineData("eleven")]
+        public async Task ReturnsErrorMessageWith400Code_WhenRightValueIsInvalid(string right)
+        {
+            // Arrange
+            var expectedErrorMessage = $"\"Could not parse value '{right}' to type System.Int32.\"";
+            var expectedCode = HttpStatusCode.BadRequest;
+
+            // Act
+            var response = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
+                                                                             $"http://localhost:5001/add?v1=123&v2={right}"));
+            var actualMessage = await response.Content.ReadAsStringAsync();
+            var actualCode = response.StatusCode;
+
+            // Assert
+            Assert.Equal(expectedErrorMessage, actualMessage);
+            Assert.Equal(expectedCode, actualCode);
+        }
+
+
+        [Theory]
+        [InlineData("summirize")]
+        [InlineData("modulo")]
+        [InlineData("anigilate")]
+        [InlineData("return")]
+        [InlineData("")]
+        public async Task ReturnsErrorMessageWith400ErrorCode_WhenOperationIsInvalid(string operation)
+        {
+            // Arrange
+            var expectedErrorMessage = $"\"{BinaryOperation.operationNotSupportedErrorMessage(operation)}\"";
+            var expectedCode = HttpStatusCode.BadRequest;
+
+            // Act
+            var response = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
+                                                                             $"http://localhost:5001/{operation}?v1=123&v2=123"));
+            var actualMessage = await response.Content.ReadAsStringAsync();
+            var actualCode = response.StatusCode;
+
+            // Assert
+            Assert.Equal(expectedErrorMessage, actualMessage);
+            Assert.Equal(expectedCode, actualCode);
         }
     }
 }
