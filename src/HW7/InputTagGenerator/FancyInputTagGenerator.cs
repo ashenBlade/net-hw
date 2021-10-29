@@ -32,9 +32,14 @@ namespace HW7.Infrastructure
             return GetBaseInput("number");
         }
 
+        private static IHtmlContent GenerateBaseSelectInput()
+        {
+            return new TagBuilder("select");
+        }
+
         public IHtmlContent GenerateSelectInput()
         {
-            return GetBaseInput("select");
+            return GenerateBaseSelectInput();
         }
 
         private static bool IsStringBased(Type type)
