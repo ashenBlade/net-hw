@@ -1,5 +1,8 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using HW7.NameGenerator;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -23,22 +26,45 @@ namespace HW7.Infrastructure
             typeof(T).GetProperties()
                      .Select(ConvertPropertyToFancyHtmlEditor)
                      .ToList()
-                     .ForEach(content => builder.AppendHtml(content));
+                     .ForEach(content => builder.AppendHtml(content)
+                                                .AppendLine());
             return builder;
         }
 
         private static IHtmlContent ConvertPropertyToFancyHtmlEditor(PropertyInfo property)
         {
             var builder = new HtmlContentBuilder();
-
-            builder.AppendHtml(GenerateInputTag(property));
+            var id = property.Name;
+            var input = GenerateFancyInputTag(property);
+            var label = new TagBuilder("label") { Attributes = { { "for", id } } };
+            var name = GetFancyMemberName(property);
+            label.InnerHtml.Append(name).AppendHtml(input);
+            builder.AppendHtml(label);
             return builder;
         }
 
-        private static IHtmlContent GenerateInputTag(PropertyInfo property)
+        private static string GetFancyMemberName(MemberInfo member)
+        {
+            var displayName = member.GetCustomAttribute<DisplayNameAttribute>();
+            if (displayName != null) return displayName.DisplayName ?? string.Empty;
+
+            var display = member.GetCustomAttribute<DisplayAttribute>();
+            if (display != null) return display.Name ?? string.Empty;
+
+            return FormatNameToFancyCamelCase(member.Name);
+        }
+
+        private static string FormatNameToFancyCamelCase(string name)
+        {
+            return new FancyNameFormatter()
+               .FormatName(new CamelCaseFormatter()
+                              .FormatName(name));
+        }
+
+        private static IHtmlContent GenerateFancyInputTag(PropertyInfo property)
         {
             var generator = new FancyInputTagGenerator();
-            var tag = generator.GenerateInputTag(property.PropertyType);
+            var tag = generator.GenerateInputTagFor(property);
             return tag;
         }
     }

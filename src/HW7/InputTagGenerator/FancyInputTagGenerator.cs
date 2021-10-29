@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -6,10 +7,10 @@ namespace HW7.Infrastructure
 {
     public class FancyInputTagGenerator : IInputTagGenerator
     {
-        public IHtmlContent GenerateInputTag(Type type)
+        public IHtmlContent GenerateInputTagFor(PropertyInfo property)
         {
-            if (IsEnum(type)) return GenerateSelectInput();
-            if (IsIntegerBased(type)) return GenerateNumberInput();
+            if (IsEnum(property.PropertyType)) return GenerateSelectInput();
+            if (IsIntegerBased(property.PropertyType)) return GenerateNumberInput();
             return GenerateTextInput();
         }
 
@@ -21,6 +22,7 @@ namespace HW7.Infrastructure
             builder.AppendHtml(input);
             return builder;
         }
+
 
         public IHtmlContent GenerateTextInput()
         {
