@@ -30,6 +30,7 @@ namespace HW7.Infrastructure
         private static IHtmlContent ConvertPropertyToFancyHtmlEditor(PropertyInfo property)
         {
             var builder = new HtmlContentBuilder();
+
             builder.AppendHtml(GenerateInputTag(property));
             return builder;
         }
