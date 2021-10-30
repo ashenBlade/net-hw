@@ -24,7 +24,7 @@ namespace HW7.Infrastructure
             return builder;
         }
 
-        private static IHtmlContent ConvertToFancyHtmlEditor<TModel>(PropertyInfo property, TModel model)
+        private static TagBuilder ConvertToFancyHtmlEditor<TModel>(PropertyInfo property, TModel model)
         {
             var builder = new TagBuilder("label") { Attributes = { { "for", property.Name } } };
             builder.InnerHtml
@@ -43,17 +43,20 @@ namespace HW7.Infrastructure
 
         private static void AddValueToInput<TModel>(PropertyInfo property, TModel model, TagBuilder input)
         {
-            if (model is not null) input.Attributes["value"] = property.GetValue(model)?.ToString() ?? string.Empty;
+            if (model is not null)
+                input.Attributes["value"] = property.GetValue(model)?.ToString() ?? string.Empty;
         }
 
 
         private static string GetFancyLabelName(MemberInfo member)
         {
             var displayName = member.GetCustomAttribute<DisplayNameAttribute>();
-            if (displayName != null) return displayName.DisplayName ?? string.Empty;
+            if (displayName != null)
+                return displayName.DisplayName ?? string.Empty;
 
             var display = member.GetCustomAttribute<DisplayAttribute>();
-            if (display != null) return display.Name ?? string.Empty;
+            if (display != null)
+                return display.Name ?? string.Empty;
 
             return FormatNameToFancyCamelCase(member.Name);
         }
@@ -67,9 +70,7 @@ namespace HW7.Infrastructure
 
         private static TagBuilder GenerateFancyInputTag(PropertyInfo property)
         {
-            var generator = new FancyInputTagGenerator();
-            var tag = generator.GenerateInputTagFor(property);
-            return tag;
+            return new FancyInputTagGenerator().GenerateInputTagFor(property);
         }
     }
 }
