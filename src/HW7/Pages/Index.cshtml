@@ -1,15 +1,36 @@
 ﻿@page
-
 @using HW7.Infrastructure
 @model HW7.Models.TestModel
 
 @{
     ViewData["Title"] = "Home page";
 }
+<table>
+    <tr >
+        <td style="margin-right: 10px">
+            <div>
+                <h2>My Fancy Editor</h2>
+                @using (Html.BeginForm())
+                {
+                    @Html.ValidationSummary()
+                    @Html.FancyEditorForModel()
+                    <input type="submit"/>
+                }
+            </div>
+        </td>
 
-@using (Html.BeginForm())
-{
-    @Html.ValidationSummary()
-    @Html.FancyEditorForModel()
-    <input type="submit"/>
-}
+        <td >
+            <div>
+                <h2>Default Editor</h2>
+                @using (Html.BeginForm())
+                {
+                    @Html.ValidationSummary()
+                    ;
+                    @Html.EditorForModel()
+                    ;
+                    <input type="submit"/>
+                }
+            </div>
+        </td>
+    </tr>
+</table>
