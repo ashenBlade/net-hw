@@ -15,20 +15,21 @@ namespace HW7.Infrastructure
             var builder = new HtmlContentBuilder();
             var br = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
             typeof(T).GetProperties()
-                     .Select(prop => ConvertPropertyToFancyHtmlEditor(prop, html.ViewData.Model))
+                     .AsParallel()
+                     .Where(prop => prop.CanRead && prop.CanWrite)
+                     .Select(prop => ConvertToFancyHtmlEditor(prop, html.ViewData.Model))
                      .ToList()
                      .ForEach(content => builder.AppendHtml(content)
                                                 .AppendHtml(br));
             return builder;
         }
 
-        private static IHtmlContent ConvertPropertyToFancyHtmlEditor<TModel>(PropertyInfo property, TModel model)
+        private static IHtmlContent ConvertToFancyHtmlEditor<TModel>(PropertyInfo property, TModel model)
         {
             var builder = new TagBuilder("label") { Attributes = { { "for", property.Name } } };
-            var convertPropertyToFancyHtmlEditor = builder
-                                                  .InnerHtml
-                                                  .AppendHtml(GetFancyLabelName(property))
-                                                  .AppendHtml(GetInputTagForProperty(property, model));
+            builder.InnerHtml
+                   .AppendHtml(GetFancyLabelName(property))
+                   .AppendHtml(GetInputTagForProperty(property, model));
             return builder;
         }
 

@@ -5,14 +5,13 @@ using System.Linq;
 using System.Reflection;
 using HW7.NameFormatter;
 using HW7.NameGenerator;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HW7.Infrastructure
 {
     public class FancyInputTagGenerator : IInputTagGenerator
     {
-        private readonly AggregatedNameFormatter _nameFormatter;
+        private readonly INameFormatter _nameFormatter;
         public FancyInputTagGenerator()
         {
             _nameFormatter =
@@ -24,11 +23,11 @@ namespace HW7.Infrastructure
         {
             var select = new TagBuilder("select");
             foreach (var value in Enum.GetNames(propertyInfo.PropertyType))
-                select.InnerHtml.AppendHtml(GetSelectOption(value));
+                select.InnerHtml.AppendHtml(GetSelectOptionTag(value));
             return select;
         }
 
-        private TagBuilder GetSelectOption(object obj)
+        private TagBuilder GetSelectOptionTag(object obj)
         {
             var value = _nameFormatter.FormatName(obj?.ToString() ?? string.Empty);
             var builder = new TagBuilder("option") { Attributes = { { "value", value } } };
@@ -37,23 +36,25 @@ namespace HW7.Infrastructure
             return builder;
         }
 
-        private static string GetInputTagType(PropertyInfo property)
-        {
-            return GetInputTagTypeFromAttribute(property)
-                ?? GetInputTagTypeFromDataType(property);
-        }
-
-        private static string GetInputTagTypeFromDataType(PropertyInfo property)
+        private static string GetInputTypeFromDataType(PropertyInfo property)
         {
             return IsIntegerBased(property.PropertyType)
                        ? "number"
-                       : "text";
+                       : IsDateBased(property.PropertyType)
+                           ? "date"
+                           : "text";
         }
 
-        private static string? GetInputTagTypeFromAttribute(PropertyInfo property)
+        private static string? GetInputTypeFromAttribute(PropertyInfo property)
         {
             return property.GetCustomAttribute<DataTypeAttribute>()?.DataType.ToHtmlDataType();
         }
+        private static string GetInputTagType(PropertyInfo property)
+        {
+            return GetInputTypeFromAttribute(property)
+                ?? GetInputTypeFromDataType(property);
+        }
+
 
         public TagBuilder GenerateInputTagFor(PropertyInfo property)
         {
@@ -81,7 +82,7 @@ namespace HW7.Infrastructure
         }
 
 
-        private void ApplyValidationAttributes(PropertyInfo property, TagBuilder builder)
+        private static void ApplyValidationAttributes(PropertyInfo property, TagBuilder builder)
         {
             GetValidationAttributes(property)
                .ToList()
@@ -90,91 +91,76 @@ namespace HW7.Infrastructure
 
         private static void ApplyValidationAttribute(ValidationAttribute attribute, TagBuilder builder)
         {
-            IEnumerable<(string Name, string Value)> constraints = attribute switch
-                                                                   {
-                                                                       MaxLengthAttribute maxLength => new[]
-                                                                                                       {
-                                                                                                           ( "maxlength",
-                                                                                                             maxLength
-                                                                                                                .Length
-                                                                                                                .ToString() )
-                                                                                                       },
-                                                                       MinLengthAttribute minLength => new[]
-                                                                                                       {
-                                                                                                           ( "minlength",
-                                                                                                             minLength
-                                                                                                                .Length
-                                                                                                                .ToString() )
-                                                                                                       },
-                                                                       RangeAttribute range => new[]
-                                                                                               {
-                                                                                                   ( "maxlength",
-                                                                                                     range.Maximum
-                                                                                                          .ToString() ),
-                                                                                                   ( "minlength",
-                                                                                                     range.Minimum
-                                                                                                          .ToString() )
-                                                                                               },
-                                                                       RequiredAttribute required => new[]
-                                                                                                     {
-                                                                                                         ( "required",
-                                                                                                           string
-                                                                                                              .Empty )
-                                                                                                     },
-                                                                       RegularExpressionAttribute regex => new[]
-                                                                                                           {
-                                                                                                               ( "pattern",
-                                                                                                                 regex
-                                                                                                                    .Pattern )
-                                                                                                           },
-                                                                       EmailAddressAttribute email => new[]
-                                                                                                      {
-                                                                                                          ( "pattern",
-                                                                                                            @"[A-Za-z](\w|\d)+@(\w)+\.(\w)+" )
-                                                                                                      },
-                                                                       PhoneAttribute phone => new[]
-                                                                                               {
-                                                                                                   ( "pattern",
-                                                                                                     @"\d+" )
-                                                                                               },
-                                                                       _ => null
-                                                                   };
-            if (constraints == null) return;
+            var constraints = attribute switch
+                              {
+                                  MaxLengthAttribute maxLength => new[]
+                                                                  {
+                                                                      ( "maxlength",
+                                                                        maxLength
+                                                                           .Length
+                                                                           .ToString() )
+                                                                  },
+                                  MinLengthAttribute minLength => new[]
+                                                                  {
+                                                                      ( "minlength",
+                                                                        minLength
+                                                                           .Length
+                                                                           .ToString() )
+                                                                  },
+                                  RangeAttribute range => new[]
+                                                          {
+                                                              ( "maxlength",
+                                                                range.Maximum
+                                                                     .ToString() ),
+                                                              ( "minlength",
+                                                                range.Minimum
+                                                                     .ToString() )
+                                                          },
+                                  RequiredAttribute required => new[]
+                                                                {
+                                                                    ( "required",
+                                                                      string
+                                                                         .Empty )
+                                                                },
+                                  RegularExpressionAttribute regex => new[]
+                                                                      {
+                                                                          ( "pattern",
+                                                                            regex
+                                                                               .Pattern )
+                                                                      },
+                                  EmailAddressAttribute email => new[]
+                                                                 {
+                                                                     ( "pattern",
+                                                                       @"[A-Za-z](\w|\d)+@(\w)+\.(\w)+" )
+                                                                 },
+                                  PhoneAttribute phone => new[]
+                                                          {
+                                                              ( "pattern",
+                                                                @"\d+" )
+                                                          },
+                                  _ => null
+                              };
+            if (constraints == null)
+                return;
 
-            foreach (var (name, value) in constraints) builder.Attributes.Add(name, value);
-        }
-
-        public IHtmlContent GenerateNumberInput(PropertyInfo property)
-        {
-            var tag = GetBaseInputTag("number");
-            return tag;
-        }
-
-        private static TagBuilder GenerateBaseSelectInput()
-        {
-            return new TagBuilder("select");
-        }
-
-        public IHtmlContent GenerateSelectInput(PropertyInfo property)
-        {
-            return GenerateBaseSelectInput();
-        }
-
-        private static bool IsStringBased(Type type)
-        {
-            return type == typeof(string);
+            foreach (var (name, value) in constraints)
+                builder.Attributes.Add(name, value);
         }
 
         private static bool IsIntegerBased(Type type)
         {
             return type == typeof(int)
+                || type == typeof(double)
                 || type == typeof(long)
-                || type == typeof(short);
+                || type == typeof(short)
+                || type == typeof(decimal)
+                || type == typeof(float);
         }
 
-        private static bool IsEnum(Type type)
+        private static bool IsDateBased(Type type)
         {
-            return type.IsEnum;
+            return type == typeof(DateTime);
         }
+
     }
 }
