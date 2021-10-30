@@ -86,47 +86,69 @@ namespace HW7.Infrastructure
         {
             GetValidationAttributes(property)
                .ToList()
-               .ForEach(attribute => ApplyValidationAttribute(attribute, builder));
+               .ForEach(attribute => ApplyValidationAttribute(property, attribute, builder));
         }
 
-        private static void ApplyValidationAttribute(ValidationAttribute attribute, TagBuilder builder)
+        private static int MaxValueForLength(int length)
+        {
+            var max = 0;
+            while (length > 0)
+            {
+                max = max * 10 + 9;
+                length--;
+            }
+
+            return max;
+        }
+
+        private static (string, string) GetMaxLengthInputAttribute(PropertyInfo property,
+                                                                   int value)
+        {
+            return IsIntegerBased(property.PropertyType)
+                       ? ( "max", MaxValueForLength(value).ToString() )
+                       : ( "maxlength", value.ToString() );
+        }
+
+        private static (string, string) GetMinLengthInputAttribute(PropertyInfo property,
+                                                                   int value)
+        {
+            return IsIntegerBased(property.PropertyType)
+                       ? ( "min", ( MaxValueForLength(value - 1) + 1 ).ToString() )
+                       : ( "minlength", value.ToString() );
+        }
+
+        private static IEnumerable<(string, string)> GetRangeInputAttribute(PropertyInfo property,
+                                                                            RangeAttribute range)
+        {
+            return new[] { ( "min", range.Minimum.ToString() ), ( "max", range.Maximum.ToString() ) };
+        }
+
+        private static void ApplyValidationAttribute(PropertyInfo property,
+                                                     ValidationAttribute attribute,
+                                                     TagBuilder builder)
         {
             var constraints = attribute switch
                               {
                                   MaxLengthAttribute maxLength => new[]
                                                                   {
-                                                                      ( "maxlength",
-                                                                        maxLength
-                                                                           .Length
-                                                                           .ToString() )
+                                                                      GetMaxLengthInputAttribute(property,
+                                                                                                 maxLength.Length)
                                                                   },
                                   MinLengthAttribute minLength => new[]
                                                                   {
-                                                                      ( "minlength",
-                                                                        minLength
-                                                                           .Length
-                                                                           .ToString() )
+                                                                      GetMinLengthInputAttribute(property,
+                                                                                                 minLength.Length)
                                                                   },
-                                  RangeAttribute range => new[]
-                                                          {
-                                                              ( "maxlength",
-                                                                range.Maximum
-                                                                     .ToString() ),
-                                                              ( "minlength",
-                                                                range.Minimum
-                                                                     .ToString() )
-                                                          },
+                                  RangeAttribute range => GetRangeInputAttribute(property, range),
                                   RequiredAttribute required => new[]
                                                                 {
                                                                     ( "required",
-                                                                      string
-                                                                         .Empty )
+                                                                      string.Empty )
                                                                 },
                                   RegularExpressionAttribute regex => new[]
                                                                       {
                                                                           ( "pattern",
-                                                                            regex
-                                                                               .Pattern )
+                                                                            regex.Pattern )
                                                                       },
                                   EmailAddressAttribute email => new[]
                                                                  {
