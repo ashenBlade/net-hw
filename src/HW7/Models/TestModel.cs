@@ -6,8 +6,10 @@ namespace HW7.Models
     public class TestModel
     {
         [DisplayName("Имя")]
+        [Required]
         public string Name { get; set; }
 
+        [Range(1, 4)]
         public string LastName { get; set; }
 
         [DataType(DataType.Password)]
@@ -18,5 +20,8 @@ namespace HW7.Models
 
         [DisplayName("Кто по жизни?")]
         public Gender Gender { get; set; }
+
+        [RegularExpression(@"\d\d\d")]
+        public string Regex { get; set; }
     }
 }

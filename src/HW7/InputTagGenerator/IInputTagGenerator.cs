@@ -1,10 +1,10 @@
 using System.Reflection;
-using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HW7.Infrastructure
 {
     public interface IInputTagGenerator
     {
-        IHtmlContent GenerateInputTagFor(PropertyInfo property);
+        TagBuilder GenerateInputTagFor(PropertyInfo property);
     }
 }

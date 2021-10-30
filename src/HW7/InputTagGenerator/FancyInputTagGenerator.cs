@@ -1,9 +1,10 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using HW7.NameFormatter;
+using HW7.NameGenerator;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -11,7 +12,16 @@ namespace HW7.Infrastructure
 {
     public class FancyInputTagGenerator : IInputTagGenerator
     {
-        private string GetInputTagType(PropertyInfo property)
+        private readonly AggregatedNameFormatter _nameFormatter;
+
+        public FancyInputTagGenerator()
+        {
+            _nameFormatter =
+                new AggregatedNameFormatter(new CamelCaseFormatter(),
+                                            new AggregatedNameFormatter(new FancyNameFormatter()));
+        }
+
+        private static string GetInputTagType(PropertyInfo property)
         {
             return GetInputTagTypeFromAttribute(property)
                 ?? GetInputTagTypeFromDataType(property);
@@ -19,7 +29,9 @@ namespace HW7.Infrastructure
 
         private static string GetInputTagTypeFromDataType(PropertyInfo property)
         {
-            return "text";
+            return IsIntegerBased(property.PropertyType)
+                       ? "number"
+                       : "text";
         }
 
         private static string? GetInputTagTypeFromAttribute(PropertyInfo property)
@@ -27,10 +39,34 @@ namespace HW7.Infrastructure
             return property.GetCustomAttribute<DataTypeAttribute>()?.DataType.ToHtmlDataType();
         }
 
-        public IHtmlContent GenerateInputTagFor(PropertyInfo property)
+        public TagBuilder GenerateInputTagFor(PropertyInfo property)
+        {
+            return property.PropertyType.IsEnum
+                       ? GenerateSelectTag(property)
+                       : GenerateInputTag(property);
+        }
+
+        private TagBuilder GenerateInputTag(PropertyInfo property)
         {
             var builder = new TagBuilder("input") { Attributes = { { "type", GetInputTagType(property) } } };
             ApplyValidationAttributes(property, builder);
+            return builder;
+        }
+
+        private TagBuilder GenerateSelectTag(PropertyInfo propertyInfo)
+        {
+            var select = new TagBuilder("select");
+            foreach (var value in Enum.GetNames(propertyInfo.PropertyType))
+                @select.InnerHtml.AppendHtml(GetSelectOption(value));
+            return select;
+        }
+
+        private TagBuilder GetSelectOption(object obj)
+        {
+            var value = _nameFormatter.FormatName(obj?.ToString() ?? string.Empty);
+            var builder = new TagBuilder("option") { Attributes = { { "value", value } } };
+            builder.InnerHtml
+                   .Append(value);
             return builder;
         }
 
@@ -52,7 +88,7 @@ namespace HW7.Infrastructure
 
         private void ApplyValidationAttributes(PropertyInfo property, TagBuilder builder)
         {
-            foreach (var attribute in GetValidationAttributes(property)) ApplyValidationAttribute(attribute, builder);
+            // foreach (var attribute in GetValidationAttributes(property)) ApplyValidationAttribute(attribute, builder);
             GetValidationAttributes(property)
                .ToList()
                .ForEach(attribute => ApplyValidationAttribute(attribute, builder));
@@ -64,24 +100,24 @@ namespace HW7.Infrastructure
                                                                    {
                                                                        MaxLengthAttribute maxLength => new[]
                                                                                                        {
-                                                                                                           ( "max-length",
+                                                                                                           ( "maxlength",
                                                                                                              maxLength
                                                                                                                 .Length
                                                                                                                 .ToString() )
                                                                                                        },
                                                                        MinLengthAttribute minLength => new[]
                                                                                                        {
-                                                                                                           ( "min-length",
+                                                                                                           ( "minlength",
                                                                                                              minLength
                                                                                                                 .Length
                                                                                                                 .ToString() )
                                                                                                        },
                                                                        RangeAttribute range => new[]
                                                                                                {
-                                                                                                   ( "max-length",
+                                                                                                   ( "maxlength",
                                                                                                      range.Maximum
                                                                                                           .ToString() ),
-                                                                                                   ( "min-length",
+                                                                                                   ( "minlength",
                                                                                                      range.Minimum
                                                                                                           .ToString() )
                                                                                                },
@@ -91,7 +127,12 @@ namespace HW7.Infrastructure
                                                                                                            string
                                                                                                               .Empty )
                                                                                                      },
-
+                                                                       RegularExpressionAttribute regex => new[]
+                                                                                                           {
+                                                                                                               ( "pattern",
+                                                                                                                 regex
+                                                                                                                    .Pattern )
+                                                                                                           },
                                                                        _ => null
                                                                    };
             if (constraints == null) return;
