@@ -13,12 +13,28 @@ namespace HW7.Infrastructure
     public class FancyInputTagGenerator : IInputTagGenerator
     {
         private readonly AggregatedNameFormatter _nameFormatter;
-
         public FancyInputTagGenerator()
         {
             _nameFormatter =
                 new AggregatedNameFormatter(new CamelCaseFormatter(),
                                             new AggregatedNameFormatter(new FancyNameFormatter()));
+        }
+
+        private TagBuilder GenerateSelectTag(PropertyInfo propertyInfo)
+        {
+            var select = new TagBuilder("select");
+            foreach (var value in Enum.GetNames(propertyInfo.PropertyType))
+                select.InnerHtml.AppendHtml(GetSelectOption(value));
+            return select;
+        }
+
+        private TagBuilder GetSelectOption(object obj)
+        {
+            var value = _nameFormatter.FormatName(obj?.ToString() ?? string.Empty);
+            var builder = new TagBuilder("option") { Attributes = { { "value", value } } };
+            builder.InnerHtml
+                   .Append(value);
+            return builder;
         }
 
         private static string GetInputTagType(PropertyInfo property)
@@ -53,42 +69,20 @@ namespace HW7.Infrastructure
             return builder;
         }
 
-        private TagBuilder GenerateSelectTag(PropertyInfo propertyInfo)
-        {
-            var select = new TagBuilder("select");
-            foreach (var value in Enum.GetNames(propertyInfo.PropertyType))
-                @select.InnerHtml.AppendHtml(GetSelectOption(value));
-            return select;
-        }
 
-        private TagBuilder GetSelectOption(object obj)
-        {
-            var value = _nameFormatter.FormatName(obj?.ToString() ?? string.Empty);
-            var builder = new TagBuilder("option") { Attributes = { { "value", value } } };
-            builder.InnerHtml
-                   .Append(value);
-            return builder;
-        }
-
-        private IEnumerable<ValidationAttribute> GetValidationAttributes(PropertyInfo property)
+        private static IEnumerable<ValidationAttribute> GetValidationAttributes(PropertyInfo property)
         {
             return property.GetCustomAttributes<ValidationAttribute>();
         }
 
-        private TagBuilder GetBaseInput(string type)
+        private static TagBuilder GetBaseInputTag(string type)
         {
             return new TagBuilder("input") { Attributes = { { "type", type } } };
         }
 
 
-        public IHtmlContent GenerateTextInput(PropertyInfo property)
-        {
-            return GetBaseInput("text");
-        }
-
         private void ApplyValidationAttributes(PropertyInfo property, TagBuilder builder)
         {
-            // foreach (var attribute in GetValidationAttributes(property)) ApplyValidationAttribute(attribute, builder);
             GetValidationAttributes(property)
                .ToList()
                .ForEach(attribute => ApplyValidationAttribute(attribute, builder));
@@ -133,6 +127,16 @@ namespace HW7.Infrastructure
                                                                                                                  regex
                                                                                                                     .Pattern )
                                                                                                            },
+                                                                       EmailAddressAttribute email => new[]
+                                                                                                      {
+                                                                                                          ( "pattern",
+                                                                                                            @"[A-Za-z](\w|\d)+@(\w)+\.(\w)+" )
+                                                                                                      },
+                                                                       PhoneAttribute phone => new[]
+                                                                                               {
+                                                                                                   ( "pattern",
+                                                                                                     @"\d+" )
+                                                                                               },
                                                                        _ => null
                                                                    };
             if (constraints == null) return;
@@ -142,7 +146,7 @@ namespace HW7.Infrastructure
 
         public IHtmlContent GenerateNumberInput(PropertyInfo property)
         {
-            var tag = GetBaseInput("number");
+            var tag = GetBaseInputTag("number");
             return tag;
         }
 

@@ -10,7 +10,6 @@ namespace HW7.NameFormatter
             _inner = inner;
             _formatter = formatter;
         }
-
         public string FormatName(string name)
         {
             name = _formatter.FormatName(name);

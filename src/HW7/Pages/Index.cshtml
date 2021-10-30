@@ -1,12 +1,15 @@
 ﻿@page
 
 @using HW7.Infrastructure
-
 @model HW7.Models.TestModel
 
 @{
     ViewData["Title"] = "Home page";
 }
 
-@Html.FancyEditorForModel()
-
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    @Html.FancyEditorForModel()
+    <input type="submit"/>
+}

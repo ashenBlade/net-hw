@@ -24,13 +24,15 @@ namespace HW7.Infrastructure
 
         private static IHtmlContent ConvertPropertyToFancyHtmlEditor<TModel>(PropertyInfo property, TModel model)
         {
-            return new TagBuilder("label") { Attributes = { { "for", property.Name } } }
-                  .InnerHtml
-                  .Append(GetFancyLabelName(property))
-                  .AppendHtml(GetInputForProperty(property, model));
+            var builder = new TagBuilder("label") { Attributes = { { "for", property.Name } } };
+            var convertPropertyToFancyHtmlEditor = builder
+                                                  .InnerHtml
+                                                  .AppendHtml(GetFancyLabelName(property))
+                                                  .AppendHtml(GetInputTagForProperty(property, model));
+            return builder;
         }
 
-        private static TagBuilder GetInputForProperty<TModel>(PropertyInfo property, TModel model)
+        private static TagBuilder GetInputTagForProperty<TModel>(PropertyInfo property, TModel model)
         {
             var input = GenerateFancyInputTag(property);
             input.Attributes.Add("id", property.Name);

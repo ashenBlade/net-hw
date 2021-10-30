@@ -12,6 +12,9 @@ namespace HW7.Models
         [Range(1, 4)]
         public string LastName { get; set; }
 
+        [Phone]
+        public string Phone { get; set; }
+
         [DataType(DataType.Password)]
         public int Age { get; set; }
 
