@@ -9,7 +9,7 @@ namespace HW7
             var builder = new StringBuilder();
             foreach (var ch in name)
             {
-                if (char.IsUpper(ch)) builder.Append(' ');
+                if (char.IsUpper(ch) || char.IsDigit(ch)) builder.Append(' ');
 
                 builder.Append(ch);
             }
