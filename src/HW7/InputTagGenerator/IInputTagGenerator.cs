@@ -5,9 +5,6 @@ namespace HW7.Infrastructure
 {
     public interface IInputTagGenerator
     {
-        IHtmlContent GenerateInputTagFor(PropertyInfo type);
-        IHtmlContent GenerateTextInput();
-        IHtmlContent GenerateNumberInput();
-        IHtmlContent GenerateSelectInput();
+        IHtmlContent GenerateInputTagFor(PropertyInfo property);
     }
 }

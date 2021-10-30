@@ -34,9 +34,8 @@ namespace HW7.Infrastructure
         private static IHtmlContent ConvertPropertyToFancyHtmlEditor(PropertyInfo property)
         {
             var builder = new HtmlContentBuilder();
-            var id = property.Name;
             var input = GenerateFancyInputTag(property);
-            var label = new TagBuilder("label") { Attributes = { { "for", id } } };
+            var label = new TagBuilder("label") { Attributes = { { "for", property.Name } } };
             var name = GetFancyMemberName(property);
             label.InnerHtml.Append(name).AppendHtml(input);
             builder.AppendHtml(label);
