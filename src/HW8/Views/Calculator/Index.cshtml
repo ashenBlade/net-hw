@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>In this page you can use simple calculator actions: </p>
+
+    <form method="get">
+        <div style="display: flex; flex-flow: column nowrap;">
+            <label for="left">Left: <input type="number" name="left" id="left"></label>
+            <label for="right">Right: <input type="number" name="right" id="right"></label>
+        </div>
+        <br/>
+
+        <label for="actions">Actions:</label>
+        <div id="actions" style="display: flex; flex-direction: column">
+            <button type="submit" asp-action="Add">Add</button>
+            <button type="submit" asp-action="Sub">Substract</button>
+            <button type="submit" asp-action="Mul">Multiply</button>
+            <button type="submit" asp-action="Div">Divide</button>
+        </div>
+    </form>
+</div>

@@ -1,27 +1,58 @@
 ﻿using System.Diagnostics;
 using HW8.Models;
+using HW8.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace HW8.Controllers
 {
-    public class HomeController : Controller
+    public class CalculatorController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<CalculatorController> _logger;
+        private readonly ICalculatorService _calculator;
 
-        public HomeController(ILogger<HomeController> logger)
+        public CalculatorController(ILogger<CalculatorController> logger, ICalculatorService calculator)
         {
             _logger = logger;
+            _calculator = calculator;
         }
 
+
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpGet]
+        public IActionResult Add(int left, int right)
         {
-            return View();
+            return View("Result",
+                        new CalculationResult
+                        {
+                            Left = left,
+                            Operation = "+",
+                            Right = right,
+                            Result = _calculator.Calculate(left, "+", right)
+                        });
+        }
+
+        [HttpGet]
+        public IActionResult Sub(int left, int right)
+        {
+            return new JsonResult(_calculator.Calculate(left, "-", right));
+        }
+
+        [HttpGet]
+        public IActionResult Div(int left, int right)
+        {
+            return new JsonResult(_calculator.Calculate(left, "/", right));
+        }
+
+        [HttpGet]
+        public IActionResult Mul(int left, int right)
+        {
+            return new JsonResult(_calculator.Calculate(left, "*", right));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

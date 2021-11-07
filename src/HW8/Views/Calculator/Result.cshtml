@@ -1,0 +1,26 @@
+@model CalculationResult
+
+@{
+    ViewBag.Title = "Calculation result";
+    Layout = "_Layout";
+}
+
+<h2>Calculation result</h2>
+<table class="table table-bordered">
+    <tr>
+        <td>Operation</td>
+        <td>@Model.Operation</td>
+    </tr>
+    <tr>
+        <td>Left operand</td>
+        <td>@Model.Left</td>
+    </tr>
+    <tr>
+        <td>Right operand</td>
+        <td>@Model.Right</td>
+    </tr>
+    <tr>
+        <td class="font-weight-bold">Result</td>
+        <td class="font-weight-bolder">@Model.Result</td>
+    </tr>
+</table>
