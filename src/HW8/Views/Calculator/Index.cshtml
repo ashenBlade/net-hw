@@ -1,4 +1,6 @@
-﻿@{
+﻿@model CalculationResult
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -6,19 +8,23 @@
     <h1 class="display-4">Welcome</h1>
     <p>In this page you can use simple calculator actions: </p>
 
-    <form method="get">
-        <div style="display: flex; flex-flow: column nowrap;">
-            <label for="left">Left: <input type="number" name="left" id="left"></label>
-            <label for="right">Right: <input type="number" name="right" id="right"></label>
+    <form method="post" class="form-group">
+        <div class="align-content-center d-flex">
+            <input class="form-control" type="number" name="left" id="left"/>
+            <select class="form-control mx-2" id="operation" name="operation">
+                <option value="+" selected="">+</option>
+                <option value="-">-</option>
+                <option value="/">/</option>
+                <option value="*">*</option>
+            </select>
+            <input class="form-control" type="number" name="right" id="right"/>
         </div>
-        <br/>
-
-        <label for="actions">Actions:</label>
-        <div id="actions" style="display: flex; flex-direction: column">
-            <button type="submit" asp-action="Add">Add</button>
-            <button type="submit" asp-action="Sub">Substract</button>
-            <button type="submit" asp-action="Mul">Multiply</button>
-            <button type="submit" asp-action="Div">Divide</button>
-        </div>
+        <button type="submit" asp-action="Index" class="btn btn-primary my-3">Calculate</button>
     </form>
+    <div>
+        @if (Model != null)
+        {
+            <h3 class="text-center text-secondary">Result is: @Model.Result</h3>
+        }
+    </div>
 </div>

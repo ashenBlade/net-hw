@@ -24,35 +24,40 @@ namespace HW8.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult Add(int left, int right)
+        [HttpPost]
+        public IActionResult Index(int left, string operation, int right)
         {
-            return View("Result",
-                        new CalculationResult
+            return View(new CalculationResult
                         {
                             Left = left,
-                            Operation = "+",
+                            Operation = operation,
                             Right = right,
-                            Result = _calculator.Calculate(left, "+", right)
+                            Result = _calculator.Calculate(left, operation, right)
                         });
         }
 
         [HttpGet]
-        public IActionResult Sub(int left, int right)
+        public int Add(int left, int right)
         {
-            return new JsonResult(_calculator.Calculate(left, "-", right));
+            return _calculator.Calculate(left, "+", right);
         }
 
         [HttpGet]
-        public IActionResult Div(int left, int right)
+        public int Sub(int left, int right)
         {
-            return new JsonResult(_calculator.Calculate(left, "/", right));
+            return _calculator.Calculate(left, "-", right);
         }
 
         [HttpGet]
-        public IActionResult Mul(int left, int right)
+        public int Div(int left, int right)
         {
-            return new JsonResult(_calculator.Calculate(left, "*", right));
+            return _calculator.Calculate(left, "/", right);
+        }
+
+        [HttpGet]
+        public int Mul(int left, int right)
+        {
+            return _calculator.Calculate(left, "*", right);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
