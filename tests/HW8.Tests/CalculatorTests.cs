@@ -14,9 +14,22 @@ namespace HW8.Tests
             _factory = factory;
         }
 
-        private static string GetCalculatorUrl(string action, int left, int right)
+        private static string GetCalculatorUrl(string action, string left, string right)
         {
             return $"Calculator/{action}?left={left}&right={right}";
+        }
+
+        private async Task BaseTest(string action, string left, string right, string expected)
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            // Act
+            var response = await client.GetAsync(GetCalculatorUrl(action, left, right));
+            response.EnsureSuccessStatusCode();
+
+            var actual = await response.Content.ReadAsStringAsync();
+            // Assert
+            Assert.Equal(expected, actual);
         }
 
         [Theory]
@@ -27,16 +40,42 @@ namespace HW8.Tests
         [InlineData(0, 0)]
         public async Task Add_WithValidArguments_ShouldCalculateRight(int left, int right)
         {
-            // Arrange
-            var expected = ( left + right ).ToString();
-            var client = _factory.CreateClient();
-            // Act
-            var response = await client.GetAsync(GetCalculatorUrl("Add", left, right));
-            response.EnsureSuccessStatusCode();
-
-            var actual = await response.Content.ReadAsStringAsync();
-            // Assert
-            Assert.Equal(expected, actual);
+            await BaseTest("Add", left.ToString(), right.ToString(), ( left + right ).ToString());
         }
+
+        [Theory]
+        [InlineData(1, 4)]
+        [InlineData(-123, 3445)]
+        [InlineData(231, 6789)]
+        [InlineData(43, 542)]
+        [InlineData(0, 0)]
+        public async Task Sub_WithValidArguments_ShouldCalculateRight(int left, int right)
+        {
+            await BaseTest("Sub", left.ToString(), right.ToString(), ( left - right ).ToString());
+        }
+
+        [Theory]
+        [InlineData(1, 4)]
+        [InlineData(-123, 3445)]
+        [InlineData(231, 6789)]
+        [InlineData(43, 542)]
+        [InlineData(0, 0)]
+        public async Task Div_WithValidArguments_ShouldCalculateRight(int left, int right)
+        {
+            await BaseTest("Div", left.ToString(), right.ToString(), ( left / right ).ToString());
+        }
+
+        [Theory]
+        [InlineData(1, 4)]
+        [InlineData(-123, 3445)]
+        [InlineData(231, 6789)]
+        [InlineData(43, 542)]
+        [InlineData(0, 0)]
+        public async Task Mul_WithValidArguments_ShouldCalculateRight(int left, int right)
+        {
+            await BaseTest("Mul", left.ToString(), right.ToString(), ( left * right ).ToString());
+        }
+
+
     }
 }
