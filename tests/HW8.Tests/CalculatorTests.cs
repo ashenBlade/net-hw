@@ -59,7 +59,6 @@ namespace HW8.Tests
         [InlineData(-123, 3445)]
         [InlineData(231, 6789)]
         [InlineData(43, 542)]
-        [InlineData(0, 0)]
         public async Task Div_WithValidArguments_ShouldCalculateRight(int left, int right)
         {
             await BaseTest("Div", left.ToString(), right.ToString(), ( left / right ).ToString());
