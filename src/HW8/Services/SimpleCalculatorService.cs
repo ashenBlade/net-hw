@@ -10,8 +10,10 @@ namespace HW8.Services
                        "+" => left + right,
                        "-" => left - right,
                        "*" => left * right,
-                       "/" => left / right,
-                       _   => 0
+                       "/" => right == 0
+                                  ? 0
+                                  : left / right,
+                       _ => 0
                    };
         }
     }
