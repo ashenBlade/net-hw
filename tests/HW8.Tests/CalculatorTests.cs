@@ -76,6 +76,10 @@ namespace HW8.Tests
             await BaseTest("Mul", left.ToString(), right.ToString(), ( left * right ).ToString());
         }
 
-
+        [Fact]
+        public async Task Div_WithRightEqualsZero_ShouldReturnZero()
+        {
+            await BaseTest("Div", "8", "0", "0");
+        }
     }
 }
