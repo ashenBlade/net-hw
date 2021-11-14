@@ -1,0 +1,45 @@
+﻿@page
+@model IndexModel
+@{
+    Layout = "Shared/_Layout";
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <form class="form-group" method="post" asp>
+        <div class="input-group">
+            <label>Expression: <input id="expression" type="text" name="Expression"/></label>
+            <button type="button" id="calc-btn">Calculate</button>
+        </div>
+    </form>
+    <div id="answer">
+
+    </div>
+    <script type="application/javascript">
+        let btn = document.getElementById("calc-btn");
+        btn.onclick(async function(e) {
+          let expression = document.getElementById("expression").value;
+          if (!expression)
+              return;
+          let response = await fetch(`https://localhost:5001/Calculate`,
+          { method: "post",
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: expression
+          });
+          let answer = await response.text();
+
+          let label = document.createElement('label');
+          let input = document.createElement('input');
+          input.value = answer;
+          input.type = 'number';
+          input.readOnly = true;
+
+          label.innerText += 'Answer: ';
+          label.appendChild(input);
+
+          document.getElementById("answer")?.appendChild(label);
+        });
+    </script>
+</div>
