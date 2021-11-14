@@ -47,9 +47,9 @@ namespace HW9
 
         private Token ReadNumber(string expression, int position)
         {
-            var i = position;
-            while (i < expression.Length && char.IsDigit(expression, i++)) ;
-            return new Token(expression.Substring(position, i), TokenType.Number);
+            var length = 0;
+            while (position + ++length < expression.Length && char.IsDigit(expression, position + length)) ;
+            return new Token(expression.Substring(position, length), TokenType.Number);
         }
     }
 }
