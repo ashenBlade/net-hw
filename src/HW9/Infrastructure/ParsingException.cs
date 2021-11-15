@@ -6,6 +6,7 @@ namespace HW9
     {
         public int Position { get; }
         public string Expression { get; }
+        public string Information { get; init; } = string.Empty;
 
         public ParsingException(int position, string expression)
         {
