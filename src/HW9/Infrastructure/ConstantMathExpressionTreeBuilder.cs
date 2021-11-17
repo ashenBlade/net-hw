@@ -32,7 +32,7 @@ namespace HW9
             foreach (var token in _tokenizer.Tokenize(expression))
             {
                 if (token.TokenType == TokenType.Number)
-                    output.Push(Expression.Constant(int.Parse(token.Value)));
+                    output.Push(Expression.Constant(decimal.Parse(token.Value)));
                 else if (token.TokenType == TokenType.Operation)
                 {
                     while (operators.TryPop(out var upper))

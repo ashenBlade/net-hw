@@ -1,15 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace HW9.Tests
 {
     public class TokenizerTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
         private readonly SimpleTokenizer _tokenizer;
 
-        public TokenizerTests()
+        public TokenizerTests(ITestOutputHelper testOutputHelper)
         {
+            _testOutputHelper = testOutputHelper;
             _tokenizer = new SimpleTokenizer();
         }
 
@@ -23,6 +26,21 @@ namespace HW9.Tests
                 Assert.Equal(expected[i].Value, actual[i].Value);
                 Assert.Equal(expected[i].TokenType, actual[i].TokenType);
             }
+        }
+
+
+        [Theory]
+        [InlineData("1 + 3 * 4 + 5 + 6 + 7 * 8")]
+        public void MethodName_WithWhat_ShouldDoWhat(string expression)
+        {
+            // Arrange
+            var builder = new ConstantMathExpressionTreeBuilder(new SimpleTokenizer());
+            // Act
+
+            // Assert
+            var buildExpression = builder.BuildExpression(expression);
+            var answer = new SimpleMathExpressionSolver().Solve(buildExpression);
+            _testOutputHelper.WriteLine($"{answer}");
         }
 
         [Fact]
