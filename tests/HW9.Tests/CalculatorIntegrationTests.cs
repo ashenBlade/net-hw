@@ -42,5 +42,36 @@ namespace HW9.Tests
         {
             await AssertCalculatedRight("4 + 4", 8);
         }
+
+        [Fact]
+        public async Task Calculate_With4plusbracket4multiply2bracket_ShouldReturn12()
+        {
+            await AssertCalculatedRight("4 + (4 * 2)", 12);
+        }
+
+        [Theory]
+        [InlineData("1 + 2 + 3 + 4 + 5", "15")]
+        [InlineData("1 + 2 + 3 - 4 + 5", "7")]
+        [InlineData("1 + 2 + 3 - 4 - 5", "-3")]
+        [InlineData("1 * 2 * 3 * 4 * 5", "120")]
+        [InlineData("1 * 2 / 3 * 4 * 5", "13.333333333333333333333333334")]
+        public async Task Calculate_WithExpressionWithSamePrecedence_ShouldCaclulateRight(
+            string expression,
+            string expected)
+        {
+            await AssertCalculatedRight(expression, decimal.Parse(expected));
+        }
+
+        [Theory]
+        [InlineData("(1 + 2) * 3", "9")]
+        [InlineData("(1 * 2) * 3", "6")]
+        [InlineData("(1 - 2) * 3", "-3")]
+        [InlineData("1 / (2 + 3) + 4", "4.2")]
+        public async Task Calculate_WithExpressionWithBrackets_ShouldRespectCalculationOrder(
+            string expression,
+            string expected)
+        {
+            await AssertCalculatedRight(expression, decimal.Parse(expected));
+        }
     }
 }

@@ -63,7 +63,8 @@ namespace HW9
                 currentPosition += token.Value.Length;
             }
 
-            while (operators.Count > 0) ApplyOperator(output, operators.Pop().Value);
+            while (operators.Count > 0)
+                ApplyOperator(output, operators.Pop().Value);
 
             return output.Pop();
         }
