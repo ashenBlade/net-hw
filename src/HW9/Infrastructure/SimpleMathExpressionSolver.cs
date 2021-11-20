@@ -25,17 +25,12 @@ namespace HW9
                    };
         }
 
-        protected override Expression VisitConstant(ConstantExpression node)
-        {
-            return node;
-        }
-
 
         public async Task<decimal> SolveAsync(Expression expression)
         {
             return Visit(expression) is ConstantExpression constantExpression
                        ? ( decimal ) constantExpression.Value
-                       : 0;
+                       : throw new Exception($"Invalid expression: {expression}");
         }
 
         public decimal Solve(Expression expression)

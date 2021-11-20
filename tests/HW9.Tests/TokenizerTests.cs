@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -30,16 +31,16 @@ namespace HW9.Tests
 
 
         [Theory]
-        [InlineData("1 + 3 * 4 + 5 + 6 + 7 * 8")]
-        public void MethodName_WithWhat_ShouldDoWhat(string expression)
+        [InlineData("1 + 3 + 4 + 5 + 6 + 7 + 8")]
+        public async Task MethodName_WithWhat_ShouldDoWhat(string expression)
         {
             // Arrange
             var builder = new ConstantMathExpressionTreeBuilder(new SimpleTokenizer());
             // Act
-
+            // _testOutputHelper.WriteLine($"{builder.BuildExpression(expression)}");
             // Assert
             var buildExpression = builder.BuildExpression(expression);
-            var answer = new SimpleMathExpressionSolver().Solve(buildExpression);
+            var answer = await new SimpleMathExpressionSolver().SolveAsync(buildExpression);
             _testOutputHelper.WriteLine($"{answer}");
         }
 

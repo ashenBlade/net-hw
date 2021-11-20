@@ -42,7 +42,7 @@ namespace HW9
 
         private string RemoveWhitespaces(string expression)
         {
-            return expression.Replace(" ", "");
+            return expression?.Replace(" ", "") ?? string.Empty;
         }
 
         private Token ReadNumber(string expression, int position)
