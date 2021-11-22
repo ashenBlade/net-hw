@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HW9
@@ -11,6 +12,7 @@ namespace HW9
         {
             var left = node.Left.Evaluate();
             var right = node.Right.Evaluate();
+            Thread.Sleep(1000);
             Task.WaitAll(left, right);
             var leftValue = left.Result;
             var rightValue = right.Result;
