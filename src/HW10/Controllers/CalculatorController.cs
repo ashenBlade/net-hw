@@ -1,3 +1,5 @@
+using System;
+using System.Linq.Expressions;
 using HW10.Infrastructure;
 using HW9;
 using Microsoft.AspNetCore.Mvc;
@@ -26,13 +28,25 @@ namespace HW10.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult Calculate([FromBody] string expression)
+        [HttpPost]
+        public IActionResult Calculate([FromForm] string expression)
         {
-            var tree = _treeBuilder.BuildExpression(expression);
-            var result = _calculator.Calculate(tree);
-            _logger.LogInformation("Evaluating expression: {0}\nResult: {1}", expression, result);
-            return new JsonResult(new {Expression = expression, Result = result});
+            Expression tree;
+            decimal result;
+            _logger.LogInformation("Evaluating expression: {0}\n", expression);
+            try
+            {
+                tree = _treeBuilder.BuildExpression(expression);
+                result = _calculator.Calculate(tree);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error while calculating expression {0}", expression);
+                return new JsonResult(new {Success = false, e.Message});
+            }
+
+            _logger.LogInformation("Successfully evaluated. Result: {0}", result);
+            return new JsonResult(new {Expression = expression, Result = result, Success = true});
         }
     }
 }

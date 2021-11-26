@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using HW10.Infrastructure;
 
 namespace HW9
 {
     public class SimpleMathExpressionSolver : ExpressionVisitor,
-                                              IMathExpressionSolver
+                                              IMathExpressionSolver,
+                                              ICalculator
     {
         private Dictionary<Expression, Expression[]> ExpressionDependencies { get; } = new();
         private Dictionary<Expression, decimal> Values { get; } = new();
@@ -92,6 +94,11 @@ namespace HW9
             return SolveAsync(expression)
                   .GetAwaiter()
                   .GetResult();
+        }
+
+        public decimal Calculate(Expression expression)
+        {
+            return Solve(expression);
         }
     }
 }
