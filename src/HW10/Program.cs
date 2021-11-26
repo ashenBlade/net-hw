@@ -1,5 +1,7 @@
 using HW10.Infrastructure;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -8,9 +10,12 @@ var builder = WebApplication
 
 // Add services to the container.
 var services = builder.Services;
+
 services.AddControllersWithViews();
 services.AddCalculator();
-
+services.AddDbContext<CalculatorDbContext>(optionsBuilder =>
+                                               optionsBuilder.UseSqlite(builder.Configuration
+                                                                               .GetConnectionString("SQLiteDevelopmentString")));
 
 
 var app = builder.Build();

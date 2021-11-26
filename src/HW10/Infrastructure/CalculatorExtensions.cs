@@ -9,6 +9,7 @@ namespace HW10.Infrastructure
         public static IServiceCollection AddCalculator(this IServiceCollection collection)
         {
             collection = collection ?? throw new ArgumentNullException(nameof(collection));
+            collection.AddTransient<ITokenizer, SimpleTokenizer>();
             collection.AddTransient<IMathExpressionTreeBuilder, ConstantMathExpressionTreeBuilder>();
             collection.AddTransient<ICalculator>(provider => new CachingCalculator(new SimpleCalculator()));
             collection.AddTransient<IMathExpressionSolver, SimpleMathExpressionSolver>();
