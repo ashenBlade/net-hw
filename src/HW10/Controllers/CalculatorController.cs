@@ -47,7 +47,7 @@ namespace HW10.Controllers
             }
 
             _logger.LogInformation("Successfully evaluated. Result: {0}", result);
-            return new JsonResult(new {Expression = expression, Result = result, Success = true});
+            return new ContentResult {Content = result.ToString()};
         }
     }
 }
