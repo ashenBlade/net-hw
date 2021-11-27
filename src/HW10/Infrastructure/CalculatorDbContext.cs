@@ -7,6 +7,9 @@ namespace HW10.Infrastructure
     {
         public DbSet<CalculatorCache> CalculatorCache { get; set; }
 
-        public CalculatorDbContext(DbContextOptions<CalculatorDbContext> options) : base(options) { }
+        public CalculatorDbContext(DbContextOptions<CalculatorDbContext> options) : base(options)
+        {
+            Database.EnsureCreated();
+        }
     }
 }
