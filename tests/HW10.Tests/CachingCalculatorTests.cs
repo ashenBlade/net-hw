@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HW10.Infrastructure;
@@ -6,31 +8,11 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace HW10.Tests
 {
     public class CachingCalculatorTests
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public CachingCalculatorTests(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
-
-        private static HttpClient CreateClient()
-        {
-            using var host = new WebApplicationFactory<Startup>()
-               .WithWebHostBuilder(builder =>
-                                       builder.ConfigureServices(services =>
-                                                                     services
-                                                                        .AddDbContext<CalculatorDbContext>(options =>
-                                                                                                               options
-                                                                                                                  .UseInMemoryDatabase("database"))));
-            return host.CreateClient();
-        }
-
         private static HttpRequestMessage CreateCalculatorPostMessage(string expression)
         {
             return new HttpRequestMessage(HttpMethod.Post, "https://localhost:5001/Calculator/Calculate")
@@ -43,17 +25,23 @@ namespace HW10.Tests
                    };
         }
 
-        private static async Task BaseAssert(string expression, string expectedString)
+        private static WebApplicationFactory<Startup> CreateHost()
         {
-            using var host = new WebApplicationFactory<Startup>()
+            return new WebApplicationFactory<Startup>()
                .WithWebHostBuilder(builder =>
                                        builder.ConfigureServices(services =>
                                                                      services
                                                                         .AddDbContext<CalculatorDbContext>(options =>
                                                                                                                options
                                                                                                                   .UseInMemoryDatabase("database"))));
-            var client = host.CreateClient();
-            var response = await client.SendAsync(CreateCalculatorPostMessage(expression));
+        }
+
+        private static async Task BaseAssert(string expression, string expectedString)
+        {
+            using var host = CreateHost();
+            using var client = host.CreateClient();
+            using var message = CreateCalculatorPostMessage(expression);
+            using var response = await client.SendAsync(CreateCalculatorPostMessage(expression));
             var actual = decimal.Parse(await response.Content.ReadAsStringAsync());
             var expected = decimal.Parse(expectedString);
             Assert.Equal(expected, actual);
@@ -78,6 +66,50 @@ namespace HW10.Tests
         public async Task Calculate_WithSimpleExpression_ShouldCalculateRight(string expression, string expected)
         {
             await BaseAssert(expression, expected);
+        }
+
+
+        [Theory]
+        [InlineData("(1 + 1) * 4", "8")]
+        [InlineData("4 * 2 / (11 - 3)", "1")]
+        [InlineData("4 * 30 / (5 - 3)", "60")]
+        [InlineData("4 + 2 / (11 - 7)", "4.5")]
+        public async Task Calculate_WithExpressionsWithParenthesis_ShouldCalculateRespectingPresedence(
+            string expression,
+            string expected)
+        {
+            await BaseAssert(expression, expected);
+        }
+
+        [Theory]
+        [InlineData("1 + 1 + 1 + 1")]
+        [InlineData("1 - 1000 * 90 / 1")]
+        [InlineData("1 - 1000")]
+        [InlineData("90 / 2")]
+        [InlineData("123 / 2 * 34 / (15 + 3)")]
+        public async Task Calculate_WithRepetitiveExpressions_ShouldReturnResultFasterSecondTime(string expression)
+        {
+            using var host = CreateHost();
+            using var client = host.CreateClient();
+            using var message = CreateCalculatorPostMessage(expression);
+
+            async void Action()
+            {
+                await client.SendAsync(message);
+            }
+
+            var first = await MeasureTime(Action);
+            var second = await MeasureTime(Action);
+            Assert.True(first > second);
+        }
+
+        private static async Task<TimeSpan> MeasureTime(Action action)
+        {
+            var timer = new Stopwatch();
+            timer.Start();
+            action();
+            timer.Stop();
+            return timer.Elapsed;
         }
     }
 }
