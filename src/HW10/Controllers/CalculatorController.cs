@@ -23,6 +23,7 @@ namespace HW10.Controllers
         }
         // GET
         [Route("Calculator")]
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
