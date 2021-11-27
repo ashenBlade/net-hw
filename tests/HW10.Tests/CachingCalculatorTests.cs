@@ -43,7 +43,7 @@ namespace HW10.Tests
                    };
         }
 
-        private static async Task BaseAssert(string expression, string expected)
+        private static async Task BaseAssert(string expression, string expectedString)
         {
             using var host = new WebApplicationFactory<Startup>()
                .WithWebHostBuilder(builder =>
@@ -54,7 +54,8 @@ namespace HW10.Tests
                                                                                                                   .UseInMemoryDatabase("database"))));
             var client = host.CreateClient();
             var response = await client.SendAsync(CreateCalculatorPostMessage(expression));
-            var actual = await response.Content.ReadAsStringAsync();
+            var actual = decimal.Parse(await response.Content.ReadAsStringAsync());
+            var expected = decimal.Parse(expectedString);
             Assert.Equal(expected, actual);
         }
 
@@ -62,6 +63,21 @@ namespace HW10.Tests
         public async Task Calculate_With4plus4_ShouldCalculate8()
         {
             await BaseAssert("4 + 4", "8");
+        }
+
+        [Theory]
+        [InlineData("1 + 2 + 3 + 4", "10")]
+        [InlineData("1 * 2", "2")]
+        [InlineData("1 * 2 * 3 * 4", "24")]
+        [InlineData("100 - 2 + 3 + 4", "105")]
+        [InlineData("11 + 21 - 34", "-2")]
+        [InlineData("1 * 2 + 3 - 4", "1")]
+        [InlineData("1 + 56 - 11 * 2", "35")]
+        [InlineData("1 + 56 - 22 / 2", "46")]
+        [InlineData("1 + 56 + 22 * 2", "101")]
+        public async Task Calculate_WithSimpleExpression_ShouldCalculateRight(string expression, string expected)
+        {
+            await BaseAssert(expression, expected);
         }
     }
 }
