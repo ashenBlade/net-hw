@@ -1,11 +1,19 @@
 using System;
 using System.Linq.Expressions;
 using HW10.Infrastructure;
+using HW9;
 
 namespace HW11.Infrastructure
 {
     public class DynamicCalculator : ICalculator
     {
+        private IMathExpressionTreeBuilder _treeBuilder;
+
+        public DynamicCalculator(IMathExpressionTreeBuilder treeBuilder)
+        {
+            _treeBuilder = treeBuilder;
+        }
+
         private decimal Solve(BinaryExpression binary)
         {
             var left = Solve(( dynamic ) binary.Left);
@@ -25,9 +33,9 @@ namespace HW11.Infrastructure
             return ( decimal ) constant.Value;
         }
 
-        public decimal Calculate(Expression expression)
+        public decimal Calculate(string expression)
         {
-            return ( dynamic? ) Solve(( dynamic ) expression);
+            return ( dynamic? ) Solve(( dynamic ) _treeBuilder.BuildExpression(expression));
         }
     }
 }

@@ -1,3 +1,6 @@
+using HW10.Infrastructure;
+using HW11.Infrastructure;
+using HW9;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -5,7 +8,13 @@ using Microsoft.Extensions.Hosting;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+var services = builder.Services;
+services.AddRazorPages();
+
+services.AddTransient<ITokenizer, SimpleTokenizer>();
+services.AddTransient<IMathExpressionTreeBuilder, ConstantMathExpressionTreeBuilder>();
+
+services.AddTransient<ICalculator, DynamicCalculator>();
 
 var app = builder.Build();
 
