@@ -12,8 +12,8 @@ var services = builder.Services;
 services.AddRazorPages();
 
 services.AddTransient<ITokenizer, SimpleTokenizer>();
+services.AddTransient<IExceptionHandler, CalculatorExceptionHandler>();
 services.AddTransient<IMathExpressionTreeBuilder, ConstantMathExpressionTreeBuilder>();
-
 services.AddTransient<ICalculator, DynamicCalculator>();
 
 var app = builder.Build();

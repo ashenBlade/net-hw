@@ -7,11 +7,13 @@ namespace HW11.Infrastructure
 {
     public class DynamicCalculator : ICalculator
     {
-        private IMathExpressionTreeBuilder _treeBuilder;
+        private readonly IMathExpressionTreeBuilder _treeBuilder;
+        private readonly IExceptionHandler _handler;
 
-        public DynamicCalculator(IMathExpressionTreeBuilder treeBuilder)
+        public DynamicCalculator(IMathExpressionTreeBuilder treeBuilder, IExceptionHandler handler)
         {
             _treeBuilder = treeBuilder;
+            _handler = handler;
         }
 
         private decimal Solve(BinaryExpression binary)
@@ -35,7 +37,15 @@ namespace HW11.Infrastructure
 
         public decimal Calculate(string expression)
         {
-            return ( dynamic? ) Solve(( dynamic ) _treeBuilder.BuildExpression(expression));
+            try
+            {
+                return ( dynamic? ) Solve(( dynamic ) _treeBuilder.BuildExpression(expression));
+            }
+            catch (Exception e)
+            {
+                _handler.HandleException(e);
+                return 0;
+            }
         }
     }
 }

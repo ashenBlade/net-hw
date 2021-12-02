@@ -1,10 +1,27 @@
-﻿@page
+﻿@page "{hander?}"
+
+
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Calculator</h1>
+    <form class="d-inline-block">
+        <input type="text" class="form-control" id="expression"/>
+        <button class="btn-primary btn" type="button" id="submit">Calculate</button>
+    </form>
+    <br/>
+    <input type="text" id="result" class="form-control" readonly="readonly"/>
+    <script type="application/javascript">
+    document.getElementById('submit').addEventListener('click', async e => {
+       let json = await fetch('?handler=Calculate&expression=' + encodeURIComponent(document.getElementById('expression').value), {
+           method: 'GET',
+           credentials: 'include'
+       })
+                            .then(r => r.json());
+       document.getElementById('result').value = json.result;
+       });
+    </script>
 </div>
