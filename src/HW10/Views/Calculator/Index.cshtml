@@ -1,0 +1,45 @@
+@model dynamic
+
+@{
+    ViewBag.Title = "CalculatorController";
+    Layout = "_Layout";
+}
+
+<h2>Calculator</h2>
+<div class="container">
+    <form class="form">
+        <label class="form-label" for="expression">Expression: </label>
+        <input id="expression" class="form-control" type="text"/>
+        <button type="button" id="calc-expr-btn" class="btn btn-primary">Calculate</button>
+    </form>
+</div>
+<div id="calc-result" hidden>
+    <p>Result: <input readonly type="number" id="result-input"></p>
+</div>
+<div id="error">
+    <p id="error-msg" class="text-center fw-bold bg-danger"></p>
+</div>
+
+@section Scripts
+{
+    <script type="application/javascript">
+let submit = $('#calc-expr-btn');
+submit.click(async e => {
+    let expression = $('#expression').val();
+    let form = new FormData();
+    form.append("expression", expression);
+    let response = await fetch("/Calculator/Calculate", {
+        method: "POST",
+        body: form
+    });
+    let json = await response.json();
+    if (!(json && json.success)) {
+       $('#error-mg').html(json.message);
+       return;
+    }
+    $('#calc-result').attr('hidden', false);
+    let result = $('#result-input');
+    result.val(json.result);
+});
+</script>
+}
