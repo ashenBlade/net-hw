@@ -1,0 +1,54 @@
+﻿@page
+@model IndexModel
+@{
+    Layout = "Shared/_Layout";
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <form class="form-group" method="post">
+        <div class="input-group">
+            <label>Expression: <input id="expression" type="text" name="Expression"/></label>
+            <button type="button" id="calc-btn">Calculate</button>
+        </div>
+    </form>
+    <div id="answer">
+
+    </div>
+    <script type="application/javascript">
+        function formatExpression(expression) {
+            return encodeURIComponent(expression);
+        }
+        let btn = document.getElementById("calc-btn");
+        btn.onclick = async function(e) {
+          let expression = document.getElementById("expression").value;
+          if (!expression)
+              return;
+          let url = '/Calculate?expression=' + formatExpression(expression);
+            console.log(url);
+          let response = await fetch(url,
+          {
+              method: "get",
+              headers: {
+                'Content-Type': 'text/plain'
+            },
+          });
+          if (!response.ok) {
+            alert("Incorrect expression");
+            return;
+          }
+          let answer = await response.text();
+
+          let label = document.createElement('label');
+          let input = document.createElement('input');
+          input.value = answer;
+          input.type = 'number';
+          input.readOnly = true;
+
+          label.innerHTML += "Answer: ";
+          label.appendChild(input);
+
+          document.getElementById("answer")?.appendChild(label);
+        };
+    </script>
+</div>
