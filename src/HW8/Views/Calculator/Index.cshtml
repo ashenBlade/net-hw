@@ -1,0 +1,30 @@
+﻿@model CalculationResult
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>In this page you can use simple calculator actions: </p>
+
+    <form method="post" class="form-group">
+        <div class="align-content-center d-flex">
+            <input class="form-control" type="number" name="left" id="left"/>
+            <select class="form-control mx-2" id="operation" name="operation">
+                <option value="+" selected="">+</option>
+                <option value="-">-</option>
+                <option value="/">/</option>
+                <option value="*">*</option>
+            </select>
+            <input class="form-control" type="number" name="right" id="right"/>
+        </div>
+        <button type="submit" asp-action="Index" class="btn btn-primary my-3">Calculate</button>
+    </form>
+    <div>
+        @if (Model != null)
+        {
+            <h3 class="text-center text-secondary">Result is: @Model.Result</h3>
+        }
+    </div>
+</div>
