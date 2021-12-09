@@ -7,6 +7,12 @@
 
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.13.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.12"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\tests\HW8.Tests\HW8.Tests.csproj"/>
+        <ProjectReference Include="..\HW6\WebApplication\WebApplication.fsproj"/>
     </ItemGroup>
 
 </Project>
