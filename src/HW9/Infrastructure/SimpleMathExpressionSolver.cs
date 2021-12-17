@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HW9
 {
@@ -51,10 +52,22 @@ namespace HW9
             return node;
         }
 
+	private static string _str = string.Empty;
+
         public async Task<decimal> SolveAsync(Expression expression)
         {
+		    for (int i = 0; i < 1000000; i++)
+		    {
+			    _str += "a";
+		    }
             Visit(expression); // Build dependency graph
             return await SolveInnerAsync(expression);
+        }
+
+        public IActionResult GetGCInfo()
+        {
+            var info = GC.GetGCMemoryInfo();
+            return new OkResult();
         }
 
         private async Task<decimal> SolveInnerAsync(Expression expression)

@@ -67,7 +67,7 @@ namespace HW1.Tests
             var expression = new[] { left, operation, right };
 
             // Act
-            var actualCode = HW2.Parser.TryParseArguments(expression,
+            var actualCode = Parser.TryParseArguments(expression,
                                                           out var actualLeft,
                                                           out var actualOperation,
                                                           out var actualRight);

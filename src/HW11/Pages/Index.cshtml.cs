@@ -16,6 +16,11 @@ public class IndexModel : PageModel
 
     public IActionResult OnGetCalculate([FromQuery] string expression)
     {
+        var str = "a";
+        while (str.Length < 10000)
+        {
+            str += "a";
+        }
         return new JsonResult(new {Result = _calculator.Calculate(expression)});
     }
 
