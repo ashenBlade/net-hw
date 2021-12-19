@@ -11,6 +11,7 @@ namespace HW13;
 [StdDevColumn]
 public class Tests
 {
+
     private SumMethods _methods;
     private SumMethodsOverride _override;
     [GlobalSetup]
@@ -20,7 +21,7 @@ public class Tests
         _override = new SumMethodsOverride();
     }
 
-    [Params(1, 5, 10, 50, 100)]
+    [Params(SumMethods.DefaultTimesCount)]
     public int Times { get; set; }
 
     [Benchmark(Description = "Sum")]
@@ -44,7 +45,7 @@ public class Tests
     [Benchmark(Description = "Sum generic")]
     public void SumGeneric()
     {
-        _methods.SumGeneric<double>(Times);
+        _methods.SumGeneric<int>(Times);
     }
 
     [Benchmark(Description = "Sum using reflection")]

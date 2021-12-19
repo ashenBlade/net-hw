@@ -2,7 +2,8 @@
 
 public class SumMethods
 {
-    public int Sum(int times)
+    public const int DefaultTimesCount = 10000;
+    public int Sum(int times = DefaultTimesCount)
     {
         var sum = 0;
         for (int i = 0; i < times; i++)
@@ -13,12 +14,12 @@ public class SumMethods
         return sum;
     }
 
-    public virtual int SumVirtual(int times)
+    public virtual int SumVirtual(int times = DefaultTimesCount)
     {
         return times;
     }
 
-    public TReturn SumGeneric<TReturn>(int times)
+    public TReturn SumGeneric<TReturn>(int times = DefaultTimesCount)
     {
         var sum = 0;
         for (int i = 0; i < times; i++)
@@ -29,7 +30,7 @@ public class SumMethods
         return default;
     }
 
-    public static int SumStatic(int times)
+    public static int SumStatic(int times = DefaultTimesCount)
     {
         var sum = 0;
         for (int i = 0; i < times; i++)
@@ -40,7 +41,7 @@ public class SumMethods
         return sum;
     }
 
-    public int SumDynamic(int times)
+    public int SumDynamic(int times = DefaultTimesCount)
     {
         dynamic sum = 0;
         for (int i = 0; i < times; i++)
@@ -51,7 +52,7 @@ public class SumMethods
         return sum;
     }
 
-    public int SumReflection(int times)
+    public int SumReflection(int times = DefaultTimesCount)
     {
         return ( int ) typeof(SumMethods).GetMethod(nameof(Sum))!.Invoke(this, new object[] {times})!;
     }
