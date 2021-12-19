@@ -1,18 +1,17 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using HW13;
 
 BenchmarkRunner.Run<StaticTests>();
 
-class StaticTests : TestBase
+public class StaticTests : TestBase
 {
-    public StaticTests()
+    [Benchmark(Description = "Static sum")]
+    public override void Sum()
     {
-        SumMethod = SumMethods.SumStatic;
+        SumMethods.SumStatic();
     }
-
-    protected override SumDelegate SumMethod { get; }
-
 }

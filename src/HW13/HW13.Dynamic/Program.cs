@@ -1,16 +1,16 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using HW13;
 
 BenchmarkRunner.Run<DynamicTest>();
 
-class DynamicTest : TestBase
+public class DynamicTest : TestBase
 {
-    public DynamicTest()
+    [Benchmark(Description = "Dynamic sum")]
+    public override void Sum()
     {
-        SumMethod = t => Invoker.SumDynamic(t);
+        Invoker.SumDynamic();
     }
-
-    protected override SumDelegate SumMethod { get; }
 }

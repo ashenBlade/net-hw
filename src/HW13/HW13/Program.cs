@@ -1,4 +1,4 @@
 ﻿using BenchmarkDotNet.Running;
 using HW13;
 
-BenchmarkRunner.Run<Tests>();
+// BenchmarkRunner.Run<Tests>();

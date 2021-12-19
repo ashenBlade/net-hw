@@ -1,17 +1,16 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using HW13;
 
 BenchmarkRunner.Run<StandardTests>();
 
-class StandardTests : TestBase
+public class StandardTests : TestBase
 {
-    public StandardTests()
+    [Benchmark(Description = "Standard sum")]
+    public override void Sum()
     {
-        SumMethod = t => Invoker.Sum(t);
+        Invoker.Sum();
     }
-
-    protected override SumDelegate SumMethod { get; }
 }

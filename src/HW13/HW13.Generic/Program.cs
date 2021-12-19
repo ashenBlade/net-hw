@@ -6,12 +6,15 @@ using HW13;
 
 BenchmarkRunner.Run<GenericTest>();
 
-class GenericTest : TestBase
+public class GenericTest : TestBase
 {
     public GenericTest()
     {
-        SumMethod = t => Invoker.SumGeneric<int>(t);
     }
 
-    protected override SumDelegate SumMethod { get; }
+    [Benchmark(Description = "Sum generic")]
+    public override void Sum()
+    {
+        Invoker.SumGeneric<int>();
+    }
 }

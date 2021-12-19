@@ -3,8 +3,6 @@ using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 namespace HW13;
 
-public delegate int SumDelegate(int times);
-
 [MemoryDiagnoser]
 [MinColumn]
 [MaxColumn]
@@ -13,12 +11,8 @@ public delegate int SumDelegate(int times);
 [StdDevColumn]
 public abstract class TestBase
 {
-    protected SumMethods Invoker { get; set; } = new();
-    protected abstract SumDelegate SumMethod { get;  }
+    protected SumMethods Invoker { get; init; } = new();
 
     [Benchmark]
-    public void Sum()
-    {
-        SumMethod(SumMethods.DefaultTimesCount);
-    }
+    public abstract void Sum();
 }
