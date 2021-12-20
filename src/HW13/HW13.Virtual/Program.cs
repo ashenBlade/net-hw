@@ -5,7 +5,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using HW13;
 
-BenchmarkRunner.Run<VirtualTests>();
+new VirtualTests().Run();
 
 public class VirtualTests : TestBase
 {

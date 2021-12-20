@@ -4,7 +4,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using HW13;
 
-BenchmarkRunner.Run<GenericTest>();
+new GenericTest().Run();
 
 public class GenericTest : TestBase
 {

@@ -5,7 +5,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using HW13;
 
-BenchmarkRunner.Run<StaticTests>();
+new StaticTests().Run();
 
 public class StaticTests : TestBase
 {

@@ -4,7 +4,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using HW13;
 
-BenchmarkRunner.Run<DynamicTest>();
+new DynamicTest().Run();
 
 public class DynamicTest : TestBase
 {

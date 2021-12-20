@@ -4,8 +4,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using HW13;
 
-BenchmarkRunner.Run<StandardTests>();
-
+new StandardTests().Run();
 public class StandardTests : TestBase
 {
     [Benchmark(Description = "Standard sum")]
