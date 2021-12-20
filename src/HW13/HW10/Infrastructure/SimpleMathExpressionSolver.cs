@@ -75,7 +75,6 @@ namespace HW9
             {
                 var left = Values[binaryExpression.Left];
                 var right = Values[binaryExpression.Right];
-                await Task.Delay(WaitTime);
                 Values[expression] = binaryExpression.NodeType switch
                                      {
                                          ExpressionType.Add      => left + right,

@@ -17,8 +17,9 @@ namespace HW13.Tests
         public string GenerateExpression()
         {
             var result = new StringBuilder();
-            foreach (var ch in Pattern)
+            for (int i = 0; i < Pattern.Length; i++)
             {
+                var ch = Pattern[i];
                 if (ch == '@')
                 {
                     result.Append(Random.Next());
@@ -28,7 +29,6 @@ namespace HW13.Tests
                     result.Append(ch);
                 }
             }
-
             return result.ToString();
         }
     }
