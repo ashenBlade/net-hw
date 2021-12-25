@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using HW10.Infrastructure;
 
 namespace HW9
 {
     public class SimpleMathExpressionSolver : ExpressionVisitor,
-                                              IMathExpressionSolver
+                                              IMathExpressionSolver,
+                                              ICalculator
     {
         private Dictionary<Expression, Expression[]> ExpressionDependencies { get; } = new();
         private Dictionary<Expression, decimal> Values { get; } = new();
@@ -52,22 +53,10 @@ namespace HW9
             return node;
         }
 
-	private static string _str = string.Empty;
-
         public async Task<decimal> SolveAsync(Expression expression)
         {
-		    for (int i = 0; i < 1000000; i++)
-		    {
-			    _str += "a";
-		    }
             Visit(expression); // Build dependency graph
             return await SolveInnerAsync(expression);
-        }
-
-        public IActionResult GetGCInfo()
-        {
-            var info = GC.GetGCMemoryInfo();
-            return new OkResult();
         }
 
         private async Task<decimal> SolveInnerAsync(Expression expression)
@@ -86,7 +75,6 @@ namespace HW9
             {
                 var left = Values[binaryExpression.Left];
                 var right = Values[binaryExpression.Right];
-                await Task.Delay(WaitTime);
                 Values[expression] = binaryExpression.NodeType switch
                                      {
                                          ExpressionType.Add      => left + right,
@@ -105,6 +93,11 @@ namespace HW9
             return SolveAsync(expression)
                   .GetAwaiter()
                   .GetResult();
+        }
+
+        public decimal Calculate(Expression expression)
+        {
+            return Solve(expression);
         }
     }
 }
