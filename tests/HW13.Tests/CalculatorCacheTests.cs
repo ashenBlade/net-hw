@@ -1,52 +1,61 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using JetBrains.dotMemoryUnit;
 using Xunit;
+using Xunit.Abstractions;
 
+[assembly: SuppressXUnitOutputException]
 namespace HW13.Tests
 {
     public class CalculatorCacheTests : IClassFixture<CalculatorCacheFixture>
     {
         private readonly CalculatorCacheFixture _fixture;
+        private readonly ITestOutputHelper _testOutputHelper;
         private HttpClient NewClient => _fixture.Factory.CreateClient();
 
-        public CalculatorCacheTests(CalculatorCacheFixture fixture)
+        public CalculatorCacheTests(CalculatorCacheFixture fixture, ITestOutputHelper testOutputHelper)
         {
             _fixture = fixture;
+            _testOutputHelper = testOutputHelper;
         }
 
         [Fact]
         [DotMemoryUnit(FailIfRunWithoutSupport = true, CollectAllocations = true)]
         public void TestsForDotMemoryUnitAllocations()
         {
+            DotMemoryUnitTestOutput.SetOutputMethod(_testOutputHelper.WriteLine);
             const int TotalRequestsCount = 1_000;
-            const int IterationsCount = 1_000;
-            const int PacketSize = TotalRequestsCount / IterationsCount;
+            const int PacketSize = 1_000;
+            const int IterationsCount = TotalRequestsCount / PacketSize;
             using var client = NewClient;
             var previousSnapshot = dotMemory.Check();
             var generator = new ExpressionGenerator("@ + @ - @ * @ - @");
+            var totalAllocated = 0L;
             for (var i = 0; i < IterationsCount; i++)
             {
+                var expression = generator
+                   .GenerateExpression();
                 var packets = Enumerable.Range(0, PacketSize)
-                                        .Select(_ =>
-                                                    ( Task ) client.SendAsync(GetHttpRequestMessage(generator
-                                                                                                       .GenerateExpression())))
+                                        .Select(_ => ( Task ) client.SendAsync(GetHttpRequestMessage(expression)))
                                         .ToArray();
                 Task.WaitAll(packets);
-
+                var currentExpressionSize = Encoding.UTF8.GetBytes(expression).Length;
                 previousSnapshot = dotMemory.Check(memory =>
                 {
-                    Assert.NotEqual(0, memory.GetDifference(previousSnapshot)
-                                             .GetNewObjects(where => where.Type.Is<string>())
-                                             .ObjectsCount);
+                    var difference = memory.GetDifference(previousSnapshot);
+                    var newObjects = difference.GetNewObjects();
+                    totalAllocated += newObjects.SizeInBytes;
+                    _testOutputHelper.WriteLine($"{i}: Allocated = {newObjects.SizeInBytes} bytes");
+                    Assert.True(0 <= newObjects.SizeInBytes);
+                    Assert.True(currentExpressionSize <= newObjects.SizeInBytes);
                 });
             }
-            // dotMemory.Check(memory =>
-            // {
-            //
-            // });
+            _testOutputHelper.WriteLine("");
+            _testOutputHelper.WriteLine($"Allocated total: {totalAllocated} bytes");
         }
 
         private static HttpRequestMessage GetHttpRequestMessage(string expression)
