@@ -1,14 +1,8 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using HW10;
-using HW10.Infrastructure;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using JetBrains.dotMemoryUnit;
 using Xunit;
 
 namespace HW13.Tests
@@ -22,6 +16,39 @@ namespace HW13.Tests
         {
             _fixture = fixture;
         }
+
+        [Fact]
+        [DotMemoryUnit(FailIfRunWithoutSupport = true, CollectAllocations = true)]
+        public void TestsForDotMemoryUnitAllocations()
+        {
+            const int TotalRequestsCount = 1_000;
+            const int IterationsCount = 1_000;
+            const int PacketSize = TotalRequestsCount / IterationsCount;
+            using var client = NewClient;
+            var previousSnapshot = dotMemory.Check();
+            var generator = new ExpressionGenerator("@ + @ - @ * @ - @");
+            for (var i = 0; i < IterationsCount; i++)
+            {
+                var packets = Enumerable.Range(0, PacketSize)
+                                        .Select(_ =>
+                                                    ( Task ) client.SendAsync(GetHttpRequestMessage(generator
+                                                                                                       .GenerateExpression())))
+                                        .ToArray();
+                Task.WaitAll(packets);
+
+                previousSnapshot = dotMemory.Check(memory =>
+                {
+                    Assert.NotEqual(0, memory.GetDifference(previousSnapshot)
+                                             .GetNewObjects(where => where.Type.Is<string>())
+                                             .ObjectsCount);
+                });
+            }
+            // dotMemory.Check(memory =>
+            // {
+            //
+            // });
+        }
+
         private static HttpRequestMessage GetHttpRequestMessage(string expression)
         {
             return new HttpRequestMessage(HttpMethod.Post, "https://localhost:5001/Calculator/Calculate")
