@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System;
+using BenchmarkDotNet.Running;
+using HW12;
 
-Console.WriteLine("Hello, World!");
+BenchmarkRunner.Run<CalculatorBenchmark>();

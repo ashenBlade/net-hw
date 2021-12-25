@@ -68,9 +68,10 @@ namespace HW1.Tests
 
             // Act
             var actualCode = Parser.TryParseArguments(expression,
-                                                          out var actualLeft,
-                                                          out var actualOperation,
-                                                          out var actualRight);
+                                                       out var actualLeft,
+                                                       out var actualOperation,
+                                                       out var actualRight);
+
 
             // Assert
             Assert.Equal(ParsingErrors.None, actualCode.Value);
