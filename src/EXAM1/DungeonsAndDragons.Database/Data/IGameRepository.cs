@@ -31,7 +31,7 @@ public interface IGameRepository
     Task RemovePlayerAsync(Player player);
 
     IAsyncEnumerable<Class> GetAllClassesAsync();
-    Task<Player> GetClassByIdAsync(int id);
+    Task<Class> GetClassByIdAsync(int id);
     Task<int> AddClassAsync(Class @class);
     Task UpdateClassAsync(Class @class);
     Task RemoveClassAsync(Class @class);
