@@ -1,4 +1,6 @@
 using DungeonsAndDragons.Game.Defaults.Classes.MonsterClasses;
+using DungeonsAndDragons.Game.Defaults.Equipments.Armor;
+using DungeonsAndDragons.Game.Defaults.Equipments.Weapons;
 using DungeonsAndDragons.Game.Defaults.Races;
 using DungeonsAndDragons.Game.Entity.Characteristics;
 using DungeonsAndDragons.Game.Entity.Classes;
@@ -15,6 +17,8 @@ public class Worg : Monster
                new Monstr(), 
                new Human(), 
                new CharacteristicsSet(16, 13, 13, 7, 11, 8), 
-               IdeologyType.Evil) 
+               IdeologyType.Evil,
+               new Weaponless(),
+               new NoneArmor()) 
     { }
 }

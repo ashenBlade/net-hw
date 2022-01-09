@@ -1,4 +1,6 @@
 using DungeonsAndDragons.Game.Defaults.Classes.MonsterClasses;
+using DungeonsAndDragons.Game.Defaults.Equipments.Armor;
+using DungeonsAndDragons.Game.Defaults.Equipments.Weapons;
 using DungeonsAndDragons.Game.Defaults.Races;
 using DungeonsAndDragons.Game.Entity.Characteristics;
 using DungeonsAndDragons.Game.Entity.Classes;
@@ -15,5 +17,7 @@ public class Aarakocra : Monster
                new Humanoid(), 
                new Human(), 
                new CharacteristicsSet(10, 14, 10, 11, 12, 11), 
-               IdeologyType.Neutral) { }
+               IdeologyType.Neutral,
+               new Dagger(),
+               new NoneArmor()) { }
 }
