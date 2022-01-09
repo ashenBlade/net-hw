@@ -5,7 +5,7 @@ namespace DungeonsAndDragons.Database.Data;
 
 public interface IGameRepository
 {
-    Task<bool> SaveChangesAsync();
+    Task SaveChangesAsync();
     
     IAsyncEnumerable<Monster> GetAllMonstersAsync();
     Task<Monster> GetMonsterByIdAsync(int id);
