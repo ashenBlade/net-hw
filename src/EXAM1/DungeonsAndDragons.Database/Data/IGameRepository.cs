@@ -1,5 +1,4 @@
 using DungeonsAndDragons.Database.Model;
-using Monster = DungeonsAndDragons.Game.Entity.Creatures.Monster;
 
 namespace DungeonsAndDragons.Database.Data;
 
