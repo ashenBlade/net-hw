@@ -6,7 +6,7 @@ using DungeonsAndDragons.Game.Entity.Equipments.Weapons;
 
 namespace DungeonsAndDragons.Game.Defaults.Classes;
 
-public class Druid : Class
+public class Druid : PlayerClass
 {
     public Druid() 
         : base(new Hits(new GameDice(8, 1), 8, 5),

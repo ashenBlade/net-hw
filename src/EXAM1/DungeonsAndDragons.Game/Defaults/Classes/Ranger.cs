@@ -5,7 +5,7 @@ using DungeonsAndDragons.Game.Entity.Equipments.Weapons;
 
 namespace DungeonsAndDragons.Game.Defaults.Classes;
 
-public class Ranger : Class
+public class Ranger : PlayerClass
 {
     public Ranger() 
         : base(new Hits(new GameDice(10, 1), 10, 6),

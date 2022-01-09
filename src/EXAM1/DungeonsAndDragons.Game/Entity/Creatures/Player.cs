@@ -8,7 +8,7 @@ namespace DungeonsAndDragons.Game.Entity.Creatures;
 public class Player : Creature
 {
     public Player(string name, 
-                  Class @class, 
+                  PlayerClass @class, 
                   Race race, 
                   CharacteristicsSet characteristics, 
                   IdeologyType ideology) : 

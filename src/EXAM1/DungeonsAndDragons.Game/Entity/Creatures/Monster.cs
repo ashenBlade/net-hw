@@ -8,7 +8,7 @@ namespace DungeonsAndDragons.Game.Entity.Creatures;
 public class Monster : Creature
 {
     public Monster(string name, 
-                   Class @class, 
+                   MonsterClass @class, 
                    Race race, 
                    CharacteristicsSet characteristics, 
                    IdeologyType ideology) 

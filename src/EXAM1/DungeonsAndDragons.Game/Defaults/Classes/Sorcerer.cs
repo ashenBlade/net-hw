@@ -5,7 +5,7 @@ using DungeonsAndDragons.Game.Entity.Equipments.Weapons;
 
 namespace DungeonsAndDragons.Game.Defaults.Classes;
 
-public class Sorcerer : Class
+public class Sorcerer : PlayerClass
 {
     public Sorcerer() 
         : base(new Hits(new GameDice(6, 1), 6, 4), 

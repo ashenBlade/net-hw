@@ -5,7 +5,7 @@ using DungeonsAndDragons.Game.Entity.Equipments.Weapons;
 
 namespace DungeonsAndDragons.Game.Defaults.Classes;
 
-public class Barbarian : Class
+public class Barbarian : PlayerClass
 {
     private static ClassPossessions GetBarbarianClassPossessions()
     {

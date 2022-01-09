@@ -5,7 +5,7 @@ using DungeonsAndDragons.Game.Entity.Equipments.Weapons;
 
 namespace DungeonsAndDragons.Game.Defaults.Classes;
 
-public class Fighter : Class
+public class Fighter : PlayerClass
 {
     public Fighter() 
         : base(new Hits(new GameDice(10, 1), 10, 6), "Fighter", 
