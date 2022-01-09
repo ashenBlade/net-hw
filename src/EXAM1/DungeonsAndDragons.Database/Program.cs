@@ -10,6 +10,7 @@ var connectionString = builder.Environment.IsDevelopment()
                            ? builder.Configuration.GetConnectionString("PostgreSQLDebugConnectionString")
                            : builder.Configuration.GetConnectionString("PostgreSQLDevelopmentConnectionString");
 builder.Services.AddDbContext<GameDbContext>(opt => opt.UseNpgsql(connectionString));
+builder.Services.AddScoped<IGameRepository, DatabaseGameRepository>();
 var app = builder.Build();
 
 app.UseAuthorization();
