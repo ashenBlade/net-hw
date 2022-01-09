@@ -97,4 +97,48 @@ public class DungeonsAndDragonsController : ControllerBase
         
         return Ok(MonsterReadDTO.FromModel(monster));
     }
+
+    [HttpGet]
+    [Route("players")]
+    public async Task<IActionResult> GetAllPlayersAsync()
+    {
+        var list = new List<PlayerReadDTO>();
+        await foreach (var player in _repo.GetAllPlayersAsync())
+        {
+            list.Add(PlayerReadDTO.FromModel(player));
+        }
+
+        return Ok(list);
+    }
+
+    [HttpGet(Name = "GetPlayerByIdAsync")]
+    [Route("players/{id:int}")]
+    public async Task<IActionResult> GetPlayerByIdAsync(int id)
+    {
+        var player = await _repo.GetPlayerByIdAsync(id);
+        if (player is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(PlayerReadDTO.FromModel(player));
+    }
+
+    [HttpPost(Name = "CreatePlayerAsync")]
+    [Route("players")]
+    public async Task<IActionResult> CreatePlayerAsync(PlayerCreateDTO dto)
+    {
+        var model = PlayerCreateDTO.ToModel(dto);
+        try
+        {
+            var id = await _repo.AddPlayerAsync(model);
+            await _repo.SaveChangesAsync();
+            return CreatedAtAction("GetPlayerById", new {Id = id}, model);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Could not save new player to repository");
+            return new StatusCodeResult(500);
+        }
+    }
 }
