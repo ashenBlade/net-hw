@@ -1,3 +1,6 @@
+using DungeonsAndDragons.Database.Data;
+using DungeonsAndDragons.Database.DTO;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DungeonsAndDragons.Database.Controllers;
@@ -7,8 +10,61 @@ namespace DungeonsAndDragons.Database.Controllers;
 [Route("api/[controller]")]
 public class DungeonsAndDragonsController : ControllerBase
 {
-    public DungeonsAndDragonsController()
+    private readonly IGameRepository _repo;
+    private readonly ILogger<DungeonsAndDragonsController> _logger;
+
+    public DungeonsAndDragonsController(IGameRepository repo,
+                                        ILogger<DungeonsAndDragonsController> logger)
     {
-        
+        _repo = repo;
+        _logger = logger;
+    }
+
+    [HttpGet]
+    [Route("classes")]
+    public async Task<IActionResult> GetAllClassesAsync()
+    {
+        _logger.LogInformation("Hit GetAllClassesAsync");
+        var classes = new List<ClassReadDTO>();
+        await foreach (var model in _repo.GetAllClassesAsync())
+        {
+            classes.Add(ClassReadDTO.FromModel(model));
+        }
+        _logger.LogTrace("Retrieved {ClassesAmount} classes from database", classes.Count);
+        return Ok(classes);
+    }
+
+    [HttpGet(Name = "GetClassById")]
+    [Route("classes/{id:int}")]
+    public async Task<IActionResult> GetClassByIdAsync(int id)
+    {
+        _logger.LogInformation("Hit GetClassByIdAsync with id: {Id}", id);
+        var model = await _repo.GetClassByIdAsync(id);
+        if (model is null)
+        {
+            _logger.LogTrace("Class with id: {Id} not found", id);
+            return NotFound();
+        }
+        var dto = ClassReadDTO.FromModel(model);
+        return Ok(dto);
+    }
+
+    [HttpPost]
+    [Route("classes")]
+    public async Task<IActionResult> PostClassAsync(ClassCreateDTO dto)
+    {
+        _logger.LogInformation("Hit PostClassAsync");
+        var model = ClassCreateDTO.ToModel(dto);
+        var id = _repo.AddClassAsync(model);
+        try
+        {
+            await _repo.SaveChangesAsync();
+            return CreatedAtAction("GetClassById", new {Id = id}, model);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Could not save new class");
+            return new StatusCodeResult(500);
+        }
     }
 }
