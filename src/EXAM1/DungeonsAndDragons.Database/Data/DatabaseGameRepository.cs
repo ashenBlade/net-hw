@@ -1,4 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using DungeonsAndDragons.Database.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace DungeonsAndDragons.Database.Data;
 
@@ -17,156 +19,185 @@ public class DatabaseGameRepository : IGameRepository
 
     public async Task SaveChangesAsync()
     {
+        _logger.LogInformation("Saving changes");
         await _context.SaveChangesAsync();
     }
 
     public IAsyncEnumerable<Monster> GetAllMonstersAsync()
     {
-        throw new NotImplementedException();
+        return _context.Monsters.AsAsyncEnumerable();
     }
 
     public Task<Monster> GetMonsterByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return _context.Monsters
+                       .Include(m => m.Class)
+                       .Include(m => m.Race)
+                       .Include(m => m.Characteristics)
+                       .FirstOrDefaultAsync(m => m.Id == id);
     }
 
-    public Task<int> AddMonsterAsync(Monster monster)
+    public async Task<int> AddMonsterAsync(Monster monster)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Monsters.AddAsync(monster);
+        return entity.Entity.Id;
     }
 
     public Task UpdateMonsterAsync(Monster monster)
     {
-        throw new NotImplementedException();
+        _context.Monsters.Update(monster);
+        return Task.CompletedTask;
     }
 
     public Task RemoveMonsterAsync(Monster monster)
     {
-        throw new NotImplementedException();
+        _context.Monsters.Remove(monster);
+        return Task.CompletedTask;
     }
 
     public IAsyncEnumerable<Weapon> GetAllWeaponsAsync()
     {
-        throw new NotImplementedException();
+        return _context.Weapons.AsAsyncEnumerable();
     }
 
     public Task<Weapon> GetWeaponByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return _context.Weapons.FirstOrDefaultAsync(w => w.Id == id);
     }
 
-    public Task<int> AddWeaponAsync(Weapon weapon)
+    public async Task<int> AddWeaponAsync(Weapon weapon)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Weapons.AddAsync(weapon);
+        return entity.Entity.Id;
     }
 
     public Task UpdateWeaponAsync(Weapon weapon)
     {
-        throw new NotImplementedException();
+        _context.Weapons.Update(weapon);
+        return Task.CompletedTask;
     }
 
     public Task RemoveWeaponAsync(Weapon weapon)
     {
-        throw new NotImplementedException();
+        _context.Weapons.Remove(weapon);
+        return Task.CompletedTask;
     }
 
     public IAsyncEnumerable<Armor> GetAllArmorAsync()
     {
-        throw new NotImplementedException();
+        return _context.Armors.AsAsyncEnumerable();
     }
 
     public Task<Armor> GetArmorByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return _context.Armors.FirstOrDefaultAsync(a => a.Id == id);
     }
 
-    public Task<int> AddArmorAsync(Armor armor)
+    public async Task<int> AddArmorAsync(Armor armor)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Armors.AddAsync(armor);
+        return entity.Entity.Id;
     }
 
     public Task UpdateArmorAsync(Armor armor)
     {
-        throw new NotImplementedException();
+        _context.Armors.Update(armor);
+        return Task.CompletedTask;
     }
 
     public Task RemoveArmorAsync(Armor armor)
     {
-        throw new NotImplementedException();
+        _context.Armors.Remove(armor);
+        return Task.CompletedTask;
     }
 
     public IAsyncEnumerable<Player> GetAllPlayersAsync()
     {
-        throw new NotImplementedException();
+        return _context.Players
+                       .Include(p => p.Class)
+                       .Include(p => p.Race)
+                       .AsAsyncEnumerable();
     }
 
     public Task<Player> GetPlayerByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return _context.Players
+                       .Include(p => p.Class)
+                       .Include(p => p.Race)
+                       .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public Task<int> AddPlayerAsync(Player player)
+    public async Task<int> AddPlayerAsync(Player player)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Players.AddAsync(player);
+        return entity.Entity.Id;
     }
 
     public Task UpdatePlayerAsync(Player player)
     {
-        throw new NotImplementedException();
+        _context.Players.Update(player);
+        return Task.CompletedTask;
     }
 
     public Task RemovePlayerAsync(Player player)
     {
-        throw new NotImplementedException();
+        _context.Players.Remove(player);
+        return Task.CompletedTask;
     }
 
     public IAsyncEnumerable<Class> GetAllClassesAsync()
     {
-        throw new NotImplementedException();
+        return _context.Classes.AsAsyncEnumerable();
     }
 
-    public Task<Player> GetClassByIdAsync(int id)
+    public Task<Class> GetClassByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return _context.Classes.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public Task<int> AddClassAsync(Class @class)
+    public async Task<int> AddClassAsync(Class @class)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Classes.AddAsync(@class);
+        return entity.Entity.Id;
     }
 
     public Task UpdateClassAsync(Class @class)
     {
-        throw new NotImplementedException();
+        _context.Classes.Update(@class);
+        return Task.CompletedTask;
     }
 
     public Task RemoveClassAsync(Class @class)
     {
-        throw new NotImplementedException();
+        _context.Classes.Remove(@class);
+        return Task.CompletedTask;
     }
 
     public IAsyncEnumerable<Race> GetAllRacesAsync()
     {
-        throw new NotImplementedException();
+        return _context.Races.AsAsyncEnumerable();
     }
 
     public Task<Race> GetRaceByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return _context.Races.FirstOrDefaultAsync(r => r.Id == id);
     }
 
-    public Task<int> AddRaceAsync(Race race)
+    public async Task<int> AddRaceAsync(Race race)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Races.AddAsync(race);
+        return entity.Entity.Id;
     }
 
     public Task UpdateRaceAsync(Race race)
     {
-        throw new NotImplementedException();
+        _context.Races.Update(race);
+        return Task.CompletedTask;
     }
 
     public Task RemoveRaceAsync(Race race)
     {
-        throw new NotImplementedException();
+        _context.Races.Remove(race);
+        return Task.CompletedTask;
     }
 }
