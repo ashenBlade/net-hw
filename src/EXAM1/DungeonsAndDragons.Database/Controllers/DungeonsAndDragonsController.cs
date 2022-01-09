@@ -1,5 +1,6 @@
 using DungeonsAndDragons.Database.Data;
 using DungeonsAndDragons.Database.DTO;
+using DungeonsAndDragons.Database.Model;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Mvc;
 
@@ -66,5 +67,34 @@ public class DungeonsAndDragonsController : ControllerBase
             _logger.LogError(e, "Could not save new class");
             return new StatusCodeResult(500);
         }
+    }
+
+    [HttpGet]
+    [Route("monsters")]
+    public async Task<IActionResult> GetAllMonstersAsync()
+    {
+        _logger.LogInformation("Hit GetAllMonstersAsync");
+        var list = new List<MonsterReadDTO>();
+        await foreach (var monster in _repo.GetAllMonstersAsync())
+        {
+            list.Add(MonsterReadDTO.FromModel(monster));
+        }
+
+        return Ok(list);
+    }
+
+    [HttpGet(Name = "GetMonsterById")]
+    [Route("monsters/{id:int}")]
+    public async Task<IActionResult> GetMonsterByIdAsync(int id)
+    {
+        _logger.LogInformation("Hit GetMonsterByIdAsync with id: {Id}", id);
+        var monster = await _repo.GetMonsterByIdAsync(id);
+        if (monster is null)
+        {
+            _logger.LogTrace("Monster with id: {Id} not found. Sending NotFound()", id);
+            return NotFound();
+        }
+        
+        return Ok(MonsterReadDTO.FromModel(monster));
     }
 }
