@@ -12,5 +12,6 @@ public class Class
     public int Id { get; set; }
     [Required]
     public string Name { get; set; }
+    [Required]
     public GameDice HitsGameDice { get; set; }
 }
