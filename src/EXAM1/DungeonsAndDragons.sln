@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonsAndDragons.Server",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonsAndDragons.Web", "DungeonsAndDragons.Web\DungeonsAndDragons.Web.csproj", "{FA44C4BB-537C-4ED8-95FC-FDCB048958F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonsAndDragons.Game", "DungeonsAndDragons.Game\DungeonsAndDragons.Game.csproj", "{EE9C10D5-75BE-4C06-96D6-22D2722BFF02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{FA44C4BB-537C-4ED8-95FC-FDCB048958F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA44C4BB-537C-4ED8-95FC-FDCB048958F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA44C4BB-537C-4ED8-95FC-FDCB048958F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE9C10D5-75BE-4C06-96D6-22D2722BFF02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE9C10D5-75BE-4C06-96D6-22D2722BFF02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE9C10D5-75BE-4C06-96D6-22D2722BFF02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE9C10D5-75BE-4C06-96D6-22D2722BFF02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
