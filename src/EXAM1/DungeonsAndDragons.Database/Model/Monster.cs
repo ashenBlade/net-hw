@@ -16,7 +16,7 @@ public class Monster
     
     [Required]
     public int ClassId { get; set; }
-    public Class Type { get; set; }
+    public Class Class { get; set; }
 
     [Required]
     public Characteristics Characteristics { get; set; }
