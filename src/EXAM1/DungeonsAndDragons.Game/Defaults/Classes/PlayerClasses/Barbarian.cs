@@ -3,7 +3,7 @@ using DungeonsAndDragons.Game.Entity.Classes;
 using DungeonsAndDragons.Game.Entity.Equipments.Armor;
 using DungeonsAndDragons.Game.Entity.Equipments.Weapons;
 
-namespace DungeonsAndDragons.Game.Defaults.Classes;
+namespace DungeonsAndDragons.Game.Defaults.Classes.PlayerClasses;
 
 public class Barbarian : PlayerClass
 {

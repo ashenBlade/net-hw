@@ -3,20 +3,20 @@ using DungeonsAndDragons.Game.Entity.Classes;
 using DungeonsAndDragons.Game.Entity.Equipments.Armor;
 using DungeonsAndDragons.Game.Entity.Equipments.Weapons;
 
-namespace DungeonsAndDragons.Game.Defaults.Classes;
+namespace DungeonsAndDragons.Game.Defaults.Classes.PlayerClasses;
 
-public class Ranger : PlayerClass
+public class Sorcerer : PlayerClass
 {
-    public Ranger() 
-        : base(new Hits(new GameDice(10, 1), 10, 6),
-               "Ranger",
+    public Sorcerer() 
+        : base(new Hits(new GameDice(6, 1), 6, 4), 
+               "Sorcerer", 
                new ClassPossessions(new Possession<WeaponProficiency>()
                                     {
-                                        Possessions = {WeaponProficiency.Simple, WeaponProficiency.Martial}
+                                        Possessions = {WeaponProficiency.Simple}
                                     },
                                     new Possession<ArmorType>()
                                     {
-                                        Possessions = {ArmorType.Light, ArmorType.Medium, ArmorType.Shield}
+                                        Possessions = {  } // Sorcerers don't wear armor
                                     })) 
     { }
 }

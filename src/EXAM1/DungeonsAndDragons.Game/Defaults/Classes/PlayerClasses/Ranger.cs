@@ -1,19 +1,18 @@
-using System.Net;
 using DungeonsAndDragons.Game.Common;
 using DungeonsAndDragons.Game.Entity.Classes;
 using DungeonsAndDragons.Game.Entity.Equipments.Armor;
 using DungeonsAndDragons.Game.Entity.Equipments.Weapons;
 
-namespace DungeonsAndDragons.Game.Defaults.Classes;
+namespace DungeonsAndDragons.Game.Defaults.Classes.PlayerClasses;
 
-public class Druid : PlayerClass
+public class Ranger : PlayerClass
 {
-    public Druid() 
-        : base(new Hits(new GameDice(8, 1), 8, 5),
-               "Druid",
+    public Ranger() 
+        : base(new Hits(new GameDice(10, 1), 10, 6),
+               "Ranger",
                new ClassPossessions(new Possession<WeaponProficiency>()
                                     {
-                                        Possessions = {WeaponProficiency.Simple}
+                                        Possessions = {WeaponProficiency.Simple, WeaponProficiency.Martial}
                                     },
                                     new Possession<ArmorType>()
                                     {
