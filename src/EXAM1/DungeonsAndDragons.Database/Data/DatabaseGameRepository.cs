@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using DungeonsAndDragons.Database.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +27,7 @@ public class DatabaseGameRepository : IGameRepository
         return _context.Monsters.AsAsyncEnumerable();
     }
 
-    public Task<Monster> GetMonsterByIdAsync(int id)
+    public Task<Monster?> GetMonsterByIdAsync(int id)
     {
         return _context.Monsters
                        .Include(m => m.Class)
@@ -60,7 +59,7 @@ public class DatabaseGameRepository : IGameRepository
         return _context.Weapons.AsAsyncEnumerable();
     }
 
-    public Task<Weapon> GetWeaponByIdAsync(int id)
+    public Task<Weapon?> GetWeaponByIdAsync(int id)
     {
         return _context.Weapons.FirstOrDefaultAsync(w => w.Id == id);
     }
@@ -88,7 +87,7 @@ public class DatabaseGameRepository : IGameRepository
         return _context.Armors.AsAsyncEnumerable();
     }
 
-    public Task<Armor> GetArmorByIdAsync(int id)
+    public Task<Armor?> GetArmorByIdAsync(int id)
     {
         return _context.Armors.FirstOrDefaultAsync(a => a.Id == id);
     }
@@ -119,7 +118,7 @@ public class DatabaseGameRepository : IGameRepository
                        .AsAsyncEnumerable();
     }
 
-    public Task<Player> GetPlayerByIdAsync(int id)
+    public Task<Player?> GetPlayerByIdAsync(int id)
     {
         return _context.Players
                        .Include(p => p.Class)
@@ -150,7 +149,7 @@ public class DatabaseGameRepository : IGameRepository
         return _context.Classes.AsAsyncEnumerable();
     }
 
-    public Task<Class> GetClassByIdAsync(int id)
+    public Task<Class?> GetClassByIdAsync(int id)
     {
         return _context.Classes.FirstOrDefaultAsync(c => c.Id == id);
     }
@@ -178,7 +177,7 @@ public class DatabaseGameRepository : IGameRepository
         return _context.Races.AsAsyncEnumerable();
     }
 
-    public Task<Race> GetRaceByIdAsync(int id)
+    public Task<Race?> GetRaceByIdAsync(int id)
     {
         return _context.Races.FirstOrDefaultAsync(r => r.Id == id);
     }
