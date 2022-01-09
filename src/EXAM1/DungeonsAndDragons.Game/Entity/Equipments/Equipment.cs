@@ -1,5 +1,3 @@
-using DungeonsAndDragons.Game.Entity.Equipment;
-
 namespace DungeonsAndDragons.Game.Entity.Equipments;
 
 public abstract class Equipment
