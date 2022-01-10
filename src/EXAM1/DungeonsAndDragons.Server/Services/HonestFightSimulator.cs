@@ -8,6 +8,12 @@ namespace DungeonsAndDragons.Server.Services;
 
 public class HonestFightSimulator : IFightSimulator
 {
+    private readonly ILogger<HonestFightSimulator> _logger;
+
+    public HonestFightSimulator(ILogger<HonestFightSimulator> logger)
+    {
+        _logger = logger;
+    }
     public async Task<FightEndDTO> SimulateFightAsync(FightStartDTO dto)
     {
         await Task.Yield();
@@ -18,9 +24,12 @@ public class HonestFightSimulator : IFightSimulator
         var logs = new List<RoundLog>();
         while (IsAlive(player) && IsAlive(monster))
         {
+            _logger.LogInformation("Round: {RoundNumber}", round);
             var log = MakeRound(player, monster, dice);
+            _logger.LogInformation("Player: {PlayerResult}\nMonster: {MonsterResult}", log.PlayerStatus, log.MonsterStatus);
             log.RoundNumber = round;
             round++;
+            logs.Add(log);
         }
         return new FightEndDTO() {Logs = logs};
     }
@@ -37,9 +46,11 @@ public class HonestFightSimulator : IFightSimulator
         log.PlayerStatus = log.MonsterStatus = string.Empty;
         var playerDice = new GameDice(player.DamageMax, player.DamageCount);
         var playerResult = SimulateFightBetween(player, monster, probabilityDice, playerDice);
+        log.PlayerStatus = playerResult;
+        
         if (!IsAlive(monster))
         {
-            log.PlayerStatus = playerResult + ". You win";
+            log.PlayerStatus += " You win.";
             return log;
         }
 
@@ -53,7 +64,10 @@ public class HonestFightSimulator : IFightSimulator
         return log;
     }
 
-    private static string SimulateFightBetween(Entity first, Entity second, GameDice probabilityDice, GameDice firstEntityDamageDice)
+    private static string SimulateFightBetween(Entity first,
+                                               Entity second,
+                                               GameDice probabilityDice,
+                                               GameDice firstEntityDamageDice)
     {
         var builder = new StringBuilder();
         var probability = probabilityDice.Roll();
@@ -73,14 +87,16 @@ public class HonestFightSimulator : IFightSimulator
             return builder.ToString();
         }
 
+        builder.Append(" greater than ");
+        builder.Append(second.ArmorClass);
         builder.Append(probability == 20
-                           ? " critical hit. "
-                           : " hit. ");
+                           ? ", critical hit. "
+                           : ", hit. ");
 
         var damage = firstEntityDamageDice.Roll();
         builder.Append(damage);
         var modifier = first.AttackModifier;
-        builder.Append($"(+{modifier})");
+        builder.Append($" (+{modifier})");
 
         var totalDamage = ( damage + modifier );
         

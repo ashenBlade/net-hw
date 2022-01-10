@@ -7,29 +7,29 @@
 <div class="text-center">
     <div>Create player</div>
     <form asp-page-handler="OnPost" method="post">
-        <label asp-for="Player.Name"></label>
-        <input asp-for="Player.Name"/>
+        <label asp-for="Player.Name">User name: </label>
+        <input asp-for="Player.Name" value="Some user"/>
         <br/>
-        <label asp-for="Player.HitPoints"></label>
-        <input asp-for="Player.HitPoints"/>
+        <label asp-for="Player.HitPoints">Hit points: </label>
+        <input asp-for="Player.HitPoints" value="50"/>
         <br/>
-        <label asp-for="Player.AttackModifier"></label>
-        <input asp-for="Player.AttackModifier" id="attack-modifier"/>
+        <label asp-for="Player.AttackModifier">Attack modifier: </label>
+        <input asp-for="Player.AttackModifier" value="3" id="attack-modifier"/>
         <br/>
-        <label asp-for="Player.AttackPerRound"></label>
-        <input asp-for="Player.AttackPerRound"/>
+        <label asp-for="Player.AttackPerRound">Attacks per round: </label>
+        <input asp-for="Player.AttackPerRound" value="1"/>
         <br/>
         <label asp-for="Player.DamageCount">Damage: </label>
-        <input asp-for="Player.DamageCount" id="dmg-count"/>d<input asp-for="Player.DamageMax" id="dmg-max"/>
+        <input asp-for="Player.DamageCount" id="dmg-count" value="1"/>d<input asp-for="Player.DamageMax" value="8" id="dmg-max"/>
         <br/>
-        <label asp-for="Player.DamageModifier"></label>
-        <input asp-for="Player.DamageModifier"/>
+        <label asp-for="Player.DamageModifier">Damage modifier: </label>
+        <input asp-for="Player.DamageModifier" value="3"/>
         <br/>
-        <label asp-for="Player.Weapon"></label>
-        <input asp-for="Player.Weapon" id="weapon"/>
+        <label asp-for="Player.Weapon">Weapon: </label>
+        <input asp-for="Player.Weapon" id="weapon" value="4"/>
         <br/>
-        <label asp-for="Player.ArmorClass"></label>
-        <input asp-for="Player.ArmorClass"/>
+        <label asp-for="Player.ArmorClass">Armor class: </label>
+        <input asp-for="Player.ArmorClass" value="10"/>
         <br/>
         <label>Min AC to Always hit: </label>
         <input readonly="readonly" id="min-ac"/>
@@ -40,3 +40,32 @@
         <button class="btn btn-primary" type="submit">Fight</button>
     </form>
 </div>
+@{
+    var enemy = Model.Enemy;
+    var results = Model.FightResults;
+    var player = Model.Player;
+}
+@if(Model.FightResults is not null && Model.Enemy is not null)
+{
+    <div>
+        <div>
+            <p>Enemy:</p>
+            @enemy.FormatEntityHtmlToList()
+            <p>You</p>
+            @player.FormatEntityHtmlToList()
+        </div>
+        <div>
+            <p>Fight log</p>
+            <div>
+                @foreach (var round in results.Logs.OrderBy(l => l.RoundNumber).ToList())
+                {
+                    <p>Round @round.RoundNumber</p>
+                    <p>You</p>
+                    <p>@round.PlayerStatus</p>
+                    <p>@enemy.Name</p>
+                    <p>@round.MonsterStatus</p>
+                }
+            </div>
+        </div>
+    </div>
+}

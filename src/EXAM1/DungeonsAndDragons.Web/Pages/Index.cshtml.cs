@@ -15,6 +15,8 @@ public class IndexModel : PageModel
 
     [BindProperty]
     public Entity Player { get; set; }
+    public FightEndDTO? FightResults { get; set; }
+    public Entity? Enemy { get; set; }
     public IndexModel(ILogger<IndexModel> logger, 
                       IRandomMonsterRetriever retriever,
                       IFightService fightService)
@@ -29,12 +31,12 @@ public class IndexModel : PageModel
         
     }
 
-    public async Task<IActionResult> OnPost(Entity model)
+    public async Task OnPost()
     {
         _logger.LogInformation("Hit OnPost");
         var monster = await _retriever.GetRandomMonsterAsync();
-        var fightStartDto = new FightStartDTO() {Player = model, Monster = monster,};
-        var fightResults = await _fightService.SimulateFightAsync(fightStartDto);
-        return Page();
+        var fightStartDto = new FightStartDTO() {Player = Player, Monster = monster,};
+        FightResults = await _fightService.SimulateFightAsync(fightStartDto);
+        Enemy = monster;
     }
 }
