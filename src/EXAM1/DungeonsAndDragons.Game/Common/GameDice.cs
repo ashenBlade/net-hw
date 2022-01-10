@@ -21,8 +21,8 @@ public class GameDice
         _random = new Random();
     }
 
-    public int Roll()
+    public int Roll(int attackModifier = 0)
     {
-        return _random.Next(DiceAmount, MaxValue * DiceAmount);
+        return _random.Next(DiceAmount * attackModifier, (MaxValue + attackModifier) * DiceAmount);
     }
 }

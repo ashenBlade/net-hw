@@ -13,7 +13,9 @@ public class Entity
     [Required]
     public int AttackPerRound { get; set; }
     [Required]
-    public int Damage { get; set; }
+    public int DamageCount { get; set; }
+    [Required]
+    public int DamageMax { get; set; }
     [Required]
     public int DamageModifier { get; set; }
     [Required]

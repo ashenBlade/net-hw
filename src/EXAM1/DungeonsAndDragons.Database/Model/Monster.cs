@@ -22,8 +22,14 @@ public class Monster
     public int AttackPerRound { get; set; }
     [Required]
     [Range(1, 100)]
-    public int Damage { get; set; }
+    public int DamageCount { get; set; }
+
     [Required]
+    [Range(1, 100)]
+    public int DamageMax { get; set; }
+    
+    [Required]
+    [Range(1, 100)]
     public int DamageModifier { get; set; }
     [Required]
     [Range(1, 100)]
@@ -41,9 +47,10 @@ public class Monster
                    ArmorClass = monster.ArmorClass,
                    AttackModifier = monster.AttackModifier,
                    AttackPerRound = monster.AttackPerRound,
-                   Damage = monster.Damage,
+                   DamageCount = monster.DamageCount,
                    DamageModifier = monster.DamageModifier,
-                   Weapon = monster.Weapon
+                   Weapon = monster.Weapon,
+                   DamageMax = monster.DamageMax
                };
     }
 }

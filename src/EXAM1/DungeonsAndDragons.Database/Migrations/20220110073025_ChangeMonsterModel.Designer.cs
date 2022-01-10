@@ -2,6 +2,7 @@
 using DungeonsAndDragons.Database.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DungeonsAndDragons.Database.Migrations
 {
     [DbContext(typeof(GameDbContext))]
-    partial class GameDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220110073025_ChangeMonsterModel")]
+    partial class ChangeMonsterModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,10 +80,7 @@ namespace DungeonsAndDragons.Database.Migrations
                     b.Property<int>("AttackPerRound")
                         .HasColumnType("integer");
 
-                    b.Property<int>("DamageCount")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("DamageMax")
+                    b.Property<int>("Damage")
                         .HasColumnType("integer");
 
                     b.Property<int>("DamageModifier")

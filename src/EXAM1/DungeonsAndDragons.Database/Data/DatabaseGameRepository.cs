@@ -200,7 +200,11 @@ public class DatabaseGameRepository : IGameRepository
     public async Task<Monster?> GetRandomMonsterAsync()
     {
         var ids = await _context.Monsters.Select(m => m.Id).ToListAsync();
-        var randomId = ids[Random.Shared.Next(0, ids.Count)];
+        if (ids.Count == 0)
+        {
+            return null;
+        }
+        var randomId = ids[Random.Shared.Next(0, ids.Count - 1)];
         return await _context.Monsters.FirstOrDefaultAsync(m => m.Id == randomId);
     }
 }

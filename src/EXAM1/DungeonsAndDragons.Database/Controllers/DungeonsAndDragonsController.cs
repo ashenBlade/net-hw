@@ -88,6 +88,10 @@ public class DungeonsAndDragonsController : ControllerBase
     public async Task<IActionResult> GetRandomMonster()
     {
         var monster = await _repo.GetRandomMonsterAsync();
+        if (monster is null)
+        {
+            return BadRequest();
+        }
         return Ok(monster);
     }
     

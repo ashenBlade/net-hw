@@ -1,7 +1,12 @@
+using DungeonsAndDragons.Web.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<IFightService, RemoteFightService>();
+builder.Services.AddScoped<IRandomMonsterRetriever, DatabaseRandomMonsterRetriever>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
