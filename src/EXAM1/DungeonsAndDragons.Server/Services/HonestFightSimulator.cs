@@ -31,7 +31,11 @@ public class HonestFightSimulator : IFightSimulator
             round++;
             logs.Add(log);
         }
-        return new FightEndDTO() {Logs = logs};
+        return new FightEndDTO()
+               {
+                   Logs = logs,
+                   UserEndStatus = player
+               };
     }
 
     private static int GetProbabilityModifier(Entity entity)
@@ -71,7 +75,6 @@ public class HonestFightSimulator : IFightSimulator
     {
         var builder = new StringBuilder();
         var probability = probabilityDice.Roll();
-        probability += first.AttackModifier;
         builder.Append(first.FormatProbability(probability));
         if (probability == 1)
         {
@@ -79,6 +82,7 @@ public class HonestFightSimulator : IFightSimulator
             return builder.ToString();
         }
 
+        probability += first.AttackModifier;
         if (probability < second.ArmorClass)
         {
             builder.Append(" lesser than ");

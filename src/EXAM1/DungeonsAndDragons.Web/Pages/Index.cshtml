@@ -37,7 +37,7 @@
         <label>Damage: </label>
         <span><span id="dmg-from"></span> - <span id="dmg-to"></span></span>
         <br/>
-        <button class="btn btn-primary" type="submit">Fight</button>
+        <button class="btn btn-primary" type="submit" disabled="@(!( Model.FightResults is null || Model.FightResults.UserEndStatus.HitPoints > 0 ))">Fight</button>
     </form>
 </div>
 @{
@@ -59,11 +59,13 @@
             <div>
                 @foreach (var round in results.Logs.OrderBy(l => l.RoundNumber).ToList())
                 {
-                    <p>Round @round.RoundNumber</p>
-                    <p>You</p>
-                    <p>@round.PlayerStatus</p>
-                    <p>@enemy.Name</p>
-                    <p>@round.MonsterStatus</p>
+                    <p class="fw-bold">Round @round.RoundNumber</p>
+                    <div>
+                        <p>@player.Name</p>
+                        <p class="text-info">@round.PlayerStatus</p>
+                        <p>@enemy.Name</p>
+                        <p class="text-info">@round.MonsterStatus</p>
+                    </div>
                 }
             </div>
         </div>
