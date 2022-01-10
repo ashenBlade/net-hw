@@ -114,6 +114,9 @@ public class HonestFightSimulator : IFightSimulator
         builder.Append(" hits enemy by ");
         builder.Append(totalDamage);
         second.HitPoints -= totalDamage;
+        second.HitPoints = second.HitPoints < 0
+                               ? 0
+                               : second.HitPoints;
         builder.Append($"({second.HitPoints})");
 
         if (second.HitPoints <= 0)

@@ -8,28 +8,28 @@
     <div>Create player</div>
     <form asp-page-handler="OnPost" method="post">
         <label asp-for="Player.Name">User name: </label>
-        <input asp-for="Player.Name" value="Some user"/>
+        <input asp-for="Player.Name" />
         <br/>
         <label asp-for="Player.HitPoints">Hit points: </label>
-        <input asp-for="Player.HitPoints" value="50"/>
+        <input asp-for="Player.HitPoints"/>
         <br/>
         <label asp-for="Player.AttackModifier">Attack modifier: </label>
-        <input asp-for="Player.AttackModifier" value="3" id="attack-modifier"/>
+        <input asp-for="Player.AttackModifier" id="attack-modifier"/>
         <br/>
         <label asp-for="Player.AttackPerRound">Attacks per round: </label>
-        <input asp-for="Player.AttackPerRound" value="1" id="attacks-per-round"/>
+        <input asp-for="Player.AttackPerRound" id="attacks-per-round"/>
         <br/>
         <label asp-for="Player.DamageCount">Damage: </label>
-        <input asp-for="Player.DamageCount" id="dmg-count" value="1"/>d<input asp-for="Player.DamageMax" value="8" id="dmg-max"/>
+        <input asp-for="Player.DamageCount" id="dmg-count"/>d<input asp-for="Player.DamageMax" id="dmg-max"/>
         <br/>
         <label asp-for="Player.DamageModifier">Damage modifier: </label>
-        <input asp-for="Player.DamageModifier" value="3" id="dmg-modifier"/>
+        <input asp-for="Player.DamageModifier" id="dmg-modifier"/>
         <br/>
         <label asp-for="Player.Weapon">Weapon: </label>
-        <input asp-for="Player.Weapon" id="weapon" value="4"/>
+        <input asp-for="Player.Weapon" id="weapon" />
         <br/>
         <label asp-for="Player.ArmorClass">Armor class: </label>
-        <input asp-for="Player.ArmorClass" value="10"/>
+        <input asp-for="Player.ArmorClass"/>
         <br/>
         <label>Min AC to Always hit: </label>
         <input readonly="readonly" id="min-ac"/>
@@ -38,7 +38,7 @@
         <span><span id="dmg-from"></span> - <span id="dmg-to"></span></span>
         <br/>
         <div asp-validation-summary="All"></div>
-        <button class="btn btn-primary" type="submit">Fight</button>
+        <button class="btn btn-primary" type="submit" disabled="@(!( Model.FightResults is null || Model.FightResults.UserEndStatus?.HitPoints > 0 ))"> Fight</button>
     </form>
 </div>
 @{
