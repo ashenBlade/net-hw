@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DungeonsAndDragons.Game\DungeonsAndDragons.Game.csproj" />
+    <ProjectReference Include="..\DungeonsAndDragons.Shared\DungeonsAndDragons.Shared.csproj" />
   </ItemGroup>
 
 </Project>

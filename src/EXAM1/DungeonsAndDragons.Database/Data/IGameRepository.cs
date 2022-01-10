@@ -41,4 +41,5 @@ public interface IGameRepository
     Task<int> AddRaceAsync(Race race);
     Task UpdateRaceAsync(Race race);
     Task RemoveRaceAsync(Race race);
+    Task<Monster?> GetRandomMonsterAsync();
 }

@@ -10,16 +10,4 @@ public class MonsterReadDTO
     public Race Race { get; set; }
     public Class Class { get; set; }
     public Characteristics Characteristics { get; set; }
-
-    public static MonsterReadDTO FromModel(Monster model)
-    {
-        return new MonsterReadDTO()
-               {
-                   Id = model.Id,
-                   Name = model.Name,
-                   Characteristics = model.Characteristics,
-                   Class = model.Class,
-                   Race = model.Race
-               };
-    }
 }

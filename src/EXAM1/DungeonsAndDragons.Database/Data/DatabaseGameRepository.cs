@@ -30,9 +30,6 @@ public class DatabaseGameRepository : IGameRepository
     public Task<Monster?> GetMonsterByIdAsync(int id)
     {
         return _context.Monsters
-                       .Include(m => m.Class)
-                       .Include(m => m.Race)
-                       .Include(m => m.Characteristics)
                        .FirstOrDefaultAsync(m => m.Id == id);
     }
 
@@ -198,5 +195,12 @@ public class DatabaseGameRepository : IGameRepository
     {
         _context.Races.Remove(race);
         return Task.CompletedTask;
+    }
+
+    public async Task<Monster?> GetRandomMonsterAsync()
+    {
+        var ids = await _context.Monsters.Select(m => m.Id).ToListAsync();
+        var randomId = ids[Random.Shared.Next(0, ids.Count)];
+        return await _context.Monsters.FirstOrDefaultAsync(m => m.Id == randomId);
     }
 }

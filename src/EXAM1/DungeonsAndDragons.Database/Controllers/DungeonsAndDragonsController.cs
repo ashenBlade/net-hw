@@ -1,6 +1,7 @@
 using DungeonsAndDragons.Database.Data;
 using DungeonsAndDragons.Database.DTO;
 using DungeonsAndDragons.Database.Model;
+using DungeonsAndDragons.Shared.Models;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Mvc;
 
@@ -73,15 +74,23 @@ public class DungeonsAndDragonsController : ControllerBase
     public async Task<IActionResult> GetAllMonstersAsync()
     {
         _logger.LogInformation("Hit GetAllMonstersAsync");
-        var list = new List<MonsterReadDTO>();
+        var list = new List<Entity>();
         await foreach (var monster in _repo.GetAllMonstersAsync())
         {
-            list.Add(MonsterReadDTO.FromModel(monster));
+            list.Add(Monster.ToSharedEntity(monster));
         }
 
         return Ok(list);
     }
 
+    [HttpGet]
+    [Route("monsters/random")]
+    public async Task<IActionResult> GetRandomMonster()
+    {
+        var monster = await _repo.GetRandomMonsterAsync();
+        return Ok(monster);
+    }
+    
     [HttpGet(Name = "GetMonsterById")]
     [Route("monsters/{id:int}")]
     public async Task<IActionResult> GetMonsterByIdAsync(int id)
@@ -94,7 +103,7 @@ public class DungeonsAndDragonsController : ControllerBase
             return NotFound();
         }
         
-        return Ok(MonsterReadDTO.FromModel(monster));
+        return Ok(Monster.ToSharedEntity(monster));
     }
 
     [HttpGet]
