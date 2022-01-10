@@ -17,13 +17,13 @@
         <input asp-for="Player.AttackModifier" value="3" id="attack-modifier"/>
         <br/>
         <label asp-for="Player.AttackPerRound">Attacks per round: </label>
-        <input asp-for="Player.AttackPerRound" value="1"/>
+        <input asp-for="Player.AttackPerRound" value="1" id="attacks-per-round"/>
         <br/>
         <label asp-for="Player.DamageCount">Damage: </label>
         <input asp-for="Player.DamageCount" id="dmg-count" value="1"/>d<input asp-for="Player.DamageMax" value="8" id="dmg-max"/>
         <br/>
         <label asp-for="Player.DamageModifier">Damage modifier: </label>
-        <input asp-for="Player.DamageModifier" value="3"/>
+        <input asp-for="Player.DamageModifier" value="3" id="dmg-modifier"/>
         <br/>
         <label asp-for="Player.Weapon">Weapon: </label>
         <input asp-for="Player.Weapon" id="weapon" value="4"/>
@@ -37,7 +37,8 @@
         <label>Damage: </label>
         <span><span id="dmg-from"></span> - <span id="dmg-to"></span></span>
         <br/>
-        <button class="btn btn-primary" type="submit" disabled="@(!( Model.FightResults is null || Model.FightResults.UserEndStatus.HitPoints > 0 ))">Fight</button>
+        <div asp-validation-summary="All"></div>
+        <button class="btn btn-primary" type="submit">Fight</button>
     </form>
 </div>
 @{
@@ -70,4 +71,33 @@
             </div>
         </div>
     </div>
+}
+
+@section Scripts
+{
+    <script type="application/javascript">
+        const dmgCount = $('#dmg-count');
+        const dmgMax = $('#dmg-max');
+        const attackModifier = $('#attack-modifier');
+        const weapon = $('#weapon');
+        const minAc = $('#min-ac');
+        const dmgFrom = $('#dmg-from');
+        const dmgTo = $('#dmg-to');
+        const dmgModifier = $('#dmg-modifier');
+        const attacksPerRound = $("#attacks-per-round");
+        
+        [dmgCount, dmgMax, attackModifier, weapon, dmgModifier, attacksPerRound].forEach(t => t.on('input', e => updateDmgRange()));
+        
+        function updateDmgRange()
+        {
+            let minAcValue = Number(attackModifier.val()) + Number(weapon.val()) + 1;
+            let dmgFromValue = (Number(dmgCount.val()) + Number(weapon.val()) + Number(dmgModifier.val())) * Number(attacksPerRound.val());
+            let dmgToValue = (Number(dmgMax.val()) * Number(dmgCount.val()) + Number(weapon.val()) + Number(dmgModifier.val())) * Number(attacksPerRound.val());
+            minAc.val(minAcValue);
+            dmgFrom.text(dmgFromValue);
+            dmgTo.text(dmgToValue);
+        }
+        
+        updateDmgRange();
+    </script>
 }

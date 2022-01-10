@@ -15,7 +15,9 @@ public class IndexModel : PageModel
 
     [BindProperty]
     public Entity? Player { get; set; }
+    
     public FightEndDTO? FightResults { get; set; }
+    
     public Entity? Enemy { get; set; }
     public IndexModel(ILogger<IndexModel> logger, 
                       IRandomMonsterRetriever retriever,
@@ -34,6 +36,11 @@ public class IndexModel : PageModel
     public async Task OnPost()
     {
         _logger.LogInformation("Hit OnPost");
+        if (!ModelState.IsValid)
+        {
+            _logger.LogInformation("Invalid model");
+            return;
+        }
         var monster = await _retriever.GetRandomMonsterAsync();
         var fightStartDto = new FightStartDTO {Player = Player, Monster = monster,};
         FightResults = await _fightService.SimulateFightAsync(fightStartDto);
