@@ -16,12 +16,12 @@ export class RabbitmqForumHandler implements ForumHandler {
                 readonly username: string = 'guest',
                 readonly password: string = 'guest',
                 readonly queueName: string = '',
-                readonly exchange: string = 'amq.fanout') {
+                readonly exchange: string = 'forum',
+                readonly routingKey: string = '') {
         this.callbacks = [];
     }
 
     async open() {
-        console.log('open')
         this.amqp = new AMQPWebSocketClient(
             this.url,
             this.vhost,
@@ -29,10 +29,15 @@ export class RabbitmqForumHandler implements ForumHandler {
             this.password);
         this.client = await this.amqp.connect();
         this.channel = await this.client.channel();
-        this.queue = await this.channel.queue(this.queueName);
-        await this.channel.exchangeDeclare(this.exchange, 'fanout')
-        await this.queue.bind(this.exchange, '');
-        this.consumer = await this.queue.subscribe({noAck: true}, (msg) => {
+        await this.channel.exchangeDeclare(this.exchange, 'fanout', {
+            passive: false,
+            autoDelete: false
+        });
+        this.queue = await this.channel.queue(this.queueName, {
+            exclusive: false
+        });
+        await this.queue.bind(this.exchange, this.routingKey);
+        this.consumer = await this.queue.subscribe({noAck: true, exclusive: false}, (msg) => {
             const body = msg.bodyToString();
             if (body === null) {
                 console.error('Received body is null');
@@ -54,6 +59,10 @@ export class RabbitmqForumHandler implements ForumHandler {
                 }
             }
         });
+        console.log({
+            consumer: this.consumer,
+            queue: this.queue
+        })
     }
 
     private async resetSubscribers() {
@@ -61,7 +70,6 @@ export class RabbitmqForumHandler implements ForumHandler {
     }
 
     async close() {
-        console.log('close')
         await this.resetSubscribers();
 
         if (this.queue) {
@@ -86,14 +94,18 @@ export class RabbitmqForumHandler implements ForumHandler {
     }
 
     async sendMessage(msg: Message): Promise<void> {
-        if (this.channel === undefined) {
+        if (this.queue === undefined) {
             throw new Error('Channel is not opened')
         }
 
         const messageJson = JSON.stringify(msg);
-        await this.channel.basicPublish(this.exchange, '', messageJson, {
-            contentType: 'application/json'
+        await this.channel?.basicPublish(this.exchange, this.routingKey, messageJson, {
+            contentType: 'application/json',
+            type: 'fanout'
         });
+        // await this.queue.publish(messageJson, {
+        //     contentType: 'application/json'
+        // })
     }
 
 }
