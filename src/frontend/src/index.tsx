@@ -3,13 +3,19 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
+import {StubForumHandler} from "./services/stubForumHandler";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+// const tls = window.location.protocol === "https:";
+// const url = `${tls ? "wss" : "ws"}://localhost:15670`;
+// const amqp = new AMQPWebSocketClient(url, '/', 'guest', 'guest')
+
 root.render(
   <React.StrictMode>
-    <App />
+    <App forumHandler={new StubForumHandler()}/>
   </React.StrictMode>
 );
 
