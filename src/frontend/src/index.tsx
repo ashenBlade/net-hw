@@ -3,20 +3,20 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
-import {StubForumHandler} from "./services/stubForumHandler";
+import {RabbitmqForumHandler} from "./services/rabbitmqForumHandler";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-// const tls = window.location.protocol === "https:";
-// const url = `${tls ? "wss" : "ws"}://localhost:15670`;
-// const amqp = new AMQPWebSocketClient(url, '/', 'guest', 'guest')
+const tls = window.location.protocol === "https:";
+const url = `${tls ? "wss" : "ws"}://localhost:15670`;
+const x = new RabbitmqForumHandler(url);
 
 root.render(
-  <React.StrictMode>
-    <App forumHandler={new StubForumHandler()}/>
-  </React.StrictMode>
+    <React.StrictMode>
+        <App forumHandler={x}/>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -4,6 +4,14 @@ import {Message} from "../models/message";
 export class StubForumHandler implements ForumHandler {
     callbacks: MessageCallback[] = []
 
+    close(): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
+    open(): Promise<void> {
+        return Promise.resolve(undefined);
+    }
+
     registerOnMessageCallback(cb: (msg: Message) => void): void {
         this.callbacks.push(cb);
     }
