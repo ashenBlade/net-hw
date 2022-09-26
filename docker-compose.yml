@@ -2,20 +2,26 @@ version: '3.0'
 
 services:
   frontend:
-
     build: 
       context: src/frontend
       dockerfile: Dockerfile
-
     ports:
       - '8080:80'
+    depends_on:
+      - backend
+
   backend:
     build:
       context: src/backend
       dockerfile: MessagesAPI/Dockerfile
-
     ports:
-      - '80'
+      - '8081:80'
+    depends_on:
+      - database
+
+  database:
+    image: postgres:14-alpine
+
   rabbit-mq-relay:
     image: cloudamqp/websocket-tcp-relay
     ports:
@@ -30,5 +36,5 @@ services:
     image: rabbitmq:3.7-management
     ports:
       - "5672:5672"
-      - "8081:15672"
+      - "8082:15672"
     
