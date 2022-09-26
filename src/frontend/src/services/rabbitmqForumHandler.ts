@@ -22,22 +22,12 @@ export class RabbitmqForumHandler implements ForumHandler {
     }
 
     async open() {
-        this.amqp = new AMQPWebSocketClient(
-            this.url,
-            this.vhost,
-            this.username,
-            this.password);
+        this.amqp = new AMQPWebSocketClient(this.url, this.vhost, this.username, this.password);
         this.client = await this.amqp.connect();
         this.channel = await this.client.channel();
-        await this.channel.exchangeDeclare(this.exchange, 'fanout', {
-            passive: false,
-            autoDelete: false
-        });
-        this.queue = await this.channel.queue(this.queueName, {
-            exclusive: false
-        });
+        this.queue = await this.channel.queue(this.queueName);
         await this.queue.bind(this.exchange, this.routingKey);
-        this.consumer = await this.queue.subscribe({noAck: true, exclusive: false}, (msg) => {
+        this.consumer = await this.queue.subscribe({noAck: true}, (msg) => {
             const body = msg.bodyToString();
             if (body === null) {
                 console.error('Received body is null');
@@ -59,10 +49,6 @@ export class RabbitmqForumHandler implements ForumHandler {
                 }
             }
         });
-        console.log({
-            consumer: this.consumer,
-            queue: this.queue
-        })
     }
 
     private async resetSubscribers() {
@@ -71,19 +57,6 @@ export class RabbitmqForumHandler implements ForumHandler {
 
     async close() {
         await this.resetSubscribers();
-
-        if (this.queue) {
-            await this.queue.unbind(this.exchange);
-        }
-
-        if (this.channel && !this.channel.closed) {
-            await this.channel.close()
-        }
-
-        if (this.client && !this.client.closed) {
-            await this.client.close();
-        }
-
         if (this.amqp && !this.amqp.closed) {
             await this.amqp.close()
         }
@@ -101,11 +74,7 @@ export class RabbitmqForumHandler implements ForumHandler {
         const messageJson = JSON.stringify(msg);
         await this.channel?.basicPublish(this.exchange, this.routingKey, messageJson, {
             contentType: 'application/json',
-            type: 'fanout'
         });
-        // await this.queue.publish(messageJson, {
-        //     contentType: 'application/json'
-        // })
     }
 
 }
