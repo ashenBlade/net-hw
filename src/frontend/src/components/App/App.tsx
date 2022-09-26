@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import logo from './logo.svg';
+import logo from '../../logo.svg';
 import './App.css';
 import {AMQPChannel, AMQPWebSocketClient} from "@cloudamqp/amqp-client";
 
@@ -19,7 +19,7 @@ function App() {
       attachPublish(ch)
       const q = await ch.queue("");
       await q.bind("amq.fanout");
-      const consumer = await q.subscribe({noAck: false}, (msg) => {
+      await q.subscribe({noAck: false}, (msg) => {
         console.log(msg)
 
         if (textarea.current) {
@@ -52,7 +52,7 @@ function App() {
   }
 
   function disablePublish() {
-    document.forms[0].onsubmit = (e) => { alert("Disconnected, waiting to be reconnected"); }
+    document.forms[0].onsubmit = () => { alert("Disconnected, waiting to be reconnected"); }
   }
 
   useEffect(() => {
