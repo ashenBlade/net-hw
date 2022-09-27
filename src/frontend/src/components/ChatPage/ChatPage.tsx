@@ -2,8 +2,9 @@ import React, {FC, useEffect, useRef, useState} from 'react';
 import {Message} from "../../models/message";
 import {ChatPageProps} from "./ChatPageProps";
 import Chat from "./Chat/Chat";
+import './ChatPage.tsx.css';
 
-const ChatPage: FC<ChatPageProps> = ({forumHandler}) => {
+const ChatPage: FC<ChatPageProps> = ({forumHandler, username}) => {
     const [userMessage, setUserMessage] = useState('');
     const [messageSending, setMessageSending] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
@@ -18,7 +19,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler}) => {
 
         setMessageSending(true);
         try {
-            await forumHandler.sendMessage({message: inputMessage});
+            await forumHandler.sendMessage({message: inputMessage, username: username});
             setUserMessage('');
         } finally {
             setMessageSending(false);
@@ -35,8 +36,11 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler}) => {
 
     const onInputKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            await sendMessage();
-            inputRef.current?.focus();
+            try {
+                await sendMessage();
+            } finally {
+                inputRef.current?.focus();
+            }
         }
     }
 
@@ -53,9 +57,9 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler}) => {
 
 
     return (
-        <div className={''}>
+        <div className={'h-100 chat-page'}>
             <Chat messages={messages}/>
-            <input className={'form-control'}
+            <input className={'form-control my-2'}
                    placeholder={'Введите сообщение другим участникам'}
                    value={userMessage}
                    onChange={e => setUserMessage(e.currentTarget.value)}
