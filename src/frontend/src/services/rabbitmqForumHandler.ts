@@ -41,6 +41,8 @@ export class RabbitmqForumHandler implements ForumHandler {
                 return;
             }
 
+
+
             for (const callback of this.callbacks) {
                 try {
                     callback(message);
@@ -53,6 +55,13 @@ export class RabbitmqForumHandler implements ForumHandler {
 
     private async resetSubscribers() {
         this.callbacks.length = 0;
+    }
+
+    unregisterOnMessageCallback(cb: MessageCallback): void {
+        const index = this.callbacks.indexOf(cb);
+        if (index !== -1) {
+            this.callbacks.splice(index, 1);
+        }
     }
 
     async close() {

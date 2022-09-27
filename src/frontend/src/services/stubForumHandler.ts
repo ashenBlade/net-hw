@@ -8,6 +8,15 @@ export class StubForumHandler implements ForumHandler {
         return Promise.resolve(undefined);
     }
 
+    unregisterOnMessageCallback(cb: MessageCallback): void {
+        const index = this.callbacks.indexOf(cb);
+        if (index !== -1) {
+            this.callbacks.splice(index, 1);
+        }
+    }
+
+
+
     open(): Promise<void> {
         return Promise.resolve(undefined);
     }

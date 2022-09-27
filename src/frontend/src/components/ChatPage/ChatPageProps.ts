@@ -1,5 +1,5 @@
 import {ForumHandler} from "../../services/forumHandler";
 
-export interface ChatProps {
+export interface ChatPageProps {
     forumHandler: ForumHandler
 }

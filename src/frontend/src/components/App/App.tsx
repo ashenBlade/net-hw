@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import {RabbitmqForumHandler} from "../../services/rabbitmqForumHandler";
-import Chat from "../ChatPage/Chat";
+import ChatPage from "../ChatPage/ChatPage";
 import {useEffectOnce} from "../../hooks/useEffectOnce";
 
 const App = () => {
@@ -17,7 +17,7 @@ const App = () => {
     })
 
     return (
-        <Chat forumHandler={forumHandler}/>
+        <ChatPage forumHandler={forumHandler}/>
     );
 };
 
