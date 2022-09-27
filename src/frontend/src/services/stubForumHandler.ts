@@ -1,5 +1,6 @@
-import {ForumHandler, MessageCallback} from "./forumHandler";
+import {ForumHandler} from "./forumHandler";
 import {Message} from "../models/message";
+import {MessageCallback} from "./messageCallback";
 
 export class StubForumHandler implements ForumHandler {
     callbacks: MessageCallback[] = []
@@ -15,6 +16,9 @@ export class StubForumHandler implements ForumHandler {
         }
     }
 
+    getPreviousMessages(page: number, size: number): Promise<Message[]> {
+        return Promise.resolve([]);
+    }
 
 
     open(): Promise<void> {

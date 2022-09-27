@@ -1,20 +1,24 @@
 import React, {useState} from 'react';
 import './App.css';
-import {RabbitmqForumHandler} from "../../services/rabbitmqForumHandler";
+import {RabbitmqForumCommunicator} from "../../services/rabbitmqForumCommunicator";
 import ChatPage from "../ChatPage/ChatPage";
 import {useEffectOnce} from "../../hooks/useEffectOnce";
+import {MessagesApiMessagesRepository} from "../../services/messagesApiMessagesRepository";
+import {AggregatedForumHandler} from "../../services/aggregatedForumHandler";
 
 const App = () => {
     const tls = window.location.protocol === "https:";
     const url = `${tls ? "wss" : "ws"}://localhost:15670`;
-    const [forumHandler,] = useState(new RabbitmqForumHandler(url));
+    const [communicator,] = useState(new RabbitmqForumCommunicator(url));
+    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(''));
+    const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator))
 
     useEffectOnce(() => {
-        forumHandler.open()
+        communicator.open()
         return () => {
-            forumHandler.close()
+            communicator.close()
         }
-    })
+    });
 
     const [username, setUsername] = useState('');
 

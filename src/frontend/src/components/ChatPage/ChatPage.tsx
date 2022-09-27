@@ -3,6 +3,7 @@ import {Message} from "../../models/message";
 import {ChatPageProps} from "./ChatPageProps";
 import Chat from "./Chat/Chat";
 import './ChatPage.tsx.css';
+import {useEffectOnce} from "../../hooks/useEffectOnce";
 
 const ChatPage: FC<ChatPageProps> = ({forumHandler, username}) => {
     const [userMessage, setUserMessage] = useState('');
@@ -54,7 +55,14 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username}) => {
         }
     }, [forumHandler, messages]);
 
-
+    useEffectOnce(() => {
+        setMessageSending(true)
+        forumHandler.getPreviousMessages(1, 15).then(received => {
+            setMessages([...received, ...messages]);
+        }).finally(() => {
+            setMessageSending(false);
+        })
+    })
 
     return (
         <div className={'h-100 chat-page'}>
@@ -67,7 +75,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username}) => {
                    autoFocus={true}
                    disabled={messageSending}
                    ref={inputRef}/>
-            <button className={'btn btn-success'}
+            <button className={'btn btn-success mb-1'}
                     disabled={messageSending}
                     onClick={onSendMessageButtonClick}>
                 Отправить

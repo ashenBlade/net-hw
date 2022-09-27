@@ -1,9 +1,10 @@
-import {ForumHandler, MessageCallback} from "./forumHandler";
 import {Message, parseMessage} from "../models/message";
 import {AMQPChannel, AMQPConsumer, AMQPQueue, AMQPWebSocketClient} from "@cloudamqp/amqp-client";
 import {AMQPBaseClient} from "@cloudamqp/amqp-client/types/amqp-base-client";
+import {ForumCommunicator} from "./forumCommunicator";
+import {MessageCallback} from "./messageCallback";
 
-export class RabbitmqForumHandler implements ForumHandler {
+export class RabbitmqForumCommunicator implements ForumCommunicator {
     amqp?: AMQPWebSocketClient
     client?: AMQPBaseClient
     channel?: AMQPChannel
@@ -82,4 +83,7 @@ export class RabbitmqForumHandler implements ForumHandler {
         await this.channel.basicPublish(this.exchange, this.routingKey, JSON.stringify(msg));
     }
 
+    getMessagesFromEnd(page: number, size: number): Promise<Message[]> {
+        return Promise.resolve([]);
+    }
 }
