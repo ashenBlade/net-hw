@@ -10,12 +10,9 @@ const root = ReactDOM.createRoot(
 
 
 root.render(
-    // Commented to disable additional call of creating AMQPClient
-    // useEffect called twice in "use strict" mode
-
-    // <React.StrictMode>
+    <React.StrictMode>
         <App/>
-    // </React.StrictMode>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

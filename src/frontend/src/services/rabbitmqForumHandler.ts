@@ -16,7 +16,7 @@ export class RabbitmqForumHandler implements ForumHandler {
                 readonly username: string = 'guest',
                 readonly password: string = 'guest',
                 readonly queueName: string = '',
-                readonly exchange: string = 'forum',
+                readonly exchange: string = 'amq.fanout',
                 readonly routingKey: string = '') {
         this.callbacks = [];
     }
@@ -27,7 +27,7 @@ export class RabbitmqForumHandler implements ForumHandler {
         this.channel = await this.client.channel();
         this.queue = await this.channel.queue(this.queueName);
         await this.queue.bind(this.exchange, this.routingKey);
-        this.consumer = await this.queue.subscribe({noAck: true}, (msg) => {
+        this.consumer = await this.queue.subscribe({}, (msg) => {
             const body = msg.bodyToString();
             if (body === null) {
                 console.error('Received body is null');
@@ -37,7 +37,7 @@ export class RabbitmqForumHandler implements ForumHandler {
             try {
                 message = parseMessage(body);
             } catch (e) {
-                console.error('Could not parse received message', e)
+                console.error('Could not parse received message', e);
                 return;
             }
 
@@ -45,7 +45,7 @@ export class RabbitmqForumHandler implements ForumHandler {
                 try {
                     callback(message);
                 } catch (e) {
-                    console.error('Error occurred in callback')
+                    console.error('Error occurred in callback');
                 }
             }
         });
@@ -67,14 +67,10 @@ export class RabbitmqForumHandler implements ForumHandler {
     }
 
     async sendMessage(msg: Message): Promise<void> {
-        if (this.queue === undefined) {
+        if (!this.channel) {
             throw new Error('Channel is not opened')
         }
-
-        const messageJson = JSON.stringify(msg);
-        await this.channel?.basicPublish(this.exchange, this.routingKey, messageJson, {
-            contentType: 'application/json',
-        });
+        await this.channel.basicPublish(this.exchange, this.routingKey, JSON.stringify(msg));
     }
 
 }
