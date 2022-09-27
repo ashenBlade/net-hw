@@ -17,7 +17,9 @@ const App = () => {
     })
 
     return (
-        <ChatPage forumHandler={forumHandler}/>
+        <div className={'container-lg'}>
+            <ChatPage forumHandler={forumHandler}/>
+        </div>
     );
 };
 
