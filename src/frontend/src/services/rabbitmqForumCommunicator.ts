@@ -3,6 +3,7 @@ import {AMQPChannel, AMQPConsumer, AMQPQueue, AMQPWebSocketClient} from "@clouda
 import {AMQPBaseClient} from "@cloudamqp/amqp-client/types/amqp-base-client";
 import {ForumCommunicator} from "./forumCommunicator";
 import {MessageCallback} from "./messageCallback";
+import {RabbitMqMessagePublishedEvent} from "../models/rabbitMqMessagePublishedEvent";
 
 export class RabbitmqForumCommunicator implements ForumCommunicator {
     amqp?: AMQPWebSocketClient
@@ -36,12 +37,11 @@ export class RabbitmqForumCommunicator implements ForumCommunicator {
             }
             let message: Message;
             try {
-                message = parseMessage(body);
+                message = RabbitMqMessagePublishedEvent.fromString(body).toMessage();
             } catch (e) {
                 console.error('Could not parse received message', e);
                 return;
             }
-
 
 
             for (const callback of this.callbacks) {
@@ -80,7 +80,8 @@ export class RabbitmqForumCommunicator implements ForumCommunicator {
         if (!this.channel) {
             throw new Error('Channel is not opened')
         }
-        await this.channel.basicPublish(this.exchange, this.routingKey, JSON.stringify(msg));
+        const event = new RabbitMqMessagePublishedEvent(msg.username, msg.message);
+        await this.channel.basicPublish(this.exchange, this.routingKey, JSON.stringify(event));
     }
 
     getMessagesFromEnd(page: number, size: number): Promise<Message[]> {

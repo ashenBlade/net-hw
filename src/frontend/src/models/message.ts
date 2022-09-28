@@ -1,5 +1,5 @@
 export interface Message {
-    username?: string
+    username: string
     message: string
 }
 
@@ -12,8 +12,8 @@ export function parseMessage(json: string): Message {
         throw new Error('Message must be a string. Given', parsed.message);
     }
 
-    if (parsed.username !== undefined && typeof parsed.username !== 'string') {
-        throw new Error('Username must be string or undefined');
+    if (typeof parsed.username !== 'string') {
+        throw new Error('Username must be string. Given: ', parsed.username);
     }
 
     return {
