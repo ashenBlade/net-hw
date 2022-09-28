@@ -7,21 +7,39 @@ services:
       dockerfile: Dockerfile
     ports:
       - '8080:80'
-#    depends_on:
-#      - backend
+    depends_on:
+      - messages-api
+      - rabbit-mq-relay
 
-#  backend:
-#    build:
-#      context: src/backend
-#      dockerfile: MessagesAPI/Dockerfile
-#    ports:
-#      - '8081:80'
-#    depends_on:
-#      - database
-#
-#  database:
-#    image: postgres:14-alpine
+  messages-api:
+    build:
+      context: src/backend
+      dockerfile: FurAniJoGa.MessagesAPI/Dockerfile
+    ports:
+      - '8081:80'
+    depends_on:
+      - database
+  
+  rabbit-listener:
+    build:
+      context: src/backend
+      dockerfile: FurAniJoGa.MessagesListener/Dockerfile
+    links:
+      - rabbit-mq
+    depends_on:
+      - database
+      - rabbit-mq
 
+  database:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USERNAME=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - database
+        
   rabbit-mq-relay:
     image: cloudamqp/websocket-tcp-relay
     ports:
@@ -37,4 +55,8 @@ services:
     ports:
       - "5672:5672"
       - "8082:15672"
+   
+volumes:
+  database:
+    driver: local
     
