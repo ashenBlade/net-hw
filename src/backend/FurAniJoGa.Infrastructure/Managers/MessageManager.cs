@@ -17,19 +17,19 @@ public class MessageManager : IMessageManager
     {
         if (fromEnd)
         {
-            var list = await _context.Messages
+            var listByDesc = await _context.Messages
                 .OrderByDescending(msg => msg.PublishDate)
                 .Skip((page - 1) * size)
                 .Take(size)
                 .ToListAsync();
-            return await list.MapMessages();
+            return await listByDesc.MapMessages();
         }
 
-        var listByDesc = await _context.Messages
+        var list = await _context.Messages
             .OrderBy(msg => msg.PublishDate)
             .Skip((page - 1) * size)
             .Take(size)
             .ToListAsync();
-        return await listByDesc.MapMessages();
+        return await list.MapMessages();
     }
 }

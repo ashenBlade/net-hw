@@ -1,5 +1,7 @@
 using FurAniJoGa.Domain;
 using FurAniJoGa.Infrastructure;
+using FurAniJoGa.Infrastructure.Managers;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<MessagesDbContext>(x =>
+{
+    x.UseNpgsql("User Id=postgres;Password=8523709s;Host=database;Port=5432;Database=jojo");
+});
+builder.Services.AddScoped<IMessageManager, MessageManager>();
 
 var app = builder.Build();
 
