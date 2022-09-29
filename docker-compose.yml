@@ -38,7 +38,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - database
+      - database:/var/lib/postgresql/data
         
   rabbit-mq-relay:
     image: cloudamqp/websocket-tcp-relay
@@ -58,4 +58,5 @@ services:
    
 volumes:
   database:
+    driver: local
     
