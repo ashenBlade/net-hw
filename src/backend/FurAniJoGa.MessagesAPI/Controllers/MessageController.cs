@@ -1,5 +1,6 @@
 ﻿using FurAniJoGa.Domain;
 using FurAniJoGa.Infrastructure;
+using MessagesAPI.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessagesAPI.Controllers;
@@ -17,8 +18,8 @@ public class MessageController : Controller
     }
     
     [HttpGet("messages")]
-    public async Task<List<Message>> GetMessages(int page, int size,bool fromEnd)
+    public async Task<ActionResult<ReadMessageDto>> GetMessages(int page, int size,bool fromEnd)
     {
-        return await _messageManager.GetMessages(page, size, fromEnd);
+        return Ok( ( await _messageManager.GetMessages(page, size, fromEnd) ).Select(ReadMessageDto.FromMessage) );
     }
 }

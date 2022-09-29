@@ -4,8 +4,11 @@ export interface Message {
 }
 
 export function parseMessage(json: string): Message {
+    console.log({
+        json
+    })
     const parsed = JSON.parse(json);
-    if (parsed.message === undefined || parsed.message === null) {
+    if (!(parsed.message && parsed.username)) {
         throw new Error('No message passed');
     }
     if (typeof parsed.message !== 'string') {

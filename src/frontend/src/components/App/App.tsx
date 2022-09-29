@@ -10,7 +10,7 @@ const App = () => {
     const tls = window.location.protocol === "https:";
     const url = `${tls ? "wss" : "ws"}://localhost:15670`;
     const [communicator,] = useState(new RabbitmqForumCommunicator(url));
-    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(''));
+    const [messagesRepository,] = useState(new MessagesApiMessagesRepository('http://localhost:8081'));
     const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator))
 
     useEffectOnce(() => {
