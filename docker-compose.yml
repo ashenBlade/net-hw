@@ -8,17 +8,17 @@ services:
     ports:
       - '8080:80'
     depends_on:
-#      - messages-api
+      - messages-api
       - rabbit-mq-relay
 
-#  messages-api:
-#    build:
-#      context: src/backend
-#      dockerfile: FurAniJoGa.MessagesAPI/Dockerfile
-#    ports:
-#      - '8081:80'
-#    depends_on:
-#      - database
+  messages-api:
+    build:
+      context: src/backend
+      dockerfile: FurAniJoGa.MessagesAPI/Dockerfile
+    ports:
+      - '8081:80'
+    depends_on:
+      - database
   
   rabbit-listener:
     build:
