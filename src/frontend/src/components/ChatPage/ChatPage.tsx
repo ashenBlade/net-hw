@@ -59,6 +59,8 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username}) => {
         setMessageSending(true)
         forumHandler.getPreviousMessages(1, 15).then(received => {
             setMessages([...received, ...messages]);
+        }).catch(e => {
+            console.error('Error while retreiving message history', e);
         }).finally(() => {
             setMessageSending(false);
         })

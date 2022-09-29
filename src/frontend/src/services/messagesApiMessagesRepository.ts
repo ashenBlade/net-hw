@@ -1,6 +1,26 @@
 import {Message} from "../models/message";
 import {MessagesRepository} from "./messagesRepository";
 
+const parseMessage = (obj: any): Message => {
+    const message = obj.message;
+    const username = obj.username;
+    if (!(message && username)) {
+        throw new Error('Could not get message from response. Message and username not provided');
+    }
+    
+    if (typeof message !== 'string') {
+        throw new Error(`Message must be string. Given: ${message}`)
+    }
+    
+    if (typeof username !== 'string') {
+        throw new Error(`Username must be string. Given: ${username}`)
+    }
+    
+    return {
+        username, message
+    }
+}
+
 export class MessagesApiMessagesRepository implements MessagesRepository {
     constructor(readonly url: string) {  }
 
@@ -19,29 +39,20 @@ export class MessagesApiMessagesRepository implements MessagesRepository {
             throw new Error('page size must be integer');
         }
 
-        // const response = await fetch(`${this.url}/api/messages?from-end=true&page=${page}&size=${size}`, {
-        //     method: 'GET',
-        //     mode: 'cors',
-        //     credentials: 'include'
-        // })
-        //
-        // if (!response.ok) {
-        //     throw new Error(`Could not get response from server. Invalid response status code: ${response.status} ${response.statusText}`)
-        // }
-        //
-        // const json = await response.json();
-        // let result: Message[];
-        // try {
-        //     result = json.map((item: any) => parseMessage(item))
-        // } catch (e) {
-        //     throw new Error('Server responded with invalid json. Could not parse')
-        // }
-        // return result;
-        return [
-            {username: 'Stub name', message: 'Sample message'},
-            {username: 'Ilya', message: 'Sample message 2'},
-            {username: 'Stub name', message: 'Sample message 3'},
-            {username: 'Vlad', message: 'Sample message 4'},
-        ]
+        const response = await fetch(`${this.url}/api/messages?fromEnd=true&page=${page}&size=${size}`, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'same-origin'
+        })
+
+        if (!response.ok) {
+            throw new Error(`Could not get response from server. Invalid response status code: ${response.status} ${response.statusText}`)
+        }
+        const json: Array<any> = await response.json();
+        try {
+            return json.map(parseMessage)
+        } catch (e: any) {
+            throw new Error('Server responded with invalid json. Could not parse', e)
+        }
     }
 }

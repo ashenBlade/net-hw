@@ -83,8 +83,4 @@ export class RabbitmqForumCommunicator implements ForumCommunicator {
         const event = new RabbitMqMessagePublishedEvent(msg.username, msg.message);
         await this.channel.basicPublish(this.exchange, this.routingKey, JSON.stringify(event));
     }
-
-    getMessagesFromEnd(page: number, size: number): Promise<Message[]> {
-        return Promise.resolve([]);
-    }
 }

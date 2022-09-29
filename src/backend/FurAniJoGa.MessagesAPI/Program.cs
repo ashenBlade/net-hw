@@ -1,3 +1,4 @@
+using System.Text.Json;
 using FurAniJoGa.Domain;
 using FurAniJoGa.Infrastructure;
 using FurAniJoGa.Infrastructure.Managers;
@@ -7,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(json =>
+{
+    json.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -25,6 +29,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(x =>
+{
+    x.AllowAnyOrigin();
+});
 
 app.UseHttpsRedirection();
 
