@@ -1,10 +1,8 @@
 using FurAniJoGa.Domain;
-using FurAniJoGa.Infrastructure.Mappers;
-using Microsoft.EntityFrameworkCore;
 
 namespace FurAniJoGa.Infrastructure;
 
-public class DbMessageFactory : IMessageFactory
+public class DbMessageFactory: IMessageFactory
 {
     private readonly MessagesDbContext _context;
 
@@ -15,7 +13,7 @@ public class DbMessageFactory : IMessageFactory
 
     public async Task<Message> CreateMessageAsync(string content, string? username, CancellationToken token = default)
     {
-        var dbMessage = new Models.Message() { Content = content, Username = username, PublishDate = DateTime.UtcNow };
+        var dbMessage = new Models.Message() {Content = content, Username = username, PublishDate = DateTime.UtcNow};
         var createdEntity = await _context.Messages.AddAsync(dbMessage, token);
         await _context.SaveChangesAsync(token);
         dbMessage = createdEntity.Entity;

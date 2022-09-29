@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MessagesDbContext>(x =>
 {
-    x.UseNpgsql("User Id=postgres;Password=8523709s;Host=database;Port=5432;Database=jojo");
+    x.UseNpgsql("User Id=postgres;Password=postgres;Host=database;Port=5432;Database=postgres");
 });
 builder.Services.AddScoped<IMessageManager, MessageManager>();
 
