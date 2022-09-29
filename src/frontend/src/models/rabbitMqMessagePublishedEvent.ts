@@ -25,16 +25,10 @@ export class RabbitMqMessagePublishedEvent {
     }
 
     static fromString(body: string): RabbitMqMessagePublishedEvent {
-        const object = JSON.parse(body);
-        const messageObject = object.message;
-        const message = {
-            username: messageObject.username,
-            message: messageObject.message
-        }
-        return new RabbitMqMessagePublishedEvent(message.username, message.username)
+        const message = JSON.parse(body).message;
+        return new RabbitMqMessagePublishedEvent(message.username, message.message)
     }
-
-
+    
 
     toMessage(): Message {
         return this.message;
