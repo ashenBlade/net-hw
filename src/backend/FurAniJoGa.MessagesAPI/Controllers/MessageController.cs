@@ -9,16 +9,16 @@ namespace MessagesAPI.Controllers;
 [Route("api")]
 public class MessageController : Controller
 {
-    private readonly IMessageFactory _messageFactory;
+    private readonly IMessageManager _messageManager;
     
-    public MessageController(IMessageFactory messageFactory)
+    public MessageController(IMessageManager messageManager)
     {
-        _messageFactory = messageFactory;
+        _messageManager = messageManager;
     }
     
     [HttpGet("messages")]
     public async Task<List<Message>> GetMessages(int page, int size,bool fromEnd)
     {
-        return await _messageFactory.GetMessages(page, size, fromEnd);
+        return await _messageManager.GetMessages(page, size, fromEnd);
     }
 }
