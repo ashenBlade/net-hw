@@ -9,7 +9,6 @@ services:
       - '8080:80'
     depends_on:
       - messages-api
-      - rabbit-mq-relay
 
   messages-api:
     build:
@@ -19,16 +18,6 @@ services:
       - '8081:80'
     depends_on:
       - database
-  
-  rabbit-listener:
-    build:
-      context: src/backend
-      dockerfile: FurAniJoGa.MessagesListener/Dockerfile
-    links:
-      - rabbit-mq
-    depends_on:
-      - database
-      - rabbit-mq
 
   database:
     image: postgres:14-alpine
@@ -39,22 +28,6 @@ services:
       - "5432:5432"
     volumes:
       - database:/var/lib/postgresql/data
-        
-  rabbit-mq-relay:
-    image: cloudamqp/websocket-tcp-relay
-    ports:
-      - '15670:15670'
-    command:
-      - '--upstream'
-      - 'tcp://rabbit-mq:5672'
-    depends_on:
-      - rabbit-mq
-
-  rabbit-mq:
-    image: rabbitmq:3.7-management
-    ports:
-      - "5672:5672"
-      - "8082:15672"
    
 volumes:
   database:

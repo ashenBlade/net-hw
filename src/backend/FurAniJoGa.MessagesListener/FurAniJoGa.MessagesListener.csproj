@@ -20,4 +20,9 @@
       <ProjectReference Include="..\FurAniJoGa.Domain\FurAniJoGa.Domain.csproj" />
       <ProjectReference Include="..\FurAniJoGa.Infrastructure\FurAniJoGa.Infrastructure.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Consumers" />
+      <Folder Include="Events" />
+    </ItemGroup>
 </Project>
