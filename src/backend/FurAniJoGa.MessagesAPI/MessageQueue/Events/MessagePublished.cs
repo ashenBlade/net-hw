@@ -1,4 +1,4 @@
-namespace MessagesListener.Events;
+namespace MessagesAPI.MessageQueue.Events;
 
 public class MessagePublished
 {

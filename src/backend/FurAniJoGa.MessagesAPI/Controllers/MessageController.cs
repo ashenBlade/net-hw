@@ -1,6 +1,7 @@
 ﻿using FurAniJoGa.Domain;
 using FurAniJoGa.Infrastructure;
 using MessagesAPI.Dto;
+using MessagesAPI.MessageQueue.Events;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessagesAPI.Controllers;
@@ -10,16 +11,20 @@ namespace MessagesAPI.Controllers;
 [Route("api")]
 public class MessageController : Controller
 {
-    private readonly IMessageManager _messageManager;
-    
-    public MessageController(IMessageManager messageManager)
+    private readonly IMessageRepository _messageRepository;
+    private readonly ILogger<MessageController> _logger;
+
+    public MessageController(IMessageRepository messageRepository, ILogger<MessageController> logger)
     {
-        _messageManager = messageManager;
+        _messageRepository = messageRepository;
+        _logger = logger;
     }
     
     [HttpGet("messages")]
-    public async Task<ActionResult<ReadMessageDto>> GetMessages(int page, int size,bool fromEnd)
+    public async Task<ActionResult<ReadMessageDto>> GetMessages(int page, int size, bool fromEnd, CancellationToken token)
     {
-        return Ok( ( await _messageManager.GetMessages(page, size, fromEnd) ).Select(ReadMessageDto.FromMessage) );
+        _logger.LogInformation("Page: {Page}, Size: {Size}, From end: {FromEnd}", page, size ,fromEnd);
+        return Ok( ( await _messageRepository.GetMessages(page, size, fromEnd, token) )
+                  .Select(ReadMessageDto.FromMessage) );
     }
 }

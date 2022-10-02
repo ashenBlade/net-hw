@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurAniJoGa.MessagesAPI", "FurAniJoGa.MessagesAPI\FurAniJoGa.MessagesAPI.csproj", "{ED83527F-6449-4541-96D5-6CCA3604FF9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurAniJoGa.MessagesListener", "FurAniJoGa.MessagesListener\FurAniJoGa.MessagesListener.csproj", "{10E45E61-CA28-4DAD-AFFF-9FE85D01B7FC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurAniJoGa.Infrastructure", "FurAniJoGa.Infrastructure\FurAniJoGa.Infrastructure.csproj", "{3509B555-E8AF-4463-B037-7BF7036CD724}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurAniJoGa.Domain", "FurAniJoGa.Domain\FurAniJoGa.Domain.csproj", "{AB6A7CE3-DD6A-4496-A01B-0DDE199627F6}"
@@ -24,10 +22,6 @@ Global
 		{ED83527F-6449-4541-96D5-6CCA3604FF9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED83527F-6449-4541-96D5-6CCA3604FF9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED83527F-6449-4541-96D5-6CCA3604FF9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{10E45E61-CA28-4DAD-AFFF-9FE85D01B7FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{10E45E61-CA28-4DAD-AFFF-9FE85D01B7FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{10E45E61-CA28-4DAD-AFFF-9FE85D01B7FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{10E45E61-CA28-4DAD-AFFF-9FE85D01B7FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3509B555-E8AF-4463-B037-7BF7036CD724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3509B555-E8AF-4463-B037-7BF7036CD724}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3509B555-E8AF-4463-B037-7BF7036CD724}.Release|Any CPU.ActiveCfg = Release|Any CPU
