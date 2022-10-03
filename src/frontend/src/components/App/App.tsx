@@ -1,16 +1,18 @@
 import React, {useState} from 'react';
 import './App.css';
-import {RabbitmqForumCommunicator} from "../../services/rabbitmqForumCommunicator";
 import ChatPage from "../ChatPage/ChatPage";
 import {useEffectOnce} from "../../hooks/useEffectOnce";
 import {MessagesApiMessagesRepository} from "../../services/messagesApiMessagesRepository";
 import {AggregatedForumHandler} from "../../services/aggregatedForumHandler";
+import {SignalrForumCommunicator} from "../../services/signalrForumCommunicator";
 
 const App = () => {
-    const tls = window.location.protocol === "https:";
-    const url = `${tls ? "wss" : "ws"}://localhost:15670`;
-    const [communicator,] = useState(new RabbitmqForumCommunicator(url));
-    const [messagesRepository,] = useState(new MessagesApiMessagesRepository('http://localhost:8081'));
+    const url = process.env.REACT_APP_SERVER_URL;
+    if (!url) {
+        throw new Error('Server url is not provided');
+    }
+    const [communicator,] = useState(new SignalrForumCommunicator(`${url}/chat`));
+    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(url));
     const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator))
 
     useEffectOnce(() => {

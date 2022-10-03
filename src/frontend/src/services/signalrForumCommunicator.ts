@@ -3,16 +3,21 @@ import {BaseForumCommunicator} from "./baseForumCommunicator";
 import * as signalR from '@microsoft/signalr'
 import {HubConnection} from "@microsoft/signalr";
 
-class SignalrForumCommunicator extends BaseForumCommunicator {
+export class SignalrForumCommunicator extends BaseForumCommunicator {
     static messagePublishedFunction = "messagePublished";
-
     connection: HubConnection
 
-    constructor(readonly url: string) {
+    constructor(readonly url: string,
+                readonly chatEndpoint: string = '/chat') {
         super();
+
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(this.url)
+            .withUrl(this.endpoint)
             .build();
+    }
+
+    get endpoint() {
+        return `${this.url}${this.chatEndpoint}`
     }
 
     async open() {
