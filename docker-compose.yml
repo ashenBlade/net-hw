@@ -5,10 +5,10 @@ services:
     build: 
       context: src/frontend
       dockerfile: Dockerfile
+      args:
+        server_url: http://localhost:8081
     ports:
       - '8080:80'
-    environment:
-      REACT_APP_SERVER_URL: http://messages-api
     depends_on:
       - messages-api
 

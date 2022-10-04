@@ -17,7 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MessagesDbContext>(x =>
 {
-    x.UseNpgsql("User Id=postgres;Password=postgres;Host=localhost;Port=5432;Database=postgres");
+    x.UseNpgsql("User Id=postgres;Password=postgres;Host=database;Port=5432;Database=postgres");
 });
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddSignalR();
@@ -37,6 +37,7 @@ builder.Services.AddMassTransit(config =>
 builder.Services.AddScoped<MessagePublishedConsumer>();
 builder.Services.AddScoped<IMessageFactory, SampleMessageFactory>();
 builder.Services.AddMassTransitHostedService();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,18 +49,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(x =>
 {
-    x.AllowAnyOrigin();
+    x.WithOrigins("http://localhost:8080");
+    x.AllowAnyHeader();
+    x.AllowAnyMethod();
 });
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<ChatHub>("/chat");
-}); 
-
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chat");
 
 app.Run();

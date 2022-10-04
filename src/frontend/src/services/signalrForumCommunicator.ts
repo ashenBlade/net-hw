@@ -1,18 +1,23 @@
 import {Message} from "../models/message";
 import {BaseForumCommunicator} from "./baseForumCommunicator";
 import * as signalR from '@microsoft/signalr'
-import {HubConnection} from "@microsoft/signalr";
+import {HubConnection, LogLevel} from "@microsoft/signalr";
+import {FetchHttpClient} from "@microsoft/signalr/dist/esm/FetchHttpClient";
+import {ConsoleLogger} from "@microsoft/signalr/dist/esm/Utils";
 
 export class SignalrForumCommunicator extends BaseForumCommunicator {
-    static messagePublishedFunction = "messagePublished";
+    static messagePublishedFunction = "publishMessage";
     connection: HubConnection
 
     constructor(readonly url: string,
                 readonly chatEndpoint: string = '/chat') {
         super();
-
+        let fetchHttpClient = new FetchHttpClient(new ConsoleLogger(LogLevel.Information));
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(this.endpoint)
+            .withUrl(this.endpoint, {
+                withCredentials: false,
+                httpClient: fetchHttpClient
+            })
             .build();
     }
 

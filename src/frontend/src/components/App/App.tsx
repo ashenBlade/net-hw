@@ -11,7 +11,7 @@ const App = () => {
     if (!url) {
         throw new Error('Server url is not provided');
     }
-    const [communicator,] = useState(new SignalrForumCommunicator(`${url}/chat`));
+    const [communicator,] = useState(new SignalrForumCommunicator(`${url}`));
     const [messagesRepository,] = useState(new MessagesApiMessagesRepository(url));
     const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator))
 
