@@ -3,6 +3,7 @@ using FurAniJoGa.Domain;
 using FurAniJoGa.Infrastructure;
 using FurAniJoGa.Infrastructure.Managers;
 using MassTransit;
+using MessagesAPI;
 using MessagesAPI.MessageQueue.Consumers;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<MessagesDbContext>(x =>
     x.UseNpgsql("User Id=postgres;Password=postgres;Host=localhost;Port=5432;Database=postgres");
 });
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddSignalR();
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<MessagePublishedConsumer>();
@@ -52,6 +54,11 @@ app.UseCors(x =>
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/chat");
+}); 
 
 app.MapControllers();
 
