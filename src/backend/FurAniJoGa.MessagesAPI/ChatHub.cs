@@ -1,5 +1,5 @@
-﻿using MassTransit;
-using MessagesAPI.MessageQueue.Events;
+﻿using FurAniJoGa.RabbitMq.Contracts.Events;
+using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 
 namespace MessagesAPI;
@@ -18,7 +18,7 @@ public class ChatHub : Hub
     }
     
     [EndpointName(PublishMessageMethodName)]
-    public async Task PublishMessage(string username, string message)
+    public async Task PublishMessage(string? username, string? message)
     {
         if (username is null)
         {
@@ -31,7 +31,7 @@ public class ChatHub : Hub
             return;
         }
         
-        await _bus.Publish(new MessagePublished {Username = username, Message = message});
+        await _bus.Publish(new MessagePublishedEvent {Username = username, Message = message});
         await Clients.All.SendAsync(PublishMessageMethodName, username, message);
     }
 

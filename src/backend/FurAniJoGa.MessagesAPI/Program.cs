@@ -4,7 +4,6 @@ using FurAniJoGa.Infrastructure;
 using FurAniJoGa.Infrastructure.Managers;
 using MassTransit;
 using MessagesAPI;
-using MessagesAPI.MessageQueue.Consumers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,22 +20,36 @@ builder.Services.AddDbContext<MessagesDbContext>(x =>
 });
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddSignalR();
-builder.Services.AddMassTransit(config =>
+
+builder.Services.AddMassTransit(configurator =>
 {
-    config.AddConsumer<MessagePublishedConsumer>();
-    config.UsingInMemory((context, configurator) =>
+    var host = builder.Configuration["RABBITMQ_HOST"];
+    if (host is null)
     {
-        configurator.Host();
-        configurator.ReceiveEndpoint(new TemporaryEndpointDefinition(), x =>
+        throw new ArgumentNullException(nameof(host), "Host for RabbitMq is not provided");
+    }
+
+    var exchange = builder.Configuration["RABBITMQ_EXCHANGE"];
+    if (exchange == null)
+    {
+        throw new ArgumentNullException(nameof(exchange), "RabbitMq Exchange name is not provided");
+    }
+    
+    configurator.UsingRabbitMq((registrationContext, factory) =>
+    {
+        factory.Host(host, "/", h =>
         {
-            x.ConfigureConsumer<MessagePublishedConsumer>(context);
+            h.Username("guest");
+            h.Password("guest");
         });
-        configurator.ConfigureEndpoints(context);
+        factory.ReceiveEndpoint(e =>
+        {
+            e.Bind(exchange);
+        });
+        factory.ConfigureEndpoints(registrationContext);
     });
 });
-builder.Services.AddScoped<MessagePublishedConsumer>();
 builder.Services.AddScoped<IMessageFactory, SampleMessageFactory>();
-builder.Services.AddMassTransitHostedService();
 
 var app = builder.Build();
 
