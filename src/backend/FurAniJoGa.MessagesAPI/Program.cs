@@ -23,31 +23,7 @@ builder.Services.AddSignalR();
 
 builder.Services.AddMassTransit(configurator =>
 {
-    var host = builder.Configuration["RABBITMQ_HOST"];
-    if (host is null)
-    {
-        throw new ArgumentNullException(nameof(host), "Host for RabbitMq is not provided");
-    }
-
-    var exchange = builder.Configuration["RABBITMQ_EXCHANGE"];
-    if (exchange == null)
-    {
-        throw new ArgumentNullException(nameof(exchange), "RabbitMq Exchange name is not provided");
-    }
-    
-    configurator.UsingRabbitMq((registrationContext, factory) =>
-    {
-        factory.Host(host, "/", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
-        factory.ReceiveEndpoint(e =>
-        {
-            e.Bind(exchange);
-        });
-        factory.ConfigureEndpoints(registrationContext);
-    });
+    throw new NotImplementedException("Implement connection to MassTransit pls");
 });
 builder.Services.AddScoped<IMessageFactory, SampleMessageFactory>();
 
