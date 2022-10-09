@@ -1,7 +1,5 @@
 ﻿using FurAniJoGa.Domain;
-using FurAniJoGa.Infrastructure;
 using MessagesAPI.Dto;
-using MessagesAPI.MessageQueue.Events;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessagesAPI.Controllers;

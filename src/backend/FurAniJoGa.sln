@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurAniJoGa.Infrastructure",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurAniJoGa.Domain", "FurAniJoGa.Domain\FurAniJoGa.Domain.csproj", "{AB6A7CE3-DD6A-4496-A01B-0DDE199627F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurAniJoGa.WebHost.RabbitMqListener", "FurAniJoGa.WebHost.RabbitMqListener\FurAniJoGa.WebHost.RabbitMqListener.csproj", "{7E4C1CF5-8F7C-42B2-8B6B-2C63E5470D0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurAniJoGa.RabbitMq.Contracts", "FurAniJoGa.RabbitMq.Contracts\FurAniJoGa.RabbitMq.Contracts.csproj", "{A44E8E5E-4A81-4D23-BBF2-11A32D614610}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,13 @@ Global
 		{AB6A7CE3-DD6A-4496-A01B-0DDE199627F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB6A7CE3-DD6A-4496-A01B-0DDE199627F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB6A7CE3-DD6A-4496-A01B-0DDE199627F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E4C1CF5-8F7C-42B2-8B6B-2C63E5470D0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E4C1CF5-8F7C-42B2-8B6B-2C63E5470D0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E4C1CF5-8F7C-42B2-8B6B-2C63E5470D0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E4C1CF5-8F7C-42B2-8B6B-2C63E5470D0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A44E8E5E-4A81-4D23-BBF2-11A32D614610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A44E8E5E-4A81-4D23-BBF2-11A32D614610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A44E8E5E-4A81-4D23-BBF2-11A32D614610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A44E8E5E-4A81-4D23-BBF2-11A32D614610}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

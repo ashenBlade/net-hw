@@ -1,6 +1,6 @@
-namespace MessagesAPI.MessageQueue.Events;
+namespace FurAniJoGa.RabbitMq.Contracts.Events;
 
-public class MessagePublished
+public class MessagePublishedEvent
 {
     public string Username { get; set; }
     public string Message { get; set; }

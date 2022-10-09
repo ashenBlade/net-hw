@@ -4,7 +4,6 @@ using FurAniJoGa.Infrastructure;
 using FurAniJoGa.Infrastructure.Managers;
 using MassTransit;
 using MessagesAPI;
-using MessagesAPI.MessageQueue.Consumers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,22 +20,12 @@ builder.Services.AddDbContext<MessagesDbContext>(x =>
 });
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddSignalR();
-builder.Services.AddMassTransit(config =>
+
+builder.Services.AddMassTransit(configurator =>
 {
-    config.AddConsumer<MessagePublishedConsumer>();
-    config.UsingInMemory((context, configurator) =>
-    {
-        configurator.Host();
-        configurator.ReceiveEndpoint(new TemporaryEndpointDefinition(), x =>
-        {
-            x.ConfigureConsumer<MessagePublishedConsumer>(context);
-        });
-        configurator.ConfigureEndpoints(context);
-    });
+    throw new NotImplementedException("Implement connection to MassTransit pls");
 });
-builder.Services.AddScoped<MessagePublishedConsumer>();
 builder.Services.AddScoped<IMessageFactory, SampleMessageFactory>();
-builder.Services.AddMassTransitHostedService();
 
 var app = builder.Build();
 

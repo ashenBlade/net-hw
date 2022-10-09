@@ -1,33 +1,35 @@
 using FurAniJoGa.Domain;
+using FurAniJoGa.RabbitMq.Contracts.Events;
 using MassTransit;
-using MessagesAPI.MessageQueue.Events;
 
-namespace MessagesAPI.MessageQueue.Consumers;
+namespace FurAniJoGa.WebHost.RabbitMqListener.Consumers;
 
-public class MessagePublishedConsumer: IConsumer<MessagePublished>
+public class MessagePublishedEventConsumer: IConsumer<MessagePublishedEvent>
 {
     private readonly IMessageFactory _messageFactory;
-    private readonly IMessageRepository _repository;
-    private readonly ILogger<MessagePublishedConsumer> _logger;
+    private readonly IMessageRepository _messagesRepository;
+    private readonly ILogger<MessagePublishedEventConsumer> _logger;
 
-    public MessagePublishedConsumer(ILogger<MessagePublishedConsumer> logger, IMessageFactory messageFactory, IMessageRepository repository)
+    public MessagePublishedEventConsumer(ILogger<MessagePublishedEventConsumer> logger, 
+                                    IMessageFactory messageFactory,
+                                    IMessageRepository messagesRepository)
     {
         _messageFactory = messageFactory;
-        _repository = repository;
+        _messagesRepository = messagesRepository;
         _logger = logger;
         _messageFactory = messageFactory;
-        _repository = repository;
+        _messagesRepository = messagesRepository;
     }
     
-    public async Task Consume(ConsumeContext<MessagePublished> context)
+    public async Task Consume(ConsumeContext<MessagePublishedEvent> context)
     {
         try
         {
-            _logger.LogInformation("Requested saving message: {Message} from: {From}", context.Message.Message, context.Message.Username);
+            _logger.LogDebug("Requested saving message: {Message} from: {From}", context.Message.Message, context.Message.Username);
             var message = await _messageFactory.CreateMessageAsync(context.Message.Message,
                                                                    context.Message.Username, 
                                                                    context.CancellationToken);
-            await _repository.AddMessageAsync(message, context.CancellationToken);
+            await _messagesRepository.AddMessageAsync(message, context.CancellationToken);
         }
         catch (Exception e)
         {

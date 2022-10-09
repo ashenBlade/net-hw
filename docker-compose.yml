@@ -18,9 +18,37 @@ services:
       dockerfile: FurAniJoGa.MessagesAPI/Dockerfile
     ports:
       - '8081:80'
+    environment:
+      - RABBITMQ_HOST=rabbit-mq
+      - RABBITMQ_EXCHANGE=amq.fanout
     depends_on:
+      - rabbit-mq
+    
+  rabbit-listener:
+    build:
+      context: src/backend
+      dockerfile: FurAniJoGa.WebHost.RabbitMqListener/Dockerfile
+    ports:
+      - '8082:80'
+    depends_on:
+      - rabbit-mq
       - database
-
+    environment:
+      - RABBITMQ_HOST=rabbit-mq
+      - RABBITMQ_EXCHANGE=amq.fanout
+    
+      - DB_HOST=database
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE=postgres
+      
+  rabbit-mq:
+    image: rabbitmq:3.7-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    
   database:
     image: postgres:14-alpine
     environment:
