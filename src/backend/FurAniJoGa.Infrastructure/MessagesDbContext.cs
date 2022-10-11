@@ -1,5 +1,5 @@
 ﻿using System.Dynamic;
-using FurAniJoGa.Infrastructure.Models;
+using FurAniJoGa.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FurAniJoGa.Infrastructure;

@@ -1,3 +1,5 @@
+using FurAniJoGa.Domain.Models;
+
 namespace FurAniJoGa.Domain;
 
 public interface IMessageFactory

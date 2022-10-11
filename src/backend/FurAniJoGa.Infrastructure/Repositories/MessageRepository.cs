@@ -1,8 +1,8 @@
 ﻿using FurAniJoGa.Domain;
-using FurAniJoGa.Infrastructure.Mappers;
+using FurAniJoGa.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FurAniJoGa.Infrastructure.Managers;
+namespace FurAniJoGa.Infrastructure.Repositories;
 
 public class MessageRepository : IMessageRepository
 {
@@ -23,29 +23,20 @@ public class MessageRepository : IMessageRepository
                                            .Take(size)
                                            .OrderBy(msg => msg.PublishDate)
                                            .ToListAsync(token);
-            return listByDesc
-                  // .OrderBy(x => x.PublishDate)
-                  .MapMessages();
+            return listByDesc;
+            // .OrderBy(x => x.PublishDate)
         }
 
-        var list = await _context.Messages
+        return await _context.Messages
                                  .OrderBy(msg => msg.PublishDate)
                                  .Skip((page - 1) * size)
                                  .Take(size)
                                  .ToListAsync(token);
-        return list.MapMessages();
     }
 
     public async Task AddMessageAsync(Message message, CancellationToken token = default)
     {
-        var dbMessage = new Models.Message()
-                        {
-                            Content = message.Content,
-                            Id = message.Id,
-                            PublishDate = message.PublishDate,
-                            Username = message.Username
-                        };
-        await _context.AddAsync(dbMessage, token);
+        await _context.AddAsync(message, token);
         await _context.SaveChangesAsync(token);
     }
 }

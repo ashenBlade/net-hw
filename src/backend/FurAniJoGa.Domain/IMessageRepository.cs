@@ -1,4 +1,6 @@
-﻿namespace FurAniJoGa.Domain;
+﻿using FurAniJoGa.Domain.Models;
+
+namespace FurAniJoGa.Domain;
 
 public interface IMessageRepository
 {

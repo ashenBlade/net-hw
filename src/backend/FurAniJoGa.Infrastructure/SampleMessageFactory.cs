@@ -1,4 +1,5 @@
 using FurAniJoGa.Domain;
+using FurAniJoGa.Domain.Models;
 
 namespace FurAniJoGa.Infrastructure;
 
@@ -8,7 +9,6 @@ public class SampleMessageFactory: IMessageFactory
                                             string? username,
                                             CancellationToken token = default)
     {
-        var dbMessage = new Models.Message() {Content = content, Username = username, PublishDate = DateTime.UtcNow};
-        return Task.FromResult(new Message(dbMessage.Id, dbMessage.PublishDate, dbMessage.Username, dbMessage.Content));
+        return Task.FromResult(new Message(DateTime.UtcNow, username, content));
     }
 }
