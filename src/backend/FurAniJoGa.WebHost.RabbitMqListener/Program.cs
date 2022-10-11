@@ -1,6 +1,6 @@
 using FurAniJoGa.Domain;
 using FurAniJoGa.Infrastructure;
-using FurAniJoGa.Infrastructure.Managers;
+using FurAniJoGa.Infrastructure.Repositories;
 using FurAniJoGa.WebHost.RabbitMqListener.Consumers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;

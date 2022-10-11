@@ -1,4 +1,5 @@
 using FurAniJoGa.Domain;
+using FurAniJoGa.Domain.Models;
 
 namespace MessagesAPI.Dto;
 

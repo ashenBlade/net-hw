@@ -1,7 +1,7 @@
 using System.Text.Json;
 using FurAniJoGa.Domain;
 using FurAniJoGa.Infrastructure;
-using FurAniJoGa.Infrastructure.Managers;
+using FurAniJoGa.Infrastructure.Repositories;
 using MassTransit;
 using MessagesAPI;
 using Microsoft.EntityFrameworkCore;
