@@ -36,7 +36,31 @@ public static class ServicesExtensions
 
         services.AddMassTransit(configurator =>
         {
-            throw new NotImplementedException("Implement connection to MassTransit pls");
+            var host = configuration["RABBITMQ_HOST"];
+            if (host is null)
+            {
+                throw new ArgumentNullException(nameof(host), "Host for RabbitMq is not provided");
+            }
+
+            var exchange = configuration["RABBITMQ_EXCHANGE"];
+            if (exchange == null)
+            {
+                throw new ArgumentNullException(nameof(exchange), "RabbitMq Exchange name is not provided");
+            }
+
+            configurator.UsingRabbitMq((registrationContext, factory) =>
+            {
+                factory.Host(host, "/", h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+                factory.ReceiveEndpoint(e =>
+                {
+                    e.Bind(exchange);
+                });
+                factory.ConfigureEndpoints(registrationContext);
+            });
         });
         services.AddScoped<IMessageFactory, SampleMessageFactory>();
     }
