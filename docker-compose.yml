@@ -15,7 +15,7 @@ services:
   messages-api:
     build:
       context: src/backend
-      dockerfile: FurAniJoGa.MessagesAPI/Dockerfile
+      dockerfile: FurAniJoGa.WebHost.MessagesAPI/Dockerfile
     ports:
       - '8081:80'
     environment:
