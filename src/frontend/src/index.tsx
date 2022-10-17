@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/App/App';
@@ -15,9 +15,9 @@ if (!serverUrl) {
     throw new Error('Server url is not provided');
 }
 
-const [communicator,] = useState(new SignalrForumCommunicator(serverUrl));
-const [messagesRepository,] = useState(new MessagesApiMessagesRepository(serverUrl));
-const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator))
+const communicator = new SignalrForumCommunicator(serverUrl);
+const messagesRepository = new MessagesApiMessagesRepository(serverUrl);
+const forumHandler = new AggregatedForumHandler(messagesRepository, communicator)
 
 window.onunload = () => {
     communicator.close()
