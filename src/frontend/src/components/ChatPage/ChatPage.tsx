@@ -5,7 +5,7 @@ import Chat from "./Chat/Chat";
 import './ChatPage.tsx.css';
 import {useEffectOnce} from "../../hooks/useEffectOnce";
 
-const ChatPage: FC<ChatPageProps> = ({forumHandler, username}) => {
+const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) => {
     const [userMessage, setUserMessage] = useState('');
     const [messageSending, setMessageSending] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
@@ -69,15 +69,18 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username}) => {
     return (
         <div className={'h-100 chat-page'}>
             <Chat messages={messages}/>
-            <input className={'form-control my-2'}
-                   placeholder={'Введите сообщение другим участникам'}
-                   value={userMessage}
-                   onChange={e => setUserMessage(e.currentTarget.value)}
-                   onKeyDown={onInputKeyDown}
-                   autoFocus={true}
-                   disabled={messageSending}
-                   ref={inputRef}/>
-            <button className={'btn btn-success mb-1'}
+            <div className={'user-input'}>
+                <input className={'form-control'}
+                       placeholder={'Введите сообщение другим участникам'}
+                       value={userMessage}
+                       onChange={e => setUserMessage(e.currentTarget.value)}
+                       onKeyDown={onInputKeyDown}
+                       autoFocus={true}
+                       disabled={messageSending}
+                       ref={inputRef}/>
+                <input type={'file'} className={'form-control mt-1'}/>
+            </div>
+            <button className={'btn btn-success my-1'}
                     disabled={messageSending}
                     onClick={onSendMessageButtonClick}>
                 Отправить

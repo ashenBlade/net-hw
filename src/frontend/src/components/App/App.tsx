@@ -2,9 +2,6 @@ import React, {FC, useState} from 'react';
 import './App.css';
 import ChatPage from "../ChatPage/ChatPage";
 import {useEffectOnce} from "../../hooks/useEffectOnce";
-import {MessagesApiMessagesRepository} from "../../services/messagesApiMessagesRepository";
-import {AggregatedForumHandler} from "../../services/aggregatedForumHandler";
-import {SignalrForumCommunicator} from "../../services/signalrForumCommunicator";
 import {AppProps} from "./AppProps";
 
 const App: FC<AppProps> = ({forumHandler, fileRepository}) => {
@@ -24,12 +21,13 @@ const App: FC<AppProps> = ({forumHandler, fileRepository}) => {
         }
 
         setUsername(name!);
-    })
+    });
 
     return (
         <div className={'container-lg h-100'}>
             <ChatPage forumHandler={forumHandler}
-                      username={username} />
+                      username={username}
+                      fileRepository={fileRepository}/>
         </div>
     );
 };
