@@ -1,3 +1,5 @@
+using FurAniJoGa.WebHost.FileAPI.Services;
+
 namespace FurAniJoGa.WebHost.FileAPI;
 
 public static class ServiceCollectionExtensions

@@ -1,12 +1,12 @@
 using System.Net;
-using Amazon.Runtime.Internal;
 using Amazon.S3;
 using Amazon.S3.Model;
 
-namespace FurAniJoGa.WebHost.FileAPI;
+namespace FurAniJoGa.WebHost.FileAPI.Services;
 
 public class S3FileService: IFileService, IDisposable
 {
+    private const string OriginalFilenameMetadataField = "original-filename";
     private readonly S3FileServiceOptions _options;
     private readonly ILogger<S3FileService> _logger;
     private readonly AmazonS3Client _client;
@@ -37,7 +37,7 @@ public class S3FileService: IFileService, IDisposable
                           },
                           
                       };
-        request.Metadata.Add("original-filename", encodedFilename);
+        request.Metadata.Add(OriginalFilenameMetadataField, encodedFilename);
         PutObjectResponse response;
         try
         {
@@ -77,14 +77,17 @@ public class S3FileService: IFileService, IDisposable
             return null;
         }
 
+        var filename = response.Metadata[OriginalFilenameMetadataField];
+        
         return new FileContent()
                {
                    Content = response.ResponseStream,
-                   ContentType = response.Headers.ContentType
+                   ContentType = response.Headers.ContentType,
+                   Filename = filename
                };
     }
 
-    public async Task<File?> GetFileAsync(Guid fileId, CancellationToken token = default)
+    public async Task<File?> GetFileInfoAsync(Guid fileId, CancellationToken token = default)
     {
         var response = await _client.GetObjectMetadataAsync(_options.Bucket, fileId.ToString(), token);
         if ((int)response.HttpStatusCode > 299)

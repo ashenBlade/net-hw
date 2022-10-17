@@ -16,9 +16,9 @@ public class FilesController: ControllerBase
     }
     
     [HttpGet("{fileId:guid}")]
-    public async Task<IActionResult> GetFile(Guid fileId, CancellationToken token = default)
+    public async Task<IActionResult> GetFileMetadata(Guid fileId, CancellationToken token = default)
     {
-        var file = await _fileService.GetFileAsync(fileId, token);
+        var file = await _fileService.GetFileInfoAsync(fileId, token);
         if (file is null)
         {
             _logger.LogDebug("File with id: {FileId} not found", fileId);
@@ -31,23 +31,25 @@ public class FilesController: ControllerBase
     [HttpGet("{id:guid}/blob")]
     public async Task<IActionResult> GetFileContent(Guid id, CancellationToken token = default)
     {
-        var stream = await _fileService.DownloadFileAsync(id, token);
-        if (stream is null)
+        var fileContent = await _fileService.DownloadFileAsync(id, token);
+        if (fileContent is null)
         {
             _logger.LogDebug("File with id: {FileId} not found", id);
             return NotFound();
         }
-
-        return File(stream.Content, stream.ContentType);
+        
+        return File(fileContent.Content, 
+                    fileContent.ContentType,
+                    fileContent.Filename);
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> UploadFile(IFormFile formFile, CancellationToken token = default)
+    public async Task<IActionResult> UploadFile(IFormFile file, CancellationToken token = default)
     {
         try
         {
-            var id = await _fileService.SaveFileAsync(formFile, token);
-            return Ok(id);
+            var id = await _fileService.SaveFileAsync(file, token);
+            return Ok(new{FileId = id});
         }
         catch (Exception e)
         {
