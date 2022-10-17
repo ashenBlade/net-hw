@@ -1,6 +1,7 @@
 export interface Message {
     username: string
     message: string
+    attachment?: string
 }
 
 export function parseMessage(json: string): Message {
@@ -19,8 +20,13 @@ export function parseMessage(json: string): Message {
         throw new Error('Username must be string. Given: ', parsed.username);
     }
 
+    if (parsed.attachment && typeof parsed.attachment !== 'string') {
+        throw new Error('Attachment must be string or does not exist. Given: ', parsed.attachment)
+    }
+
     return {
         username: parsed.username,
-        message: parsed.message
+        message: parsed.message,
+        attachment: parsed.attachment
     }
 }
