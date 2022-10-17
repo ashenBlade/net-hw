@@ -71,7 +71,7 @@ public class S3FileService: IFileService, IDisposable
 
         var contentDisposition = response.Headers.ContentDisposition.Split("filename=");
         var filename = contentDisposition.Length > 1
-                           ? contentDisposition[1].Trim('"')
+                           ? Uri.UnescapeDataString( contentDisposition[1].Trim('"') )
                            : null;
         
         return new File
