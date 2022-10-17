@@ -56,7 +56,7 @@ public class S3FileService: IFileService, IDisposable
         throw new Exception($"Response from PutObjectAsync returned not success status code");
     }
 
-    public async Task<File?> DownloadFileAsync(Guid fileId, CancellationToken token = default)
+    public async Task<FileContent?> DownloadFileAsync(Guid fileId, CancellationToken token = default)
     {
         var request = new GetObjectRequest()
                       {
@@ -64,11 +64,33 @@ public class S3FileService: IFileService, IDisposable
                           BucketName = _options.Bucket
                       };
         var response = await _client.GetObjectAsync(request, token);
+
         if (response.HttpStatusCode is HttpStatusCode.NotFound)
         {
             return null;
         }
 
+        if ((int)response.HttpStatusCode >= 300)
+        {
+            _logger.LogWarning("From S3 service returned status code neither 404 nor success: {StatusCode}", 
+                               response.HttpStatusCode);
+            return null;
+        }
+
+        return new FileContent()
+               {
+                   Content = response.ResponseStream,
+                   ContentType = response.Headers.ContentType
+               };
+    }
+
+    public async Task<File?> GetFileAsync(Guid fileId, CancellationToken token = default)
+    {
+        var response = await _client.GetObjectMetadataAsync(_options.Bucket, fileId.ToString(), token);
+        if ((int)response.HttpStatusCode > 299)
+        {
+            return null;
+        }
         var contentDisposition = response.Headers.ContentDisposition.Split("filename=");
         var filename = contentDisposition.Length > 1
                            ? Uri.UnescapeDataString( contentDisposition[1].Trim('"') )
@@ -76,7 +98,7 @@ public class S3FileService: IFileService, IDisposable
         
         return new File
                {
-                   Stream = response.ResponseStream,
+                   FileId = fileId,
                    ContentType = response.Headers.ContentType,
                    Filename = filename
                };

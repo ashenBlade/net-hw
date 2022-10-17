@@ -15,16 +15,30 @@ public class FilesController: ControllerBase
         _logger = logger;
     }
     
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetFile(Guid id, CancellationToken token = default)
+    [HttpGet("{fileId:guid}")]
+    public async Task<IActionResult> GetFile(Guid fileId, CancellationToken token = default)
     {
-        var file = await _fileService.DownloadFileAsync(id, token);
+        var file = await _fileService.GetFileAsync(fileId, token);
         if (file is null)
         {
+            _logger.LogDebug("File with id: {FileId} not found", fileId);
             return NotFound();
         }
 
-        return File(file.Stream, file.ContentType, file.Filename);
+        return Ok(new {file.Filename, file.ContentType, file.FileId});
+    }
+
+    [HttpGet("{id:guid}/blob")]
+    public async Task<IActionResult> GetFileContent(Guid id, CancellationToken token = default)
+    {
+        var stream = await _fileService.DownloadFileAsync(id, token);
+        if (stream is null)
+        {
+            _logger.LogDebug("File with id: {FileId} not found", id);
+            return NotFound();
+        }
+
+        return File(stream.Content, stream.ContentType);
     }
 
     [HttpPost("")]
