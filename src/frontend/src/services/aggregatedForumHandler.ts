@@ -1,8 +1,8 @@
-import {ForumHandler} from "./forumHandler";
+import {ForumHandler} from "../interfaces/forumHandler";
 import {Message} from "../models/message";
-import {MessageCallback} from "./messageCallback";
-import {MessagesRepository} from "./messagesRepository";
-import {ForumCommunicator} from "./forumCommunicator";
+import {MessageCallback} from "../interfaces/messageCallback";
+import {MessagesRepository} from "../interfaces/messagesRepository";
+import {ForumCommunicator} from "../interfaces/forumCommunicator";
 
 export class AggregatedForumHandler implements ForumHandler {
     constructor(readonly repository: MessagesRepository,

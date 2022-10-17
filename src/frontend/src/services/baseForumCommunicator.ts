@@ -1,5 +1,5 @@
-import {ForumCommunicator} from "./forumCommunicator";
-import {MessageCallback} from "./messageCallback";
+import {ForumCommunicator} from "../interfaces/forumCommunicator";
+import {MessageCallback} from "../interfaces/messageCallback";
 import {Message} from "../models/message";
 
 export abstract class BaseForumCommunicator implements ForumCommunicator {

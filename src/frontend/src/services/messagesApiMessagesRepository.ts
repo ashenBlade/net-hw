@@ -1,5 +1,5 @@
 import {Message} from "../models/message";
-import {MessagesRepository} from "./messagesRepository";
+import {MessagesRepository} from "../interfaces/messagesRepository";
 
 const parseMessage = (obj: any): Message => {
     const message = obj.message;

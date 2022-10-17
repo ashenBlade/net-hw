@@ -7,7 +7,11 @@ RUN npm install --only=prod
 COPY . .
 
 ARG server_url
+ARG file_server_url
+
 ENV REACT_APP_SERVER_URL ${server_url}
+ENV REACT_APP_FILE_SERVER_URL ${file_server_url}
+
 RUN npm run build
 
 FROM nginx:1.23-alpine

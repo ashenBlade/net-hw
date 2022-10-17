@@ -8,10 +8,14 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+const serverUrl = process.env.REACT_APP_SERVER_URL;
+if (!serverUrl) {
+    throw new Error('REACT_APP_SERVER_URL env variable not set')
+}
 
 root.render(
     <React.StrictMode>
-        <App/>
+        <App serverUrl={serverUrl}/>
     </React.StrictMode>
 );
 

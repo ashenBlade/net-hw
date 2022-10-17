@@ -1,18 +1,18 @@
-import React, {useState} from 'react';
+import React, {FC, useState} from 'react';
 import './App.css';
 import ChatPage from "../ChatPage/ChatPage";
 import {useEffectOnce} from "../../hooks/useEffectOnce";
 import {MessagesApiMessagesRepository} from "../../services/messagesApiMessagesRepository";
 import {AggregatedForumHandler} from "../../services/aggregatedForumHandler";
 import {SignalrForumCommunicator} from "../../services/signalrForumCommunicator";
+import {AppProps} from "./AppProps";
 
-const App = () => {
-    const url = process.env.REACT_APP_SERVER_URL;
-    if (!url) {
+const App: FC<AppProps> = ({serverUrl}) => {
+    if (!serverUrl) {
         throw new Error('Server url is not provided');
     }
-    const [communicator,] = useState(new SignalrForumCommunicator(`${url}`));
-    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(url));
+    const [communicator,] = useState(new SignalrForumCommunicator(serverUrl));
+    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(serverUrl));
     const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator))
 
     useEffectOnce(() => {

@@ -1,8 +1,8 @@
 import {Message} from "../models/message";
 import {AMQPChannel, AMQPConsumer, AMQPQueue, AMQPWebSocketClient} from "@cloudamqp/amqp-client";
 import {AMQPBaseClient} from "@cloudamqp/amqp-client/types/amqp-base-client";
-import {ForumCommunicator} from "./forumCommunicator";
-import {MessageCallback} from "./messageCallback";
+import {ForumCommunicator} from "../interfaces/forumCommunicator";
+import {MessageCallback} from "../interfaces/messageCallback";
 import {RabbitMqMessagePublishedEvent} from "../models/rabbitMqMessagePublishedEvent";
 
 export class RabbitmqForumCommunicator implements ForumCommunicator {
