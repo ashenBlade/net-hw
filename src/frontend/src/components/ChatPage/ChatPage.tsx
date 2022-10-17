@@ -10,17 +10,36 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
     const [messageSending, setMessageSending] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     async function sendMessage() {
-        const inputMessage = userMessage.trim();
-        if (inputMessage.length < 3) {
+        async function getFileId(): Promise<string | undefined> {
+            if (fileInputRef.current?.files?.[0]) {
+                const file = fileInputRef.current.files[0];
+                try {
+                    return await fileRepository.addFileAsync(file);
+                } catch (e) {
+                    console.error('Error during file uploading', e);
+                    alert('Could not upload file');
+                }
+            }
+            return undefined;
+        }
+
+        const message = userMessage.trim();
+        if (message.length < 3) {
             alert('Min message length is 3');
             return;
         }
 
         setMessageSending(true);
         try {
-            await forumHandler.sendMessage({message: inputMessage, username: username});
+            const attachment = await getFileId();
+            await forumHandler.sendMessage({
+                message,
+                username,
+                attachment
+            });
             setUserMessage('');
         } finally {
             setMessageSending(false);
@@ -60,7 +79,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
         forumHandler.getPreviousMessages(1, 15).then(received => {
             setMessages([...received, ...messages]);
         }).catch(e => {
-            console.error('Error while retreiving message history', e);
+            console.error('Error while retrieving message history', e);
         }).finally(() => {
             setMessageSending(false);
         })
@@ -78,7 +97,9 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
                        autoFocus={true}
                        disabled={messageSending}
                        ref={inputRef}/>
-                <input type={'file'} className={'form-control mt-1'}/>
+                <input type={'file'}
+                       className={'form-control mt-1'}
+                       ref={fileInputRef}/>
             </div>
             <button className={'btn btn-success my-1'}
                     disabled={messageSending}
