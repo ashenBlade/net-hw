@@ -1,3 +1,7 @@
+import {ForumHandler} from "../../interfaces/forumHandler";
+import FileRepository from "../../interfaces/fileRepository";
+
 export interface AppProps {
-    serverUrl: string,
+    forumHandler: ForumHandler,
+    fileRepository: FileRepository
 }

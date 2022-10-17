@@ -1,23 +1,42 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
+import {SignalrForumCommunicator} from "./services/signalrForumCommunicator";
+import {MessagesApiMessagesRepository} from "./services/messagesApiMessagesRepository";
+import {AggregatedForumHandler} from "./services/aggregatedForumHandler";
+import StubFileRepository from "./services/stubFileRepository";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
+
 if (!serverUrl) {
-    throw new Error('REACT_APP_SERVER_URL env variable not set')
+    throw new Error('Server url is not provided');
 }
+
+const [communicator,] = useState(new SignalrForumCommunicator(serverUrl));
+const [messagesRepository,] = useState(new MessagesApiMessagesRepository(serverUrl));
+const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator))
+
+window.onunload = () => {
+    communicator.close()
+}
+
+window.onload = () => {
+    communicator.open()
+}
+
+const root = ReactDOM.createRoot(
+    document.getElementById('root') as HTMLElement
+);
 
 root.render(
     <React.StrictMode>
-        <App serverUrl={serverUrl}/>
+        <App forumHandler={forumHandler} fileRepository={new StubFileRepository()}/>
     </React.StrictMode>
 );
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

@@ -7,21 +7,7 @@ import {AggregatedForumHandler} from "../../services/aggregatedForumHandler";
 import {SignalrForumCommunicator} from "../../services/signalrForumCommunicator";
 import {AppProps} from "./AppProps";
 
-const App: FC<AppProps> = ({serverUrl}) => {
-    if (!serverUrl) {
-        throw new Error('Server url is not provided');
-    }
-    const [communicator,] = useState(new SignalrForumCommunicator(serverUrl));
-    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(serverUrl));
-    const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator))
-
-    useEffectOnce(() => {
-        communicator.open()
-        return () => {
-            communicator.close()
-        }
-    });
-
+const App: FC<AppProps> = ({forumHandler, fileRepository}) => {
     const [username, setUsername] = useState('');
 
     const minNameLength = 5;
