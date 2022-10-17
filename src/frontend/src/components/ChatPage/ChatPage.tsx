@@ -18,13 +18,9 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
         async function getAttachment(): Promise<Attachment | undefined> {
             if (fileInputRef.current?.files?.[0]) {
                 const file = fileInputRef.current.files[0];
-                const name = file.name;
                 try {
-                    const contentUrl = await fileRepository.addFileAsync(file);
-                    return {
-                        name,
-                        contentUrl
-                    }
+                    return await fileRepository.addFileAsync(file)
+
                 } catch (e) {
                     console.error('Error during file uploading', e);
                     alert('Could not upload file');

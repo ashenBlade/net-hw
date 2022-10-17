@@ -1,9 +1,10 @@
 import FileRepository from "../interfaces/fileRepository";
+import Attachment from "../models/attachment";
 
 export default class FileApiFileRepository implements FileRepository {
     constructor(readonly fileServerUrl: string) { }
 
-    async addFileAsync(file: File): Promise<string> {
+    async addFileAsync(file: File): Promise<Attachment> {
         const response = await fetch(`${this.fileServerUrl}/api/files`, {
             method: 'POST',
             body: file,
@@ -17,7 +18,13 @@ export default class FileApiFileRepository implements FileRepository {
         }
         const json = await response.json();
         const fileId = json.fileId;
-        return `${this.fileServerUrl}/api/files/${fileId}/blob`;
+        const contentUrl = `${this.fileServerUrl}/api/files/${fileId}/blob`;
+        return {
+            fileId,
+            contentUrl,
+            contentType: json.contentType,
+            name: json.filename
+        }
     }
 
     // https://stackoverflow.com/a/40940790/14109140

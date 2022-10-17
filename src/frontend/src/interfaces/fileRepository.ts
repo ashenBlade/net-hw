@@ -1,6 +1,7 @@
+import Attachment from "../models/attachment";
+
 export default interface FileRepository {
     getFileAsync(fileId: string): Promise<File | null>
 
-    // Returns created file content url
-    addFileAsync(file: File): Promise<string>
+    addFileAsync(file: File): Promise<Attachment>
 }

@@ -17,7 +17,8 @@ const parseMessage = (obj: any): Message => {
     }
     
     return {
-        username, message
+        username,
+        message
     }
 }
 
