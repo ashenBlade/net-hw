@@ -30,12 +30,6 @@ public class FilesController: ControllerBase
     [HttpPost("")]
     public async Task<IActionResult> UploadFile(IFormFile formFile, CancellationToken token = default)
     {
-        // var file = new File()
-        //            {
-        //                Filename = formFile.Name, 
-        //                Stream = formFile.OpenReadStream(),
-        //                ContentType = formFile.ContentType
-        //            };
         try
         {
             var id = await _fileService.SaveFileAsync(formFile, token);

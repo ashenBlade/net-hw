@@ -16,4 +16,13 @@
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="ConfigurationExtensions.cs">
+        <DependentUpon>Program.cs</DependentUpon>
+      </Compile>
+      <Compile Update="ServiceCollectionExtensions.cs">
+        <DependentUpon>Program.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

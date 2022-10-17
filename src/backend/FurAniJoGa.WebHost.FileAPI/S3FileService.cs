@@ -5,7 +5,7 @@ using Amazon.S3.Model;
 
 namespace FurAniJoGa.WebHost.FileAPI;
 
-public class S3FileService: IFileService
+public class S3FileService: IFileService, IDisposable
 {
     private readonly S3FileServiceOptions _options;
     private readonly ILogger<S3FileService> _logger;
@@ -15,7 +15,7 @@ public class S3FileService: IFileService
     {
         _options = options;
         _logger = logger;
-        var config = new AmazonS3Config() {ServiceURL = _options.Host.ToString(), ForcePathStyle = true,};
+        var config = new AmazonS3Config() {ServiceURL = _options.Host.ToString(), ForcePathStyle = true};
         _client = new AmazonS3Client(options.SecretKey, options.Password, config);
     }
     
@@ -38,16 +38,22 @@ public class S3FileService: IFileService
                           
                       };
         request.Metadata.Add("original-filename", encodedFilename);
+        PutObjectResponse response;
         try
         {
-            var response = await _client.PutObjectAsync(request, token);
+            response = await _client.PutObjectAsync(request, token);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Could not save file. Error occured during PutObjectAsync method call");
             throw;
         }
-        return id;
+
+        if (( int ) response.HttpStatusCode < 300) 
+            return id;
+        
+        _logger.LogWarning("Response from PutObjectAsync returned not success status code: {StatusCode}", response.HttpStatusCode);
+        throw new Exception($"Response from PutObjectAsync returned not success status code");
     }
 
     public async Task<File?> DownloadFileAsync(Guid fileId, CancellationToken token = default)
@@ -68,11 +74,16 @@ public class S3FileService: IFileService
                            ? contentDisposition[1].Trim('"')
                            : null;
         
-        return new File()
+        return new File
                {
                    Stream = response.ResponseStream,
                    ContentType = response.Headers.ContentType,
                    Filename = filename
                };
+    }
+
+    public void Dispose()
+    {
+        _client.Dispose();
     }
 }
