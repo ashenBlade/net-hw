@@ -57,6 +57,11 @@ services:
       - minio
     ports:
       - '8080:80'
+    environment:
+      S3_SECRET: minio_user
+      S3_PASSWORD: minio_password
+      S3_BUCKET: "user-files"
+      S3_HOST: http://minio:9000
   
   minio:
     image: minio/minio
