@@ -15,7 +15,9 @@ export default class FileApiFileRepository implements FileRepository {
             })
             throw new Error('Could not create new file')
         }
-        return (await response.json()).fileId;
+        const json = await response.json();
+        const fileId = json.fileId;
+        return `${this.fileServerUrl}/api/files/${fileId}/blob`;
     }
 
     // https://stackoverflow.com/a/40940790/14109140

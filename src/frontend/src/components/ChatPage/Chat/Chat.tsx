@@ -1,20 +1,22 @@
 import React, {FC} from 'react';
-import {Message} from "../../../models/message";
+import {ChatProps} from "./ChatProps";
+import ChatMessage from "./СhatMessage";
 
-interface ChatProps {
-    messages: Message[]
-}
-
-function createMessageRecord(message: Message, i: number) {
-    const name = (<b>
-        {message.username ?? 'Unknown'}
-    </b>)
+function createMessageRecord(message: ChatMessage, i: number) {
+    const name = (
+        <b>
+            {message.username ?? 'Unknown'}
+        </b>
+    )
 
     const contents = message.message;
 
-    return (<div key={i}>
-        {name}: {contents}
-    </div>)
+    return (
+        <div key={i}>
+            <div>{name}: {contents}</div>
+            {message.attachment && (<a download={message.attachment.downloadUrl}>{message.attachment.filename}</a> )}
+        </div>
+    )
 }
 
 const Chat: FC<ChatProps> = ({messages}) => {

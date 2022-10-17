@@ -4,20 +4,27 @@ import {ChatPageProps} from "./ChatPageProps";
 import Chat from "./Chat/Chat";
 import './ChatPage.tsx.css';
 import {useEffectOnce} from "../../hooks/useEffectOnce";
+import ChatMessage from "./Chat/СhatMessage";
+import Attachment from "../../models/attachment";
 
 const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) => {
     const [userMessage, setUserMessage] = useState('');
     const [messageSending, setMessageSending] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     async function sendMessage() {
-        async function getFileId(): Promise<string | undefined> {
+        async function getAttachment(): Promise<Attachment | undefined> {
             if (fileInputRef.current?.files?.[0]) {
                 const file = fileInputRef.current.files[0];
+                const name = file.name;
                 try {
-                    return await fileRepository.addFileAsync(file);
+                    const contentUrl = await fileRepository.addFileAsync(file);
+                    return {
+                        name,
+                        contentUrl
+                    }
                 } catch (e) {
                     console.error('Error during file uploading', e);
                     alert('Could not upload file');
@@ -34,7 +41,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
         setMessageSending(true);
         try {
-            const attachment = await getFileId();
+            const attachment = await getAttachment();
             await forumHandler.sendMessage({
                 message,
                 username,
@@ -64,9 +71,20 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
         }
     }
 
+    function mapMessageToChatMessage(msg: Message): ChatMessage {
+        return {
+            attachment: msg.attachment ? ({
+                downloadUrl: msg.attachment.contentUrl,
+                filename: msg.attachment.name
+            }) : undefined,
+            username: msg.username,
+            message: msg.message
+        }
+    }
+
     useEffect(() => {
         function cb(msg: Message) {
-            setMessages([...messages, msg]);
+            setMessages([...messages, mapMessageToChatMessage(msg)]);
         }
         forumHandler.registerOnMessageCallback(cb);
         return () => {
@@ -77,7 +95,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
     useEffectOnce(() => {
         setMessageSending(true)
         forumHandler.getPreviousMessages(1, 15).then(received => {
-            setMessages([...received, ...messages]);
+            setMessages([...received.map(mapMessageToChatMessage), ...messages]);
         }).catch(e => {
             console.error('Error while retrieving message history', e);
         }).finally(() => {
