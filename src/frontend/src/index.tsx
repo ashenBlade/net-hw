@@ -6,13 +6,13 @@ import reportWebVitals from './reportWebVitals';
 import {SignalrForumCommunicator} from "./services/signalrForumCommunicator";
 import {MessagesApiMessagesRepository} from "./services/messagesApiMessagesRepository";
 import {AggregatedForumHandler} from "./services/aggregatedForumHandler";
-import StubFileRepository from "./services/stubFileRepository";
+import FileApiFileRepository from "./services/fileApiFileRepository";
 
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 if (!serverUrl) {
-    throw new Error('Server url is not provided');
+    throw new Error('REACT_APP_SERVER_URL env variable is not provided');
 }
 
 const communicator = new SignalrForumCommunicator(serverUrl);
@@ -27,13 +27,21 @@ window.onload = () => {
     communicator.open()
 }
 
+const fileServerUrl = process.env.REACT_APP_FILE_SERVER_URL;
+if (!fileServerUrl) {
+    throw new Error('REACT_APP_FILE_SERVER_URL env variable is not provided')
+}
+
+const fileRepository = new FileApiFileRepository(fileServerUrl);
+
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 
 root.render(
     <React.StrictMode>
-        <App forumHandler={forumHandler} fileRepository={new StubFileRepository()}/>
+        <App forumHandler={forumHandler}
+             fileRepository={fileRepository}/>
     </React.StrictMode>
 );
 
