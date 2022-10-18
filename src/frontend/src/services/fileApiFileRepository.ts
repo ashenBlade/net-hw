@@ -8,7 +8,7 @@ export default class FileApiFileRepository implements FileRepository {
         const response = await fetch(`${this.fileServerUrl}/api/files`, {
             method: 'POST',
             body: file,
-            mode: 'cors'
+            mode: 'cors',
         });
         if (!response.ok) {
             console.error('Error during saving file', {
