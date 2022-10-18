@@ -8,8 +8,9 @@ public static class ServiceCollectionExtensions
                                                 S3FileServiceOptions s3FileServiceOptions)
     {
         services.AddControllers();
-        services.AddScoped<IFileService, S3FileService>();
         services.AddSingleton(s3FileServiceOptions);
+        services.AddScoped<IFileService, S3FileService>();
+        services.AddCors();
 
         return services;
     }

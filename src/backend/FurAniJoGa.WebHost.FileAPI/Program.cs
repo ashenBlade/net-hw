@@ -17,6 +17,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(policy =>
+{
+    policy.WithOrigins(builder.Configuration["FORUM_URL"]);
+    policy.AllowAnyHeader();
+    policy.AllowAnyMethod();
+});
+
 app.MapControllers();
 
 app.Run();
