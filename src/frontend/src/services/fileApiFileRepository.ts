@@ -5,9 +5,11 @@ export default class FileApiFileRepository implements FileRepository {
     constructor(readonly fileServerUrl: string) { }
 
     async addFileAsync(file: File): Promise<Attachment> {
+        const form = new FormData();
+        form.set('file', file);
         const response = await fetch(`${this.fileServerUrl}/api/files`, {
             method: 'POST',
-            body: file,
+            body: form,
             mode: 'cors',
         });
         if (!response.ok) {
