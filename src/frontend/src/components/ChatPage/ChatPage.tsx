@@ -44,6 +44,9 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
                 attachment
             });
             setUserMessage('');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
         } finally {
             setMessageSending(false);
         }
