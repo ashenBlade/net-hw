@@ -46,15 +46,18 @@ public class FilesController: ControllerBase
     [HttpPost("")]
     public async Task<IActionResult> UploadFile(IFormFile file, CancellationToken token = default)
     {
+        _logger.LogInformation("Attempt to upload file");
+        Guid fileId;
         try
         {
-            var id = await _fileService.SaveFileAsync(file, token);
-            return Ok(new{FileId = id});
+            fileId = await _fileService.SaveFileAsync(file, token);
         }
         catch (Exception e)
         {
             _logger.LogWarning(e, "Could not save file. Error during call SaveFileAsync");
             return Problem("Could not save file to storage");
         }
+        
+        return Ok(new{FileId = fileId});
     }
 }
