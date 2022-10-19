@@ -1,38 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
-import {SignalrForumCommunicator} from "./services/signalrForumCommunicator";
-import {MessagesApiMessagesRepository} from "./services/messagesApiMessagesRepository";
-import {AggregatedForumHandler} from "./services/aggregatedForumHandler";
-import FileApiFileRepository from "./services/fileApiFileRepository";
+import AppWrapper from "./components/App/AppWrapper";
 
-
-const serverUrl = process.env.REACT_APP_SERVER_URL;
-
-if (!serverUrl) {
-    throw new Error('REACT_APP_SERVER_URL env variable is not provided');
-}
-
-const communicator = new SignalrForumCommunicator(serverUrl);
-const messagesRepository = new MessagesApiMessagesRepository(serverUrl);
-const forumHandler = new AggregatedForumHandler(messagesRepository, communicator)
-
-window.onunload = () => {
-    communicator.close()
-}
-
-window.onload = () => {
-    communicator.open()
-}
 
 const fileServerUrl = process.env.REACT_APP_FILE_SERVER_URL;
+const serverUrl = process.env.REACT_APP_SERVER_URL;
 if (!fileServerUrl) {
     throw new Error('REACT_APP_FILE_SERVER_URL env variable is not provided')
 }
-
-const fileRepository = new FileApiFileRepository(fileServerUrl);
+if (!serverUrl) {
+    throw new Error('REACT_APP_SERVER_URL env variable is not provided');
+}
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -40,8 +20,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
     <React.StrictMode>
-        <App forumHandler={forumHandler}
-             fileRepository={fileRepository}/>
+        <AppWrapper serverUrl={serverUrl} fileServerUrl={fileServerUrl}/>
     </React.StrictMode>
 );
 

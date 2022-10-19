@@ -93,7 +93,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
     useEffectOnce(() => {
         setMessageSending(true)
-        forumHandler.getPreviousMessages(1, 15).then(received => {
+        forumHandler.getPreviousMessages(1, 40).then(received => {
             setMessages([...received.map(mapMessageToChatMessage), ...messages]);
         }).catch(e => {
             console.error('Error while retrieving message history', e);
