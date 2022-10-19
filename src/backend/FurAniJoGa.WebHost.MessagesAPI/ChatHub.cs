@@ -18,7 +18,7 @@ public class ChatHub : Hub
     }
     
     [EndpointName(PublishMessageMethodName)]
-    public async Task PublishMessage(string? username, string? message)
+    public async Task PublishMessage(string? username, string? message, Guid? fileId)
     {
         if (username is null)
         {
@@ -28,6 +28,13 @@ public class ChatHub : Hub
         if (message is null)
         {
             _logger.LogWarning("Published message content is null");
+            return;
+        }
+
+        if (fileId.HasValue)
+        {
+            await _bus.Publish(new MessagePublishedEvent {Username = username, Message = message, FileId = fileId.Value});
+            await Clients.All.SendAsync(PublishMessageMethodName, username, message, fileId);
             return;
         }
         

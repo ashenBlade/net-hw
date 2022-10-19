@@ -25,9 +25,11 @@ public class MessagePublishedEventConsumer: IConsumer<MessagePublishedEvent>
     {
         try
         {
-            _logger.LogDebug("Requested saving message: {Message} from: {From}", context.Message.Message, context.Message.Username);
+            _logger.LogDebug("Requested saving message: {Message} from: {From} with file Id {FileId}", 
+                context.Message.Message, context.Message.Username, context.Message.FileId);
             var message = await _messageFactory.CreateMessageAsync(context.Message.Message,
-                                                                   context.Message.Username, 
+                                                                   context.Message.Username,
+                                                                   context.Message.FileId, 
                                                                    context.CancellationToken);
             await _messagesRepository.AddMessageAsync(message, context.CancellationToken);
         }
@@ -36,9 +38,11 @@ public class MessagePublishedEventConsumer: IConsumer<MessagePublishedEvent>
             _logger.LogWarning(e,
                                "Error while saving message to database. "
                              + "Username: \"{Username}\". "
-                             + "Message: \"{Message}\"", 
+                             + "Message: \"{Message}\""
+                               + "File id: \"{FileId}\"", 
                                context.Message.Username,
-                               context.Message.Message);
+                               context.Message.Message, 
+                               context.Message.FileId);
         }
     }
 }
