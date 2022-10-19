@@ -14,7 +14,7 @@ function createMessageRecord(message: ChatMessage, i: number) {
     return (
         <div key={i}>
             <div>{name}: {contents}</div>
-            {message.attachment && (<a download={message.attachment.downloadUrl}>{message.attachment.filename}</a> )}
+            {message.attachment && (<a download={message.attachment.filename} href={message.attachment.downloadUrl}>{message.attachment.filename}</a> )}
         </div>
     )
 }
