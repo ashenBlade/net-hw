@@ -62,6 +62,7 @@ public static class ServicesExtensions
                 factory.ConfigureEndpoints(registrationContext);
             });
         });
+        services.AddCors();
         services.AddScoped<IMessageFactory, SampleMessageFactory>();
     }
     
