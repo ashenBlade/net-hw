@@ -14,7 +14,7 @@ public class Message
         Username = name;
         Content = content;
         PublishDate = publishDate;
-        FileId = fileId ?? new Guid();
+        FileId = fileId;
     }
     
     public Message(DateTime publishDate, string? username, string content, Guid? fileId)

@@ -23,6 +23,6 @@ public class MessageController : Controller
     {
         _logger.LogInformation("Page: {Page}, Size: {Size}, From end: {FromEnd}", page, size ,fromEnd);
         return Ok( ( await _messageRepository.GetMessages(page, size, fromEnd, token) )
-                  .Select(ReadMessageDto.FromMessage) );
+                  .Select(ReadMessageDto.FromMessage));
     }
 }

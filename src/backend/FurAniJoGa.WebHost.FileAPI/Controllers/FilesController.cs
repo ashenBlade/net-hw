@@ -16,7 +16,7 @@ public class FilesController: ControllerBase
     }
     
     [HttpGet("{fileId:guid}")]
-    public async Task<IActionResult> GetFileMetadata(Guid fileId, CancellationToken token = default)
+    public async Task<IActionResult> GetFileInfo(Guid fileId, CancellationToken token = default)
     {
         var file = await _fileService.GetFileInfoAsync(fileId, token);
         if (file is null)

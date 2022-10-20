@@ -1,4 +1,5 @@
 using System.Net;
+using Amazon.Runtime.Internal;
 using Amazon.S3;
 using Amazon.S3.Model;
 
@@ -63,7 +64,16 @@ public class S3FileService: IFileService, IDisposable
                           Key = fileId.ToString(),
                           BucketName = _options.Bucket
                       };
-        var response = await _client.GetObjectAsync(request, token);
+        GetObjectResponse response;
+        try
+        {
+            response = await _client.GetObjectAsync(request, token);
+        }
+        catch (AmazonS3Exception amazonS3Exception)
+        {
+            _logger.LogWarning(amazonS3Exception, "Could not get file content by specified key: {FileId}", fileId);
+            return null;
+        }
 
         if (response.HttpStatusCode is HttpStatusCode.NotFound)
         {

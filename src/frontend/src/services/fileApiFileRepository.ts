@@ -37,7 +37,7 @@ export default class FileApiFileRepository implements FileRepository {
         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
         const matches = filenameRegex.exec(disposition);
         if (matches != null && matches[1]) {
-            return matches[1].replace(/['"]/g, '');
+            return matches[1].replace(/['"]/, '');
         }
         return null;
     }

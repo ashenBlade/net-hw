@@ -14,7 +14,7 @@ interface AppWrapperProps {
 const AppWrapper: FC<AppWrapperProps> = ({serverUrl, fileServerUrl}) => {
     const [fileRepository,] = useState(new FileApiFileRepository(fileServerUrl));
     const [communicator,] = useState(new SignalrForumCommunicator(serverUrl, fileRepository));
-    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(serverUrl));
+    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(serverUrl, fileRepository));
     const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator));
     
     useEffectOnce(() => {
