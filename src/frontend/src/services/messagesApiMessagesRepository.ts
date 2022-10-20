@@ -12,18 +12,12 @@ export class MessagesApiMessagesRepository implements MessagesRepository {
             return null;
         }
         
-        const file = await this.fileRepository.getFileAsync(fileId);
-        if (!file) {
+        const attachment = await this.fileRepository.getFileAsync(fileId);
+        if (!attachment) {
             console.warn('Could not download user attachment. File service did not returned file from provided fileId', {fileId})
             return null;
         }
-        
-        return {
-            fileId,
-            contentUrl: URL.createObjectURL(file),
-            name: file.name,
-            contentType: file.type
-        }
+        return attachment;
     }
     
     async parseMessage(obj: any): Promise<Message> {

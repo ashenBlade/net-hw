@@ -30,7 +30,6 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
 
     async open() {
         this.connection.on(SignalrForumCommunicator.messagePublishedFunction, async (username, message, fileId) => {
-            console.log('Sfjasdfkjasdfhasdfhasdfjhasdkfjasdlkfjhasdf')
             if (!(typeof username === 'string' && typeof message === "string")) {
                 console.error('Received message arguments are not strings', {
                     username,
@@ -51,20 +50,15 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
                     })
                 }
                 
-                const file = await this.fileRepository.getFileAsync(fileId);
-                if (!file) {
+                const attachment = await this.fileRepository.getFileAsync(fileId);
+                if (!attachment) {
                     console.warn('Could not download file with provided file id. Return undefined', {
                         fileId
                     })
                     return undefined;
                 }
                 
-                return {
-                    fileId,
-                    contentUrl: URL.createObjectURL(file),
-                    name: file.name,
-                    contentType: file.type
-                }
+                return attachment;
             }
             
             this.notifyMessage({username, message, attachment: await getAttachment()});

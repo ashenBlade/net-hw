@@ -42,8 +42,8 @@ export default class FileApiFileRepository implements FileRepository {
         return null;
     }
 
-    async getFileAsync(fileId: string): Promise<File | null> {
-        const response = await fetch(`${this.fileServerUrl}/api/files/${fileId}/blob`, {
+    async getFileAsync(fileId: string): Promise<Attachment | null> {
+        const response = await fetch(`${this.fileServerUrl}/api/files/${fileId}`, {
             mode: 'cors',
             method: 'GET'
         });
@@ -55,8 +55,12 @@ export default class FileApiFileRepository implements FileRepository {
             throw new Error('Could not find requested file. Error on server')
         }
 
-        const filename = FileApiFileRepository.extractFilename(response.headers.get('content-disposition')) ?? 'user-file';
-        const contentType = response.headers.get('content-type') ?? undefined;
-        return new File([await response.blob()], filename, {type: contentType});
+        const json = await response.json();
+        return {
+            fileId: fileId,
+            contentUrl: `${this.fileServerUrl}/api/files/${fileId}/blob`,
+            name: json.filename,
+            contentType: json.contentType,
+        }
     }
 }
