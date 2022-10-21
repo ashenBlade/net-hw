@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-FurAniJoGa.WebHost.FileAPI.MetadataUpdater-C8B434F7-74F0-4D00-A9E5-2604CD855D94</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.7" />
+        <PackageReference Include="MetadataExtractor" Version="2.7.2" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FurAniJoGa.FileAPI.Abstractions\FurAniJoGa.FileAPI.Abstractions.csproj" />
+      <ProjectReference Include="..\FurAniJoGa.RabbitMq.Contracts\FurAniJoGa.RabbitMq.Contracts.csproj" />
+    </ItemGroup>
+</Project>

@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "FurAniJoGa.WebHost.FileAPI.MetadataUpdater": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

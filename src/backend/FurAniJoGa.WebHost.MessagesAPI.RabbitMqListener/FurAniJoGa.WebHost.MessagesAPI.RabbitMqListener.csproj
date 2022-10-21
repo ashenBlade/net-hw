@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-FurAniJoGa.WebHost.RabbitMqListener-91F251DD-020F-4761-8A52-CB3581EEB300</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>FurAniJoGa.WebHost.RabbitMqListener</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
