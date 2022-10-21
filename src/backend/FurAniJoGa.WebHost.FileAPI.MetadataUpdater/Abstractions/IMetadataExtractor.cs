@@ -2,5 +2,5 @@ namespace FurAniJoGa.WebHost.FileAPI.MetadataUpdater.Abstractions;
 
 public interface IMetadataExtractor
 {
-    Task<Dictionary<string, string>> ExtractMetadata();
+    Task<Dictionary<string, string>> ExtractMetadata(Stream stream);
 }

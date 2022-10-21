@@ -18,5 +18,6 @@
     <ItemGroup>
       <ProjectReference Include="..\FurAniJoGa.FileAPI.Abstractions\FurAniJoGa.FileAPI.Abstractions.csproj" />
       <ProjectReference Include="..\FurAniJoGa.RabbitMq.Contracts\FurAniJoGa.RabbitMq.Contracts.csproj" />
+      <ProjectReference Include="..\FurAniJoGa.WebHost.FileAPI\FurAniJoGa.WebHost.FileAPI.csproj" />
     </ItemGroup>
 </Project>
