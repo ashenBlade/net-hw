@@ -4,9 +4,9 @@ using MetadataExtractor.Util;
 
 namespace FurAniJoGa.WebHost.FileAPI.MetadataUpdater.Services;
 
-public class NugetMetadataExtractor: IMetadataExtractor
+public class MetadataExtractor: IMetadataExtractor
 {
-    public async Task<Dictionary<string, string>> ExtractMetadata(Stream stream)
+    public Dictionary<string, string> ExtractMetadata(Stream stream)
     {
         var metadata = ImageMetadataReader.ReadMetadata(stream).ToList();
         return metadata.Where(d => !( d.HasError || d.IsEmpty ))

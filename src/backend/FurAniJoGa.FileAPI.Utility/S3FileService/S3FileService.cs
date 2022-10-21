@@ -2,6 +2,7 @@ using System.Net;
 using Amazon.Runtime.Internal;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Microsoft.Extensions.Logging;
 
 namespace FurAniJoGa.WebHost.FileAPI.Services;
 
@@ -20,18 +21,17 @@ public class S3FileService: IFileService, IDisposable
         _client = new AmazonS3Client(options.SecretKey, options.Password, config);
     }
     
-    public async Task<Guid> SaveFileAsync(IFormFile file, CancellationToken token = default)
+    public async Task<Guid> SaveFileAsync(Stream stream, string filename, string contentType, CancellationToken token = default)
     {
         var id = Guid.NewGuid();
-        await using var stream = file.OpenReadStream();
-        var encodedFilename = Uri.EscapeDataString(file.FileName);
+        var encodedFilename = Uri.EscapeDataString(filename);
         var request = new PutObjectRequest()
                       {
                           BucketName = _options.Bucket,
                           InputStream = stream,
                           AutoCloseStream = true,
                           Key = id.ToString(),
-                          ContentType = file.ContentType,
+                          ContentType = contentType,
                           Headers =
                           {
                               ContentDisposition = $"attachment; filename=\"{encodedFilename}\""

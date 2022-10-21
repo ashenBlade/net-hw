@@ -35,7 +35,7 @@ public class FileUploadedEventConsumer: IConsumer<FileUploadedEvent>
                 _logger.LogWarning("Could not download file with provided File Id: {FileId}", message.FileId);
                 return;
             }
-            var metadata = await _extractor.ExtractMetadata(file.Content);
+            var metadata = _extractor.ExtractMetadata(file.Content);
             await _repository.AddMetadataAsync(new FileMetadata()
                                          {
                                              Metadata = metadata,

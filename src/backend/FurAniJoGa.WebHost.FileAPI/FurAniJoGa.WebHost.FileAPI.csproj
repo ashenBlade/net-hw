@@ -28,7 +28,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\FurAniJoGa.FileAPI.Abstractions\FurAniJoGa.FileAPI.Abstractions.csproj" />
+      <ProjectReference Include="..\FurAniJoGa.FileAPI.Utility\FurAniJoGa.FileAPI.Utility.csproj" />
       <ProjectReference Include="..\FurAniJoGa.RabbitMq.Contracts\FurAniJoGa.RabbitMq.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Services" />
     </ItemGroup>
 
 </Project>

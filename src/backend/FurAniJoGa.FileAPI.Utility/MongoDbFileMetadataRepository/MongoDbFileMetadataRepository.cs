@@ -6,14 +6,14 @@ namespace FurAniJoGa.FileAPI.Utility;
 
 public class MongoDbFileMetadataRepository: IFileMetadataRepository
 {
-    private readonly MongoClient _client;
+    private readonly IMongoClient _client;
     private readonly MongoDbFileMetadataRepositoryOptions _options;
     private readonly ILogger<MongoDbFileMetadataRepository> _logger;
 
     private IMongoDatabase Database => _client.GetDatabase(_options.Database);
     private IMongoCollection<FileMetadata> FileMetadata => Database.GetCollection<FileMetadata>(_options.Collection);
 
-    public MongoDbFileMetadataRepository(MongoClient client, MongoDbFileMetadataRepositoryOptions options, ILogger<MongoDbFileMetadataRepository> logger)
+    public MongoDbFileMetadataRepository(IMongoClient client, MongoDbFileMetadataRepositoryOptions options, ILogger<MongoDbFileMetadataRepository> logger)
     {
         _client = client;
         _options = options;

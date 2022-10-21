@@ -50,7 +50,8 @@ public class FilesController: ControllerBase
         Guid fileId;
         try
         {
-            fileId = await _fileService.SaveFileAsync(file, token);
+            await using var stream = file.OpenReadStream();
+            fileId = await _fileService.SaveFileAsync(stream, file.FileName, file.ContentType, token);
         }
         catch (Exception e)
         {
