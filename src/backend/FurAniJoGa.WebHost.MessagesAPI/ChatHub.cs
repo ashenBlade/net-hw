@@ -31,12 +31,6 @@ public class ChatHub : Hub
             return;
         }
 
-        // if (fileId.HasValue)
-        // {
-        //     await _bus.Publish(new MessagePublishedEvent {Username = username, Message = message, FileId = fileId.Value});
-        //     await Clients.All.SendAsync(PublishMessageMethodName, username, message, fileId.Value);
-        //     return;
-        // }
         await _bus.Publish(new MessagePublishedEvent {Username = username, Message = message, FileId = fileId});
         await Clients.All.SendAsync(PublishMessageMethodName, username, message, fileId);
     }
