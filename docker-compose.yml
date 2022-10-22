@@ -35,7 +35,7 @@ services:
   rabbit-listener:
     build:
       context: src/backend
-      dockerfile: FurAniJoGa.WebHost.RabbitMqListener/Dockerfile
+      dockerfile: FurAniJoGa.WebHost.MessagesAPI.RabbitMqListener/Dockerfile
     ports:
       - '8082:80'
     depends_on:
@@ -66,6 +66,43 @@ services:
       S3_HOST: http://minio:9000
       
       FORUM_URL: http://localhost:8080
+  
+  file-metadata-updater:
+    build:
+      context: src/backend
+      dockerfile: FurAniJoGa.WebHost.FileAPI.MetadataUpdater/Dockerfile
+    ports:
+      - '8084:80'
+    environment:
+      S3_SECRET: minio_user
+      S3_PASSWORD: minio_password
+      S3_BUCKET: "user-files"
+      S3_HOST: http://minio:9000
+      
+      MONGODB_PASSWORD: mongodb
+      MONGODB_USERNAME: root
+      MONGODB_HOST: files-metadata-mongo
+      MONGODB_PORT: 27017
+      
+      MONGODB_COLLECTION: fileMetadata
+      MONGODB_DATABASE: fileApi
+      
+      RABBITMQ_HOST: rabbit-mq
+      RABBITMQ_EXCHANGE: amq.fanout
+      
+    depends_on:
+      - files-metadata-mongo
+      - minio
+      - rabbit-mq
+        
+  files-metadata-mongo:
+    image: mongo:6.0.2
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=mongodb
+      - MONGO_INITDB_DATABASE=fileApi
   
   minio:
     image: minio/minio

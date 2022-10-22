@@ -26,5 +26,8 @@
       <Compile Update="ServiceCollectionExtensions.cs">
         <DependentUpon>Program.cs</DependentUpon>
       </Compile>
+      <Compile Update="ConfigurationExtensions.cs">
+        <DependentUpon>Program.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

@@ -44,12 +44,21 @@ public static class ServiceCollectionExtensions
             
         });
 
-        services.AddSingleton(new MongoUrl("mongodb://user:password@localhost:8084"));
-        services.AddScoped<IMongoClient, MongoClient>();
+        var mongoDbOptions = configuration.GetMongoDbConnectionOptions();
+        services.AddSingleton(new MongoUrl($"mongodb://"
+                                         + $"{mongoDbOptions.Username}:"
+                                         + $"{mongoDbOptions.Password}@"
+                                         + $"{mongoDbOptions.Host}:"
+                                         + $"{mongoDbOptions.Port}"));
+        
+        services.AddScoped<IMongoClient, MongoClient>(s => new MongoClient(s.GetRequiredService<MongoUrl>()));
+        
+        services.AddSingleton(configuration.GetMongoDbFileMetadataRepositoryOptions());
         services.AddScoped<IFileMetadataRepository, MongoDbFileMetadataRepository>();
+        
         services.AddScoped<IFileService, S3FileService>();
         
-        
+
         return services;
     }
 }
