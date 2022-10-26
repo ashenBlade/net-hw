@@ -1,4 +1,6 @@
 using FurAniJoGa.FileAPI.Abstractions;
+using FurAniJoGa.RabbitMq.Contracts.Events;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurAniJoGa.WebHost.FileAPI.Controllers;
@@ -9,10 +11,14 @@ public class FilesController: ControllerBase
 {
     private readonly IFileService _fileService;
     private readonly ILogger<FilesController> _logger;
+    private readonly IBus _bus;
+    private readonly IFileMetadataRepository _fileMetadataRepository;
 
-    public FilesController(IFileService fileService, ILogger<FilesController> logger)
+    public FilesController(IFileService fileService, IBus bus,IFileMetadataRepository fileMetadataRepository, ILogger<FilesController> logger)
     {
         _fileService = fileService;
+        _bus = bus;
+        _fileMetadataRepository = fileMetadataRepository;
         _logger = logger;
     }
     
@@ -26,7 +32,9 @@ public class FilesController: ControllerBase
             return NotFound();
         }
 
-        return Ok(new {file.Filename, file.ContentType, file.FileId});
+        var metadata = _fileMetadataRepository.GetMetadataByIdAsync(fileId, token);
+        
+        return Ok(new {file.Filename, file.ContentType, file.FileId, metadata});
     }
 
     [HttpGet("{id:guid}/blob")]
@@ -53,6 +61,8 @@ public class FilesController: ControllerBase
         {
             await using var stream = file.OpenReadStream();
             fileId = await _fileService.SaveFileAsync(stream, file.FileName, file.ContentType, token);
+            
+            await _bus.Publish(new FileUploadedEvent() {FileId = fileId}, token);
         }
         catch (Exception e)
         {
