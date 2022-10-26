@@ -1,4 +1,6 @@
-namespace FurAniJoGa.WebHost.FileAPI;
+using FurAniJoGa.WebHost.FileAPI;
+
+namespace FurAniJoGa.FileAPI.Abstractions;
 
 public interface IFileService
 {

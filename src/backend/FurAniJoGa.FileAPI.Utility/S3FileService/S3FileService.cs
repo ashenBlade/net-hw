@@ -1,10 +1,12 @@
 using System.Net;
-using Amazon.Runtime.Internal;
 using Amazon.S3;
 using Amazon.S3.Model;
+using FurAniJoGa.FileAPI.Abstractions;
+using FurAniJoGa.WebHost.FileAPI;
 using Microsoft.Extensions.Logging;
+using File = FurAniJoGa.FileAPI.Abstractions.File;
 
-namespace FurAniJoGa.WebHost.FileAPI.Services;
+namespace FurAniJoGa.FileAPI.Utility.S3FileService;
 
 public class S3FileService: IFileService, IDisposable
 {
