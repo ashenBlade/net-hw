@@ -1,4 +1,4 @@
-namespace FurAniJoGa.FileAPI.Abstractions;
+namespace FurAniJoGa.WebHost.FileAPI;
 
 public class File
 {

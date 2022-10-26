@@ -1,7 +1,7 @@
 using FurAniJoGa.FileAPI.Abstractions;
 using FurAniJoGa.FileAPI.Utility;
-using FurAniJoGa.FileAPI.Utility.S3FileService;
 using FurAniJoGa.WebHost.FileAPI.MetadataUpdater.Consumers;
+using FurAniJoGa.WebHost.FileAPI.Services;
 using MassTransit;
 using MongoDB.Driver;
 
