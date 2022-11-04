@@ -67,6 +67,16 @@ services:
       
       FORUM_URL: http://localhost:8080
   
+  redis:
+    image: bitnami/redis
+    ports:
+      - '6379:6379'
+        
+    environment:
+      REDIS_REPLICATION_MODE: 'master'
+      ALLOW_EMPTY_PASSWORD: 'yes'
+    
+    
   minio:
     image: minio/minio
     command: server --console-address ":9001" /data/
