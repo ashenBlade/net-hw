@@ -9,6 +9,21 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.8" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+        <PackageReference Include="MongoDB.Bson" Version="2.18.0" />
+        <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+        <PackageReference Include="StackExchange.Redis" Version="2.6.70" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FurAniJoGa.RabbitMq.Contracts\FurAniJoGa.RabbitMq.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="ConfigurationExtensions.cs">
+        <DependentUpon>Program.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

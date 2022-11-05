@@ -1,10 +1,46 @@
+using FurAniJoGa.RabbitMq.Contracts.Events;
 using FurAniJoGa.Worker.MongoUpdater;
+using FurAniJoGa.Worker.MongoUpdater.Consumers;
+using FurAniJoGa.Worker.MongoUpdater.FileIdRepository;
+using FurAniJoGa.Worker.MongoUpdater.FileInfoRepository;
+using FurAniJoGa.Worker.MongoUpdater.FileUploaderCounterService;
+using MassTransit;
 
-IHost host = Host.CreateDefaultBuilder(args)
-                 .ConfigureServices(services =>
-                  {
-                      services.AddHostedService<Worker>();
-                  })
-                 .Build();
+using var host = Host.CreateDefaultBuilder(args)
+                     .ConfigureServices((context, services) =>
+                      {
+                          services.AddSingleton(context.Configuration.GetRedisSettings());
+                          services.AddScoped<IUploadRequestRepository, RedisUploadRequestRepository>();
+                          services.AddScoped<IFileUploaderCounterService, RedisFileUploaderCounterService>();
+
+                          services.AddSingleton(context.Configuration.GetMongoSettings());
+                          services.AddScoped<IFileInfoRepository, MongoFileInfoRepository>();
+                      
+                          services.AddMassTransit(configurator =>
+                          {
+                              configurator.AddConsumer<FileUploadedEventConsumer>();
+                              configurator.AddConsumer<MetadataUploadedEventConsumer>();
+                              configurator.AddConsumer<FileAndMetadataUploadedEventConsumer>();
+                              configurator.UsingRabbitMq((registrationContext, factory) =>
+                              {
+                                  var host = context.Configuration.GetValue<string>("RABBITMQ_HOST");
+                                  var exchange = context.Configuration.GetValue<string>("RABBITMQ_EXCHANGE");
+                                  factory.Host(host, "/", h =>
+                                  {
+                                      h.Username("guest");
+                                      h.Password("guest");
+                                  });
+                                  factory.ReceiveEndpoint(e =>
+                                  {
+                                      e.Bind(exchange);
+                                      e.ConfigureConsumer<FileUploadedEventConsumer>(registrationContext);
+                                      e.ConfigureConsumer<MetadataUploadedEventConsumer>(registrationContext);
+                                      e.ConfigureConsumer<FileAndMetadataUploadedEventConsumer>(registrationContext);
+                                  });
+                                  factory.ConfigureEndpoints(registrationContext);
+                              });
+                          });
+                      })
+                     .Build();
 
 await host.RunAsync();
