@@ -66,6 +66,39 @@ services:
       S3_HOST: http://minio:9000
       
       FORUM_URL: http://localhost:8080
+      
+  mongo-db:
+    image: mongo:6.0.2
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: mongopassword
+    volumes:
+      - mongo-db-files:/data/db
+      
+  mongo-updater:
+    build:
+      context: src/backend
+      dockerfile: FurAniJoGa.Worker.MongoUpdater/Dockerfile
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      
+      MONGO_HOST: mongo-db
+      MONGO_PORT: 27017
+      MONGO_USERNAME: mongoadmin
+      MONGO_PASSWORD: mongopassword
+      MONGO_DATABASE: filesDb
+      MONGO_COLLECTION: filesInfo
+      
+      RABBITMQ_HOST: rabbit-mq
+      RABBITMQ_EXCHANGE: amq.fanout
+      
+    depends_on:
+      - redis
+      - rabbit-mq
+      - mongo-db
   
   redis:
     image: bitnami/redis
@@ -75,6 +108,8 @@ services:
     environment:
       REDIS_REPLICATION_MODE: 'master'
       ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - redis:/data 
     
     
   minio:
@@ -116,5 +151,9 @@ volumes:
   database:
     driver: local
   minio-storage:
+    driver: local
+  mongo-db-files:
+    driver: local
+  redis:
     driver: local
     

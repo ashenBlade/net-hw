@@ -4,9 +4,14 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["FurAniJoGa.Worker.MongoUpdater/FurAniJoGa.Worker.MongoUpdater.csproj", "FurAniJoGa.Worker.MongoUpdater/"]
+COPY ["FurAniJoGa.RabbitMq.Contracts/FurAniJoGa.RabbitMq.Contracts.csproj", "FurAniJoGa.RabbitMq.Contracts/"]
 RUN dotnet restore "FurAniJoGa.Worker.MongoUpdater/FurAniJoGa.Worker.MongoUpdater.csproj"
-COPY . .
+
+COPY ["FurAniJoGa.Worker.MongoUpdater/", "FurAniJoGa.Worker.MongoUpdater/"]
+COPY ["FurAniJoGa.RabbitMq.Contracts/", "FurAniJoGa.RabbitMq.Contracts/"]
+
 WORKDIR "/src/FurAniJoGa.Worker.MongoUpdater"
+
 RUN dotnet build "FurAniJoGa.Worker.MongoUpdater.csproj" -c Release -o /app/build
 
 FROM build AS publish
