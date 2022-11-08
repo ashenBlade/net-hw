@@ -7,11 +7,16 @@ import AppWrapper from "./components/App/AppWrapper";
 
 const fileServerUrl = process.env.REACT_APP_FILE_SERVER_URL;
 const serverUrl = process.env.REACT_APP_SERVER_URL;
+const fileMetadataServerUrl = process.env.REACT_APP_FILE_METADATA_SERVER_URL;
+
 if (!fileServerUrl) {
     throw new Error('REACT_APP_FILE_SERVER_URL env variable is not provided')
 }
 if (!serverUrl) {
     throw new Error('REACT_APP_SERVER_URL env variable is not provided');
+}
+if (!fileMetadataServerUrl) {
+    throw new Error("REACT_APP_FILE_METADATA_SERVER_URL env variable is not provided")
 }
 
 const root = ReactDOM.createRoot(
@@ -20,7 +25,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
     <React.StrictMode>
-        <AppWrapper serverUrl={serverUrl} fileServerUrl={fileServerUrl}/>
+        <AppWrapper serverUrl={serverUrl}
+                    fileServerUrl={fileServerUrl}
+                    fileMetadataServerUrl={fileMetadataServerUrl}/>
     </React.StrictMode>
 );
 
