@@ -1,46 +1,18 @@
 import {Message} from "../models/message";
 import {MessagesRepository} from "../interfaces/messagesRepository";
-import FileRepository from "../interfaces/fileRepository";
-import Attachment from "../models/attachment";
+import Guid from "../models/guid";
 
 export class MessagesApiMessagesRepository implements MessagesRepository {
-    constructor(readonly url: string, 
-                readonly fileRepository: FileRepository) {  }
-    
-    async downloadAttachment(fileId: string | null): Promise<Attachment | null> {
-        if (!fileId) {
-            return null;
-        }
-        
-        const attachment = await this.fileRepository.getFileAsync(fileId);
-        if (!attachment) {
-            console.warn('Could not download user attachment. File service did not returned file from provided fileId', {fileId})
-            return null;
-        }
-        return attachment;
-    }
-    
+    constructor(readonly url: string) {  }
+
     async parseMessage(obj: any): Promise<Message> {
         const message = obj.message;
         const username = obj.username;
-        const fileId = obj.fileId;
-        
-        if (!(message && username)) {
-            throw new Error('Could not get message from response. Message and username not provided');
-        }
-        
-        if (typeof message !== 'string') {
-            throw new Error(`Message must be string. Given: ${message}`)
-        }
-        
-        if (typeof username !== 'string') {
-            throw new Error(`Username must be string. Given: ${username}`)
-        }
-        
+        const requestId = obj.requestId;
         return {
             username,
             message,
-            attachment: await this.downloadAttachment(fileId) ?? undefined
+            requestId: new Guid(requestId)
         }
     }
 

@@ -1,7 +1,11 @@
 import Attachment from "../models/attachment";
+import Guid from "../models/guid";
 
 export default interface FileRepository {
-    getFileAsync(fileId: string): Promise<Attachment | null>
+    getFileAsync(fileId: Guid): Promise<Attachment | null>
 
-    addFileAsync(file: File): Promise<Attachment>
+    createContentUrl(fileId: Guid): string;
+
+    /// Returns RequestId to track
+    uploadFileAsync(file: File, metadata: Map<string, string>): Promise<Guid>
 }

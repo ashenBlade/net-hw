@@ -19,7 +19,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
             if (fileInputRef.current?.files?.[0]) {
                 const file = fileInputRef.current.files[0];
                 try {
-                    return await fileRepository.addFileAsync(file)
+                    return await fileRepository.uploadFileAsync(file)
 
                 } catch (e) {
                     console.error('Error during file uploading', e);

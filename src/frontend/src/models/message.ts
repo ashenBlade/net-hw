@@ -1,7 +1,7 @@
-import Attachment from "./attachment";
+import Guid from "./guid";
 
 export interface Message {
     username: string
     message: string
-    attachment?: Attachment
+    requestId?: Guid
 }
