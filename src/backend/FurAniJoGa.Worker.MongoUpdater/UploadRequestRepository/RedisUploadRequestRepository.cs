@@ -17,7 +17,7 @@ public class RedisUploadRequestRepository: IUploadRequestRepository
         _logger = logger;
     }
     
-    public async Task<Tuple<Guid?, Dictionary<string, object>?>?> FindFileIdAsync(Guid requestId)
+    public async Task<Tuple<Guid, Dictionary<string, object>>?> FindFileIdAsync(Guid requestId)
     {
         Guid? GetFileId(RedisValue value)
         {
@@ -64,13 +64,14 @@ public class RedisUploadRequestRepository: IUploadRequestRepository
                 return null;
             }
         }
+        
         var multiplexer = await ConnectionMultiplexer.ConnectAsync($"{_settings.Host}:{_settings.Port}");
         var db = multiplexer.GetDatabase();
         var results = await Task.WhenAll(db.StringGetAsync($"{requestId}-fileId"), db.StringGetAsync($"{requestId}-metadata"));
         var (fileId, metadata) = (GetFileId(results[0]), GetMetadata(results[1]));
         if (fileId is not null && metadata is not null)
         {
-            return Tuple.Create(fileId, metadata)!;
+            return Tuple.Create(fileId.Value, metadata);
         }
 
         return null;

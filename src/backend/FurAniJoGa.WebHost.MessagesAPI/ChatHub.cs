@@ -16,9 +16,22 @@ public class ChatHub : Hub
         _bus = bus;
         _logger = logger;
     }
+
+
+    public async Task NotifyFileUploadedAsync(Guid requestId, Guid fileId, Dictionary<string, object> metadata, CancellationToken token = default)
+    {
+        try
+        {
+            await Clients.All.SendAsync("onFileUploaded", requestId, fileId, metadata, token);
+        }
+        catch (HubException hubException)
+        {
+            _logger.LogWarning(hubException, "Could not notify clients of file uploaded event");
+        }
+    }
     
     [EndpointName(PublishMessageMethodName)]
-    public async Task PublishMessage(string? username, string? message, Guid? fileId)
+    public async Task PublishMessage(string? username, string? message, Guid? requestId)
     {
         if (username is null)
         {
@@ -31,7 +44,7 @@ public class ChatHub : Hub
             return;
         }
 
-        await _bus.Publish(new MessagePublishedEvent {Username = username, Message = message, FileId = fileId});
-        await Clients.All.SendAsync(PublishMessageMethodName, username, message, fileId);
+        await _bus.Publish(new MessagePublishedEvent {Username = username, Message = message, AttachmentRequestId = requestId});
+        await Clients.All.SendAsync(PublishMessageMethodName, username, message, requestId);
     }
 }

@@ -11,7 +11,8 @@ public class FileAndMetadataUploadedEventConsumer: IConsumer<FileAndMetadataUplo
     private readonly ILogger<FileAndMetadataUploadedEventConsumer> _logger;
     private readonly IUploadRequestRepository _uploadRequestRepository;
 
-    public FileAndMetadataUploadedEventConsumer(IFileInfoRepository fileInfoRepository, ILogger<FileAndMetadataUploadedEventConsumer> logger, IUploadRequestRepository uploadRequestRepository)
+    public FileAndMetadataUploadedEventConsumer(IFileInfoRepository fileInfoRepository, 
+                                                ILogger<FileAndMetadataUploadedEventConsumer> logger, IUploadRequestRepository uploadRequestRepository)
     {
         _fileInfoRepository = fileInfoRepository;
         _logger = logger;
@@ -32,25 +33,7 @@ public class FileAndMetadataUploadedEventConsumer: IConsumer<FileAndMetadataUplo
                 _logger.LogWarning("No file info found for request {RequestId}", requestId);
                 return;
             }
-
-            var (fileIdReturned, metadataReturned) = tuple;
-            if (fileIdReturned is null)
-            {
-                _logger.LogWarning("FileId for request {RequestId} is null", requestId);
-            }
-
-            if (metadataReturned is null)
-            {
-                _logger.LogWarning("Metadata for request {RequestId} is null", requestId);
-            }
-
-            if (fileIdReturned is null || metadataReturned is null)
-            {
-                return;
-            }
-
-            fileId = fileIdReturned.Value;
-            metadata = metadataReturned;
+            ( fileId, metadata ) = tuple;
         }
         catch (Exception e)
         {
