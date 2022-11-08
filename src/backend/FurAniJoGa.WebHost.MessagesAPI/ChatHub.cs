@@ -17,19 +17,6 @@ public class ChatHub : Hub
         _logger = logger;
     }
 
-
-    public async Task NotifyFileUploadedAsync(Guid requestId, Guid fileId, Dictionary<string, object> metadata, CancellationToken token = default)
-    {
-        try
-        {
-            await Clients.All.SendAsync("onFileUploaded", requestId, fileId, metadata, token);
-        }
-        catch (HubException hubException)
-        {
-            _logger.LogWarning(hubException, "Could not notify clients of file uploaded event");
-        }
-    }
-    
     [EndpointName(PublishMessageMethodName)]
     public async Task PublishMessage(string? username, string? message, Guid? requestId)
     {

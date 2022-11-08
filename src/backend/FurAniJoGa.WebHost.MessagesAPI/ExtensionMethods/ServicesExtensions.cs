@@ -3,6 +3,7 @@ using FurAniJoGa.Domain;
 using FurAniJoGa.Infrastructure;
 using FurAniJoGa.Infrastructure.Repositories;
 using MassTransit;
+using MessagesAPI.Consumers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MessagesAPI.ExtensionMethods;
@@ -58,6 +59,7 @@ public static class ServicesExtensions
                 factory.ReceiveEndpoint(e =>
                 {
                     e.Bind(exchange);
+                    e.ConfigureConsumer<FileAndMetadataUploadedEventConsumer>(registrationContext);
                 });
                 factory.ConfigureEndpoints(registrationContext);
             });
