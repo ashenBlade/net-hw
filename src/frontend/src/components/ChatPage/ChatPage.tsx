@@ -1,11 +1,12 @@
-import React, {FC, useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useReducer, useRef, useState} from 'react';
 import {Message} from "../../models/message";
 import {ChatPageProps} from "./ChatPageProps";
 import Chat from "./Chat/Chat";
 import './ChatPage.tsx.css';
 import {useEffectOnce} from "../../hooks/useEffectOnce";
 import ChatMessage from "./Chat/СhatMessage";
-import Attachment from "../../models/attachment";
+import Guid from "../../models/guid";
+import {UploadFile} from "../../models/uploadFile";
 
 const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) => {
     const [userMessage, setUserMessage] = useState('');
@@ -13,20 +14,29 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [myUploadedFiles,] = useState<Set<string>>(new Set());
+    const [, rerender] = useReducer(x => x + 1, 0);
+
+    function promptFileMetadata(): Map<string, string> {
+        return new Map();
+    }
 
     async function sendMessage() {
-        async function getAttachment(): Promise<Attachment | undefined> {
-            if (fileInputRef.current?.files?.[0]) {
-                const file = fileInputRef.current.files[0];
-                try {
-                    return await fileRepository.uploadFileAsync(file)
-
-                } catch (e) {
-                    console.error('Error during file uploading', e);
-                    alert('Could not upload file');
-                }
+        async function getRequestId(): Promise<Guid | undefined> {
+            if (!fileInputRef.current?.files?.[0]) {
+                return undefined;
             }
-            return undefined;
+            const file = fileInputRef.current.files[0];
+            const metadata = promptFileMetadata()
+            try {
+                let guid = await fileRepository.uploadFileAsync(file, metadata);
+                myUploadedFiles.add(guid.value);
+                return guid;
+            } catch (e) {
+                console.error('Error during file uploading', e);
+                alert('Could not upload file');
+                return undefined;
+            }
         }
 
         const message = userMessage.trim();
@@ -37,11 +47,11 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
         setMessageSending(true);
         try {
-            const attachment = await getAttachment();
+            const requestId = await getRequestId();
             await forumHandler.sendMessage({
                 message,
                 username,
-                attachment
+                requestId
             });
             setUserMessage('');
             if (fileInputRef.current) {
@@ -72,22 +82,41 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
     function mapMessageToChatMessage(msg: Message): ChatMessage {
         return {
-            attachment: msg.attachment ? ({
-                downloadUrl: msg.attachment.contentUrl,
-                filename: msg.attachment.name
-            }) : undefined,
             username: msg.username,
-            message: msg.message
+            message: msg.message,
+            requestId: msg.requestId,
         }
     }
 
     useEffect(() => {
-        function cb(msg: Message) {
+        function onMessageCallback(msg: Message) {
             setMessages([...messages, mapMessageToChatMessage(msg)]);
         }
-        forumHandler.registerOnMessageCallback(cb);
+
+        function onFileUploadCallback(uploadFile: UploadFile) {
+            const requiredMessage = messages.find(msg => msg.requestId === uploadFile.requestId);
+            if (!requiredMessage) {
+                console.warn('Could not find message for onFileUploadCallback');
+                return;
+            }
+            if (myUploadedFiles.has(uploadFile.requestId.value)) {
+                alert('Your file was successfully uploaded!')
+                myUploadedFiles.delete(uploadFile.requestId.value)
+            }
+            requiredMessage.attachment = {
+                name: 'Attachment',
+                contentUrl: uploadFile.contentUrl,
+                metadata: uploadFile.metadata
+            }
+            setMessages(messages);
+            rerender();
+        }
+
+        forumHandler.registerOnMessageCallback(onMessageCallback);
+        forumHandler.registerOnFileUploadedCallback(onFileUploadCallback);
         return () => {
-            forumHandler.unregisterOnMessageCallback(cb);
+            forumHandler.unregisterOnMessageCallback(onMessageCallback);
+            forumHandler.unregisterOnFileUploadCallback(onFileUploadCallback);
         }
     }, [forumHandler, messages]);
 
