@@ -8,9 +8,11 @@ COPY . .
 
 ARG server_url
 ARG file_server_url
+ARG file_metadata_server_url
 
 ENV REACT_APP_SERVER_URL ${server_url}
 ENV REACT_APP_FILE_SERVER_URL ${file_server_url}
+ENV REACT_APP_FILE_METADATA_SERVER_URL ${file_metadata_server_url}
 
 RUN npm run build
 
