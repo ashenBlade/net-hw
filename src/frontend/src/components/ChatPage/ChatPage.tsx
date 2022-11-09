@@ -17,9 +17,44 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
     const [myUploadedFiles,] = useState<Set<string>>(new Set());
     const [, rerender] = useReducer(x => x + 1, 0);
 
-    function promptFileMetadata(): Map<string, string> {
-        return new Map();
+    function promptUserInput(name: string): string {
+        let value = prompt(`${name}`);
+        while (!value) {
+            value = prompt(`Че? Не понятно? Введи: ${name}`);
+        }
+        return value;
     }
+
+    function promptUserMetadata(names: string[]): Map<string, string> {
+        const map = new Map<string, string>();
+        names.forEach(n => map.set(n, promptUserInput(n)))
+        return map;
+    }
+
+    function promptFileMetadata(contentType: string, extension: string): Map<string, string> {
+        const [baseType, concreteType] = contentType.split('/');
+        let toPrompt: string[];
+        switch (baseType) {
+            case 'image':
+                toPrompt = ['Size', 'Colors'];
+                break;
+            case 'video':
+                toPrompt = ['Duration', 'Actors'];
+                break;
+            case 'text':
+                toPrompt = [];
+                break;
+            case 'application':
+                toPrompt = [];
+                break;
+            default:
+                toPrompt = []
+                break;
+        }
+        return promptUserMetadata(toPrompt)
+    }
+
+
 
     async function sendMessage() {
         async function getRequestId(): Promise<Guid | undefined> {
@@ -27,7 +62,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
                 return undefined;
             }
             const file = fileInputRef.current.files[0];
-            const metadata = promptFileMetadata()
+            const metadata = await promptFileMetadata(file.type, file.name.split('.').pop() ?? file.name)
             try {
                 let guid = await fileRepository.uploadFileAsync(file, metadata);
                 myUploadedFiles.add(guid.value);

@@ -75,10 +75,8 @@ export default class FileApiFileRepository implements FileRepository {
 
         const json = await response.json();
         return {
-            fileId: fileId,
             contentUrl: `${this.fileServerUrl}/api/files/${fileId}/blob`,
             name: json.filename,
-            contentType: json.contentType,
         }
     }
 }
