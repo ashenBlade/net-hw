@@ -39,4 +39,11 @@ public class MessageRepository : IMessageRepository
         await _context.AddAsync(message, token);
         await _context.SaveChangesAsync(token);
     }
+
+    public async Task UpdateFileIdInMessageAsync(Guid requestId, Guid fileId, CancellationToken token = default)
+    {
+        var message = await _context.Messages.FirstOrDefaultAsync(msg => msg.RequestId == requestId, token) ?? throw new InvalidOperationException();
+        message.FileId = fileId;
+        await _context.SaveChangesAsync(token);
+    }
 }

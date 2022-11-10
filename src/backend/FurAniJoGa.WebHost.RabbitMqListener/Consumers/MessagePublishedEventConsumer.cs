@@ -29,7 +29,8 @@ public class MessagePublishedEventConsumer: IConsumer<MessagePublishedEvent>
                 context.Message.Message, context.Message.Username, context.Message.AttachmentRequestId);
             var message = await _messageFactory.CreateMessageAsync(context.Message.Message,
                                                                    context.Message.Username,
-                                                                   context.Message.AttachmentRequestId, 
+                                                                   context.Message.AttachmentRequestId,
+                                                                   context.Message.RequestId,
                                                                    context.CancellationToken);
             await _messagesRepository.AddMessageAsync(message, context.CancellationToken);
         }
