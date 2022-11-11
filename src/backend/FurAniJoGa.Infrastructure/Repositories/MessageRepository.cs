@@ -40,9 +40,14 @@ public class MessageRepository : IMessageRepository
         await _context.SaveChangesAsync(token);
     }
 
+    private async Task<Message> FindMessageByRequestId(Guid requestId, CancellationToken token = default)
+    {
+        return await _context.Messages.FirstOrDefaultAsync(msg => msg.RequestId == requestId, token) ?? throw new InvalidOperationException();
+    }
+
     public async Task UpdateFileIdInMessageAsync(Guid requestId, Guid fileId, CancellationToken token = default)
     {
-        var message = await _context.Messages.FirstOrDefaultAsync(msg => msg.RequestId == requestId, token) ?? throw new InvalidOperationException();
+        var message = await FindMessageByRequestId(requestId, token);
         message.FileId = fileId;
         await _context.SaveChangesAsync(token);
     }

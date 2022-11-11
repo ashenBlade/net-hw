@@ -25,4 +25,8 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FurAniJoGa.Worker.MongoUpdater\FurAniJoGa.Worker.MongoUpdater.csproj" />
+    </ItemGroup>
+
 </Project>
