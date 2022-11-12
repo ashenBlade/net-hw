@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddFileApi(builder.Configuration.GetS3FileServiceOptions());
 
+builder.Services.AddSingleton(builder.Configuration.GetRedisSettings());
 
 if (!builder.Environment.IsProduction())
 {

@@ -1,8 +1,7 @@
-﻿using System.Net.Http.Json;
-using FurAniJoGa.Worker.MongoUpdater.FileUploaderCounterService;
+﻿using System.Text.Json;
 using StackExchange.Redis;
 
-namespace FurAniJoGa.Worker.MongoUpdater.RedisMetadataUploaderService;
+namespace FurAniJoGa.WebHost.FileAPI.RedisMetadataUploaderService;
 
 public class RedisMetadataUploaderService : IMetadataUploaderService
 {
@@ -13,11 +12,11 @@ public class RedisMetadataUploaderService : IMetadataUploaderService
     }
 
 
-    public async Task<bool> UploadMetadata(Guid requestId, JsonContent metadata)
+    public async Task<bool> UploadMetadata(Guid requestId, Dictionary<string,string> metadata)
     {
         var multiplexer = await ConnectionMultiplexer.ConnectAsync($"{_settings.Host}:{_settings.Port}");
         var db = multiplexer.GetDatabase();
-        var result = await db.StringSetAsync(requestId.ToString(), metadata.ToString()).ConfigureAwait(false);
+        var result = await db.StringSetAsync(requestId.ToString(), JsonSerializer.Serialize(metadata)).ConfigureAwait(false);
         if (!result)
             throw new InvalidOperationException();
         return result;

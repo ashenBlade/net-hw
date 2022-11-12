@@ -1,5 +1,5 @@
 ﻿using FurAniJoGa.RabbitMq.Contracts.Events;
-using FurAniJoGa.Worker.MongoUpdater.RedisMetadataUploaderService;
+using FurAniJoGa.WebHost.FileAPI.RedisMetadataUploaderService;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +19,7 @@ public class MetadataController : Controller
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> UploadMetadata(Guid requestId, JsonContent metadata, CancellationToken token = default)
+    public async Task<IActionResult> UploadMetadata(Guid requestId, Dictionary<string,string> metadata, CancellationToken token = default)
     {
         try
         {
