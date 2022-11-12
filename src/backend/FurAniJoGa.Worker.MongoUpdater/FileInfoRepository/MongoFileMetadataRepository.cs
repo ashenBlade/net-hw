@@ -2,13 +2,13 @@ using MongoDB.Driver;
 
 namespace FurAniJoGa.Worker.MongoUpdater.FileInfoRepository;
 
-public class MongoFileInfoRepository: IFileInfoRepository
+public class MongoFileMetadataRepository: IFileMetadataRepository
 {
     private readonly MongoSettings _settings;
     private readonly IMongoClient _client;
     private IMongoDatabase Database => _client.GetDatabase(_settings.Database);
     private IMongoCollection<MongoFile> MongoFileCollection => Database.GetCollection<MongoFile>(_settings.Collection);
-    public MongoFileInfoRepository(MongoSettings settings)
+    public MongoFileMetadataRepository(MongoSettings settings)
     {
         _settings = settings;
         _client = new MongoClient(new MongoClientSettings()

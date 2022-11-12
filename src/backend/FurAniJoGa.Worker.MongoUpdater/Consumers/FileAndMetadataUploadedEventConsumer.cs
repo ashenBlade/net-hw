@@ -1,19 +1,24 @@
 using FurAniJoGa.RabbitMq.Contracts.Events;
+using FurAniJoGa.Worker.MongoUpdater.Commands;
 using FurAniJoGa.Worker.MongoUpdater.FileInfoRepository;
 using MassTransit;
+using MediatR;
 
 namespace FurAniJoGa.Worker.MongoUpdater.Consumers;
 
 public class FileAndMetadataUploadedEventConsumer: IConsumer<FileAndMetadataUploadedEvent>
 {
-    private readonly IFileInfoRepository _fileInfoRepository;
+    private readonly IFileMetadataRepository _fileMetadataRepository;
     private readonly ILogger<FileAndMetadataUploadedEventConsumer> _logger;
+    private readonly IMediator _mediator;
 
-    public FileAndMetadataUploadedEventConsumer(IFileInfoRepository fileInfoRepository, 
-                                                ILogger<FileAndMetadataUploadedEventConsumer> logger)
+    public FileAndMetadataUploadedEventConsumer(IFileMetadataRepository fileMetadataRepository, 
+                                                ILogger<FileAndMetadataUploadedEventConsumer> logger,
+                                                IMediator mediator)
     {
-        _fileInfoRepository = fileInfoRepository;
+        _fileMetadataRepository = fileMetadataRepository;
         _logger = logger;
+        _mediator = mediator;
     }
     
     public async Task Consume(ConsumeContext<FileAndMetadataUploadedEvent> context)
@@ -21,9 +26,19 @@ public class FileAndMetadataUploadedEventConsumer: IConsumer<FileAndMetadataUplo
         var requestId = context.Message.RequestId;
         _logger.LogInformation("File and metadata were uploaded for request {RequestId}", requestId);
         var (fileId, metadata) = ( context.Message.FileId, context.Message.Metadata );
+        
         try
         {
-            await _fileInfoRepository.SaveFileAsync(fileId, metadata, context.CancellationToken);
+            await _mediator.Publish(new MoveToPersistentBucketCommand() {FileId = fileId});
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning(e, "Could not publish MoveToPersistentBucketCommand");
+            return;
+        }
+        try
+        {
+            await _fileMetadataRepository.SaveFileAsync(fileId, metadata, context.CancellationToken);
         }
         catch (Exception e)
         {

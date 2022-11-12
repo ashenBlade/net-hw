@@ -99,6 +99,12 @@ services:
       RABBITMQ_HOST: rabbit-mq
       RABBITMQ_EXCHANGE: amq.fanout
       
+      S3_SECRET: minio_user
+      S3_PASSWORD: minio_password
+      S3_TEMPORARY_BUCKET: temp-user-files
+      S3_PERSISTENT_BUCKET: user-files
+      S3_HOST: http://minio:9000 
+      
     depends_on:
       - redis
       - rabbit-mq

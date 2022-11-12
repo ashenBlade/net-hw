@@ -1,4 +1,5 @@
 using FurAniJoGa.Worker.MongoUpdater.FileInfoRepository;
+using FurAniJoGa.Worker.MongoUpdater.FileMoveService;
 using FurAniJoGa.Worker.MongoUpdater.FileUploaderCounterService;
 using MassTransit;
 
@@ -29,6 +30,18 @@ public static class ConfigurationExtensions
                    Password = config.GetValue<string>("MONGO_PASSWORD"),
                    Database = config.GetValue<string>("MONGO_DATABASE"),
                    Collection = config.GetValue<string>("MONGO_COLLECTION")
+               };
+    }
+
+    public static S3FileMoveServiceOptions GetS3FileMoveServiceOptions(this IConfiguration configuration)
+    {
+        return new S3FileMoveServiceOptions()
+               {
+                   Host = configuration.GetValue<Uri>("S3_HOST"),
+                   Password = configuration.GetValue<string>("S3_PASSWORD"),
+                   SecretKey = configuration.GetValue<string>("S3_SECRET"),
+                   PersistentBucketName = configuration.GetValue<string>("S3_TEMPORARY_BUCKET"),
+                   TemporaryBucketName = configuration.GetValue<string>("S3_PERSISTENT_BUCKET")
                };
     }
 }

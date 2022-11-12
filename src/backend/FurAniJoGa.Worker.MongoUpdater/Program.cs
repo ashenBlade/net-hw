@@ -1,10 +1,13 @@
+using System.Reflection;
 using FurAniJoGa.RabbitMq.Contracts.Events;
 using FurAniJoGa.Worker.MongoUpdater;
 using FurAniJoGa.Worker.MongoUpdater.Consumers;
 using FurAniJoGa.Worker.MongoUpdater.FileIdRepository;
 using FurAniJoGa.Worker.MongoUpdater.FileInfoRepository;
+using FurAniJoGa.Worker.MongoUpdater.FileMoveService;
 using FurAniJoGa.Worker.MongoUpdater.FileUploaderCounterService;
 using MassTransit;
+using MediatR;
 
 using var host = Host.CreateDefaultBuilder(args)
                      .ConfigureServices((context, services) =>
@@ -14,7 +17,7 @@ using var host = Host.CreateDefaultBuilder(args)
                           services.AddScoped<IFileUploaderCounterService, RedisFileUploaderCounterService>();
 
                           services.AddSingleton(context.Configuration.GetMongoSettings());
-                          services.AddScoped<IFileInfoRepository, MongoFileInfoRepository>();
+                          services.AddScoped<IFileMetadataRepository, MongoFileMetadataRepository>();
                       
                           services.AddMassTransit(configurator =>
                           {
@@ -40,6 +43,10 @@ using var host = Host.CreateDefaultBuilder(args)
                                   factory.ConfigureEndpoints(registrationContext);
                               });
                           });
+
+                          services.AddSingleton(context.Configuration.GetS3FileMoveServiceOptions());
+                          services.AddScoped<IFileMoveService, S3FileMoveService>();
+                          services.AddMediatR(Assembly.GetExecutingAssembly());
                       })
                      .Build();
 
