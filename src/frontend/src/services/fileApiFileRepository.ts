@@ -1,32 +1,49 @@
 import FileRepository from "../interfaces/fileRepository";
 import Attachment from "../models/attachment";
+import Guid from "../models/guid";
 
 export default class FileApiFileRepository implements FileRepository {
-    constructor(readonly fileServerUrl: string) { }
+    constructor(readonly fileServerUrl: string,
+                readonly fileMetadataServerUrl: string) { }
 
-    async addFileAsync(file: File): Promise<Attachment> {
+    createContentUrl(fileId: Guid): string {
+        return `${this.fileServerUrl}/api/files/${fileId.value}`;
+    }
+
+    private uploadFile(file: File, requestId: Guid): Promise<Response> {
         const form = new FormData();
         form.set('file', file);
-        const response = await fetch(`${this.fileServerUrl}/api/files`, {
+        form.set('requestId', requestId.value);
+        return fetch(`${this.fileServerUrl}/api/files`, {
             method: 'POST',
             body: form,
             mode: 'cors',
         });
-        if (!response.ok) {
-            console.error('Error during saving file', {
-                statusCode: response.status
-            })
-            throw new Error('Could not create new file')
+    }
+
+    private uploadMetadata(metadata: Map<string, string>, requestId: Guid): Promise<Response> {
+        const form = new FormData();
+        form.set('metadata', JSON.stringify(metadata));
+        form.set('requestId', requestId.value);
+        return fetch(`${this.fileMetadataServerUrl}/api/metadata`, {
+            method: 'POST',
+            body: JSON.stringify(metadata),
+            mode: 'cors'
+        });
+    }
+
+    async uploadFileAsync(file: File, metadata: Map<string, string>): Promise<Guid> {
+        const requestGuid = Guid.generate();
+        const fileUploadPromise = this.uploadFile(file, requestGuid);
+        const metadataUploadPromise = this.uploadMetadata(metadata, requestGuid);
+        const [fileUploadResponse, metadataUploadResponse] = await Promise.all([fileUploadPromise, metadataUploadPromise]);
+        if (!fileUploadResponse.ok) {
+            console.error('Error during file upload', `Status code: ${fileUploadResponse.status}`);
         }
-        const json = await response.json();
-        const fileId = json.fileId;
-        const contentUrl = `${this.fileServerUrl}/api/files/${fileId}/blob`;
-        return {
-            fileId,
-            contentUrl,
-            contentType: json.contentType,
-            name: json.filename
+        if (!metadataUploadResponse.ok) {
+            console.error('Error during metadata upload', `Status code: ${metadataUploadResponse.status}`)
         }
+        return requestGuid;
     }
 
     // https://stackoverflow.com/a/40940790/14109140
@@ -42,7 +59,8 @@ export default class FileApiFileRepository implements FileRepository {
         return null;
     }
 
-    async getFileAsync(fileId: string): Promise<Attachment | null> {
+    async getFileAsync(fileGuid: Guid): Promise<Attachment | null> {
+        const fileId = fileGuid.value;
         const response = await fetch(`${this.fileServerUrl}/api/files/${fileId}`, {
             mode: 'cors',
             method: 'GET'
@@ -57,10 +75,8 @@ export default class FileApiFileRepository implements FileRepository {
 
         const json = await response.json();
         return {
-            fileId: fileId,
             contentUrl: `${this.fileServerUrl}/api/files/${fileId}/blob`,
             name: json.filename,
-            contentType: json.contentType,
         }
     }
 }

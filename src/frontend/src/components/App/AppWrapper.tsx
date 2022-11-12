@@ -9,12 +9,13 @@ import {useEffectOnce} from "../../hooks/useEffectOnce";
 interface AppWrapperProps {
     serverUrl: string
     fileServerUrl: string
+    fileMetadataServerUrl: string
 }
 
-const AppWrapper: FC<AppWrapperProps> = ({serverUrl, fileServerUrl}) => {
-    const [fileRepository,] = useState(new FileApiFileRepository(fileServerUrl));
+const AppWrapper: FC<AppWrapperProps> = ({serverUrl, fileServerUrl, fileMetadataServerUrl}) => {
+    const [fileRepository,] = useState(new FileApiFileRepository(fileServerUrl, fileMetadataServerUrl));
     const [communicator,] = useState(new SignalrForumCommunicator(serverUrl, fileRepository));
-    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(serverUrl, fileRepository));
+    const [messagesRepository,] = useState(new MessagesApiMessagesRepository(serverUrl));
     const [forumHandler,] = useState(new AggregatedForumHandler(messagesRepository, communicator));
     
     useEffectOnce(() => {

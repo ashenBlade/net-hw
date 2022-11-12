@@ -1,8 +1,12 @@
+import Guid from "../../../models/guid";
+
 export default interface ChatMessage {
     username?: string
     message: string
+    requestId?: Guid
     attachment?: {
-        downloadUrl: string
-        filename: string
+        name: string
+        contentUrl: string
+        metadata: Map<string, string>
     }
 }

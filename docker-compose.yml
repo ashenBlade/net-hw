@@ -8,6 +8,7 @@ services:
       args:
         server_url: http://localhost:8081
         file_server_url: http://localhost:8083
+        file_metadata_server_url: http://localhost:8084
     ports:
       - '8080:80'
     depends_on:
@@ -64,6 +65,9 @@ services:
       S3_PASSWORD: minio_password
       S3_BUCKET: "user-files"
       S3_HOST: http://minio:9000
+
+      RABBITMQ_HOST: rabbit-mq
+      RABBITMQ_EXCHANGE: amq.fanout
       
       FORUM_URL: http://localhost:8080
       

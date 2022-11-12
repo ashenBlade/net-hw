@@ -49,6 +49,7 @@ public static class ServicesExtensions
                 throw new ArgumentNullException(nameof(exchange), "RabbitMq Exchange name is not provided");
             }
 
+            configurator.AddConsumer<FileAndMetadataUploadedEventConsumer>();
             configurator.UsingRabbitMq((registrationContext, factory) =>
             {
                 factory.Host(host, "/", h =>

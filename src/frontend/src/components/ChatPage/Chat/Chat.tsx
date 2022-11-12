@@ -14,7 +14,25 @@ function createMessageRecord(message: ChatMessage, i: number) {
     return (
         <div key={i}>
             <div>{name}: {contents}</div>
-            {message.attachment && (<a download={message.attachment.filename} href={message.attachment.downloadUrl}>{message.attachment.filename}</a> )}
+            {
+                message.attachment && (
+                    <>
+                        <a download={message.attachment.name} href={message.attachment.contentUrl}>
+                            {message.attachment.name}
+                        </a>
+                        <button className={'btn btn-info'} onClick={() => {
+                            alert(`Metadata:\n${
+                                message.attachment && 
+                                Array.from(message.attachment.metadata.entries())
+                                    .map(([x, y]) => `${x}: ${y}`)
+                                    .join('\n')
+                            }`)
+                        }}>
+
+                        </button>
+                    </>
+                )
+            }
         </div>
     )
 }

@@ -3,6 +3,7 @@ import {Message} from "../models/message";
 import {MessageCallback} from "../interfaces/messageCallback";
 import {MessagesRepository} from "../interfaces/messagesRepository";
 import {ForumCommunicator} from "../interfaces/forumCommunicator";
+import {FileUploadedCallback} from "../interfaces/fileUploadedCallback";
 
 export class AggregatedForumHandler implements ForumHandler {
     constructor(readonly repository: MessagesRepository,
@@ -23,6 +24,14 @@ export class AggregatedForumHandler implements ForumHandler {
 
     unregisterOnMessageCallback(cb: MessageCallback): void {
         this.communicator.unregisterOnMessageCallback(cb);
+    }
+
+    registerOnFileUploadedCallback(cb: FileUploadedCallback): void {
+        this.communicator.registerOnFileUploadedCallback(cb);
+    }
+
+    unregisterOnFileUploadCallback(cb: FileUploadedCallback): void {
+        this.communicator.unregisterOnFileUploadCallback(cb);
     }
 
 }
