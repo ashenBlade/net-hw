@@ -2,9 +2,7 @@ using FurAniJoGa.WebHost.FileAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddFileApi(builder.Configuration.GetS3FileServiceOptions());
-
-builder.Services.AddSingleton(builder.Configuration.GetRedisSettings());
+builder.Services.AddFileApi(builder.Configuration.GetS3FileServiceOptions(), builder.Configuration.GetRedisSettings());
 
 if (!builder.Environment.IsProduction())
 {
