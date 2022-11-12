@@ -3,7 +3,7 @@ using Amazon.S3.Model;
 
 namespace FurAniJoGa.Worker.MongoUpdater.FileMoveService;
 
-public class S3FileMoveService: IFileMoveService
+public class S3FileMoveService: IFileMoveService, IDisposable
 {
     private readonly S3FileMoveServiceOptions _options;
     private readonly ILogger<S3FileMoveService> _logger;
@@ -38,5 +38,10 @@ public class S3FileMoveService: IFileMoveService
         {
             _logger.LogWarning(amazonException, "Error during file ({FileId}) copy", fileIdString);
         }
+    }
+
+    public void Dispose()
+    {
+        _client.Dispose();
     }
 }
