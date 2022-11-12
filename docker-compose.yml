@@ -65,6 +65,9 @@ services:
       S3_PASSWORD: minio_password
       S3_BUCKET: "user-files"
       S3_HOST: http://minio:9000
+
+      RABBITMQ_HOST: rabbit-mq
+      RABBITMQ_EXCHANGE: amq.fanout
       
       FORUM_URL: http://localhost:8080
       
