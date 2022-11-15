@@ -51,13 +51,13 @@ public class FilesController: ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> UploadFile(Guid requestId, IFormFile file, CancellationToken token = default)
+    public async Task<IActionResult> UploadFileToTempBucket(Guid requestId, IFormFile file, CancellationToken token = default)
     {
         _logger.LogInformation("Attempt to upload file");
         Guid fileId;
         try
         {
-            fileId = await _fileService.SaveFileAsync(file, token);
+            fileId = await _fileService.SaveFileToTempBucketAsync(file, token);
         }
         catch (Exception e)
         {
