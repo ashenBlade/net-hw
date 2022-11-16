@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(s3FileServiceOptions);
         services.AddSingleton(redisSettings);
         services.AddScoped<IFileService, S3FileService>();
-        services.AddScoped<IMetadataUploaderService, RedisMetadataUploaderService.RedisMetadataUploaderService>();
+        services.AddScoped<IUploaderService, RedisUploaderService>();
         services.AddCors();
 
         return services;

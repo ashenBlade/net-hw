@@ -20,14 +20,14 @@ public class S3FileService: IFileService, IDisposable
         _client = new AmazonS3Client(options.SecretKey, options.Password, config);
     }
     
-    public async Task<Guid> SaveFileAsync(IFormFile file, CancellationToken token = default)
+    public async Task<Guid> SaveFileToTempBucketAsync(IFormFile file, CancellationToken token = default)
     {
         var id = Guid.NewGuid();
         await using var stream = file.OpenReadStream();
         var encodedFilename = Uri.EscapeDataString(file.FileName);
         var request = new PutObjectRequest()
                       {
-                          BucketName = _options.Bucket,
+                          BucketName = _options.TempBucket,
                           InputStream = stream,
                           AutoCloseStream = true,
                           Key = id.ToString(),
@@ -62,7 +62,7 @@ public class S3FileService: IFileService, IDisposable
         var request = new GetObjectRequest()
                       {
                           Key = fileId.ToString(),
-                          BucketName = _options.Bucket
+                          BucketName = _options.PersistentBucket
                       };
         GetObjectResponse response;
         try
@@ -99,7 +99,7 @@ public class S3FileService: IFileService, IDisposable
 
     public async Task<File?> GetFileInfoAsync(Guid fileId, CancellationToken token = default)
     {
-        var response = await _client.GetObjectMetadataAsync(_options.Bucket, fileId.ToString(), token);
+        var response = await _client.GetObjectMetadataAsync(_options.PersistentBucket, fileId.ToString(), token);
         if ((int)response.HttpStatusCode > 299)
         {
             return null;
