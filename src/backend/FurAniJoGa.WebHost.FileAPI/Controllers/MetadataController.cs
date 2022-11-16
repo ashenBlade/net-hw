@@ -9,12 +9,12 @@ namespace FurAniJoGa.WebHost.FileAPI.Controllers;
 [Route("/api/metadata")]
 public class MetadataController : Controller
 {
-    private readonly IMetadataUploaderService _metadataUploaderService; 
+    private readonly IUploaderService _uploaderService; 
     private readonly IBus _bus;
 
-    public MetadataController(IMetadataUploaderService metadataUploaderService, IBus bus)
+    public MetadataController(IUploaderService uploaderService, IBus bus)
     {
-        _metadataUploaderService = metadataUploaderService;
+        _uploaderService = uploaderService;
         _bus = bus;
     }
 
@@ -23,11 +23,11 @@ public class MetadataController : Controller
     {
         try
         {
-            await _metadataUploaderService.UploadMetadata(requestId, metadata);
+            await _uploaderService.UploadMetadata(requestId, metadata);
         }
         catch
         {
-            return BadRequest();
+            return Problem("Could not save metadata to cache");
         }
 
         await _bus.Publish(new MetadataUploadedEvent() {Metadata = metadata, RequestId = requestId}, token);

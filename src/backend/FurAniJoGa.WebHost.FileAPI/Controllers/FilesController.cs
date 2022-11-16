@@ -1,3 +1,6 @@
+using FurAniJoGa.RabbitMq.Contracts.Events;
+using FurAniJoGa.WebHost.FileAPI.RedisMetadataUploaderService;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurAniJoGa.WebHost.FileAPI.Controllers;
@@ -8,11 +11,15 @@ public class FilesController: ControllerBase
 {
     private readonly IFileService _fileService;
     private readonly ILogger<FilesController> _logger;
+    private readonly IUploaderService _uploaderService;
+    private readonly IBus _bus;
 
-    public FilesController(IFileService fileService, ILogger<FilesController> logger)
+    public FilesController(IFileService fileService, ILogger<FilesController> logger, IUploaderService uploaderService, IBus bus)
     {
         _fileService = fileService;
         _logger = logger;
+        _uploaderService = uploaderService;
+        _bus = bus;
     }
     
     [HttpGet("{fileId:guid}")]
@@ -44,20 +51,31 @@ public class FilesController: ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> UploadFile(IFormFile file, CancellationToken token = default)
+    public async Task<IActionResult> UploadFileToTempBucket(Guid requestId, IFormFile file, CancellationToken token = default)
     {
         _logger.LogInformation("Attempt to upload file");
         Guid fileId;
         try
         {
-            fileId = await _fileService.SaveFileAsync(file, token);
+            fileId = await _fileService.SaveFileToTempBucketAsync(file, token);
         }
         catch (Exception e)
         {
             _logger.LogWarning(e, "Could not save file. Error during call SaveFileAsync");
             return Problem("Could not save file to storage");
         }
-        
+
+        try
+        {
+            await _uploaderService.UploadFileId(requestId, fileId);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning(e, "Could not save file id in redis. Error during call UploadFileId");
+            return Problem("Could not save file id to cache");
+        }
+        await _bus.Publish(new FileUploadedEvent() {FileId = fileId, RequestId = requestId}, token);
+
         return Ok(new{FileId = fileId});
     }
 }
