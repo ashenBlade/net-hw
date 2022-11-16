@@ -63,7 +63,8 @@ services:
     environment:
       S3_SECRET: minio_user
       S3_PASSWORD: minio_password
-      S3_BUCKET: "user-files"
+      S3_TEMPORARY_BUCKET: temp-user-files
+      S3_PERSISTENT_BUCKET: user-files
       S3_HOST: http://minio:9000
 
       RABBITMQ_HOST: rabbit-mq

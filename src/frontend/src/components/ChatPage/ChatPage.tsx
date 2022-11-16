@@ -33,23 +33,39 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
     function promptFileMetadata(contentType: string, extension: string): Map<string, string> {
         const [baseType, concreteType] = contentType.split('/');
-        let toPrompt: string[];
+        let toPrompt: string[] = [];
         switch (baseType) {
             case 'image':
-                toPrompt = ['Size', 'Colors'];
+                toPrompt = ['Размер изображения', 'Цвет'];
                 break;
             case 'video':
-                toPrompt = ['Duration', 'Actors'];
+                toPrompt = ['Длительность', 'Актеры'];
                 break;
             case 'text':
-                toPrompt = [];
+                switch (concreteType) {
+                    case 'html':
+                        toPrompt = ['HTML язык программирования?']
+                        break;
+                    case 'plain':
+                        toPrompt = ['Количество слов']
+                        break;
+                    case 'css':
+                        toPrompt = ['Количество классов']
+                        break;
+                }
                 break;
             case 'application':
-                toPrompt = [];
-                break;
-            default:
-                toPrompt = []
-                break;
+                switch (concreteType) {
+                    case 'pdf':
+                        toPrompt = ['Количество страниц']
+                        break;
+                    case 'json':
+                        toPrompt = ['Массив или объект']
+                        break;
+                    case 'x-bittorrent':
+                        toPrompt = ['Ты пират?']
+                        break;
+                }
         }
         return promptUserMetadata(toPrompt)
     }
