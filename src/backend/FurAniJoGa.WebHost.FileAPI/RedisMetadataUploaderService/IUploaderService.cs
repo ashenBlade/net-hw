@@ -2,6 +2,6 @@
 
 public interface IUploaderService
 {
-    Task UploadMetadata(Guid requestId, Dictionary<string,string> metadata);
-    Task UploadFileId(Guid requestId, Guid fileId);
+    Task<bool> UploadMetadata(Guid requestId, Dictionary<string,string> metadata);
+    Task<bool> UploadFileId(Guid requestId, Guid fileId);
 }

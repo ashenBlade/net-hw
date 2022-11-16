@@ -12,43 +12,23 @@ public class RedisUploaderService : IUploaderService
     }
 
 
-    public async Task UploadMetadata(Guid requestId, Dictionary<string,string> metadata)
+    public async Task<bool> UploadMetadata(Guid requestId, Dictionary<string,string> metadata)
     {
         var multiplexer = await ConnectionMultiplexer.ConnectAsync($"{_settings.Host}:{_settings.Port}");
         var db = multiplexer.GetDatabase();
-        
-        var value = await db.HashGetAllAsync(requestId.ToString());
-
-        var metadataString = JsonSerializer.Serialize(metadata);
-        
-        if (value.Length == 0)
-        {
-            HashEntry[] redisHash = {
-                new HashEntry("fileId", ""),
-                new HashEntry("metadata", metadataString)
-            };
-            await db.HashSetAsync(requestId.ToString(), redisHash);
-        }
-
-        await db.HashSetAsync(requestId.ToString(), "metadata", metadataString);
+        var result = await db.StringSetAsync($"{requestId.ToString()}-metadata", JsonSerializer.Serialize(metadata)).ConfigureAwait(false);
+        if (!result)
+            throw new InvalidOperationException();
+        return result;
     }
 
-    public async Task UploadFileId(Guid requestId, Guid fileId)
+    public async Task<bool> UploadFileId(Guid requestId, Guid fileId)
     {
         var multiplexer = await ConnectionMultiplexer.ConnectAsync($"{_settings.Host}:{_settings.Port}");
         var db = multiplexer.GetDatabase();
-        
-        var value = await db.HashGetAllAsync(requestId.ToString());
-
-        if (value.Length == 0)
-        {
-            HashEntry[] redisHash = {
-                new HashEntry("fileId", fileId.ToString()),
-                new HashEntry("metadata", "")
-            };
-            await db.HashSetAsync(requestId.ToString(), redisHash);
-        }
-
-        await db.HashSetAsync(requestId.ToString(), "fileId", fileId.ToString());
+        var result = await db.StringSetAsync($"{requestId.ToString()}-fileId", fileId.ToString()).ConfigureAwait(false);
+        if (!result)
+            throw new InvalidOperationException();
+        return result;
     }
 }
