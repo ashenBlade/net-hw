@@ -31,7 +31,8 @@ public class ChatHub : Hub
             return;
         }
 
-        await _bus.Publish(new MessagePublishedEvent {Username = username, Message = message, AttachmentRequestId = requestId});
+        _logger.LogInformation("Received message from {Username} with requestId {RequestId}", username, requestId);
+        await _bus.Publish(new MessagePublishedEvent {Username = username, Message = message, RequestId = requestId});
         await Clients.All.SendAsync(PublishMessageMethodName, username, message, requestId);
     }
 }

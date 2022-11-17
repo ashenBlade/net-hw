@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using FurAniJoGa.RabbitMq.Contracts.Events;
 using FurAniJoGa.WebHost.FileAPI.RedisMetadataUploaderService;
 using MassTransit;
@@ -14,7 +15,9 @@ public class FilesController: ControllerBase
     private readonly IUploaderService _uploaderService;
     private readonly IBus _bus;
 
-    public FilesController(IFileService fileService, ILogger<FilesController> logger, IUploaderService uploaderService, IBus bus)
+    public FilesController(IFileService fileService, 
+                           ILogger<FilesController> logger,
+                           IUploaderService uploaderService, IBus bus)
     {
         _fileService = fileService;
         _logger = logger;
@@ -51,9 +54,15 @@ public class FilesController: ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> UploadFileToTempBucket(Guid requestId, IFormFile file, CancellationToken token = default)
+    public async Task<IActionResult> UploadFileToTempBucket([FromForm(Name = "requestId")]
+                                                            [Required]
+                                                            Guid requestId, 
+                                                            [FromForm(Name = "file")]
+                                                            [Required]
+                                                            IFormFile file,
+                                                            CancellationToken token = default)
     {
-        _logger.LogInformation("Attempt to upload file");
+        _logger.LogInformation("Attempt to upload file for request {RequestId}", requestId);
         Guid fileId;
         try
         {
@@ -64,6 +73,8 @@ public class FilesController: ControllerBase
             _logger.LogWarning(e, "Could not save file. Error during call SaveFileAsync");
             return Problem("Could not save file to storage");
         }
+        
+        _logger.LogInformation("File was uploaded to temp bucket. Saving file id to REDIS");
 
         try
         {
@@ -74,6 +85,8 @@ public class FilesController: ControllerBase
             _logger.LogWarning(e, "Could not save file id in redis. Error during call UploadFileId");
             return Problem("Could not save file id to cache");
         }
+        
+        _logger.LogInformation("File id saved to redis. Publishing FileUploadedEvent");
         await _bus.Publish(new FileUploadedEvent() {FileId = fileId, RequestId = requestId}, token);
 
         return Ok(new{FileId = fileId});

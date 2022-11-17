@@ -6,6 +6,7 @@ using FurAniJoGa.Worker.MongoUpdater.FileIdRepository;
 using FurAniJoGa.Worker.MongoUpdater.FileInfoRepository;
 using FurAniJoGa.Worker.MongoUpdater.FileMoveService;
 using FurAniJoGa.Worker.MongoUpdater.FileUploaderCounterService;
+using FurAniJoGa.Worker.MongoUpdater.UploadRequestRepository;
 using MassTransit;
 using MediatR;
 

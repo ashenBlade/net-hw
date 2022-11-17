@@ -9,7 +9,7 @@ public static class WebApplicationExtensions
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
+        
         app.UseCors(x =>
         {
             x.WithOrigins("http://localhost:8080");

@@ -21,4 +21,13 @@
       <ProjectReference Include="..\FurAniJoGa.RabbitMq.Contracts\FurAniJoGa.RabbitMq.Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="ServicesExtensions.cs">
+        <DependentUpon>Program.cs</DependentUpon>
+      </Compile>
+      <Compile Update="WebApplicationExtensions.cs">
+        <DependentUpon>Program.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

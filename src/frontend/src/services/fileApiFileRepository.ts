@@ -11,24 +11,31 @@ export default class FileApiFileRepository implements FileRepository {
     }
 
     private uploadFile(file: File, requestId: Guid): Promise<Response> {
+        console.log({
+            requestId
+        })
         const form = new FormData();
         form.set('file', file);
         form.set('requestId', requestId.value);
         return fetch(`${this.fileServerUrl}/api/files`, {
             method: 'POST',
             body: form,
-            mode: 'cors',
+            mode: 'cors'
         });
     }
 
     private uploadMetadata(metadata: Map<string, string>, requestId: Guid): Promise<Response> {
-        const form = new FormData();
-        form.set('metadata', JSON.stringify(metadata));
-        form.set('requestId', requestId.value);
+
         return fetch(`${this.fileMetadataServerUrl}/api/metadata`, {
             method: 'POST',
-            body: JSON.stringify(metadata),
-            mode: 'cors'
+            body: JSON.stringify({
+                metadata: Object.fromEntries(metadata),
+                requestId: requestId.value
+            }),
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
     }
 
@@ -63,7 +70,7 @@ export default class FileApiFileRepository implements FileRepository {
         const fileId = fileGuid.value;
         const response = await fetch(`${this.fileServerUrl}/api/files/${fileId}`, {
             mode: 'cors',
-            method: 'GET'
+            method: 'GET',
         });
         if (!response.ok) {
             if (response.status === 404) {

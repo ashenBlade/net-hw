@@ -11,6 +11,6 @@ public class SampleMessageFactory: IMessageFactory
                                             Guid? requestId,
                                             CancellationToken token = default)
     {
-        return Task.FromResult(new Message(DateTime.UtcNow, username, content, fileId,requestId));
+        return Task.FromResult(new Message(DateTime.UtcNow, username, content, fileId, requestId));
     }
 }

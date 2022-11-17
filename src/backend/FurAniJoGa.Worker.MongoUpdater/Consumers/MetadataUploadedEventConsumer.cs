@@ -22,15 +22,15 @@ public class MetadataUploadedEventConsumer: IConsumer<MetadataUploadedEvent>
     
     public async Task Consume(ConsumeContext<MetadataUploadedEvent> context)
     {
-        var e = context.Message;
-        _logger.LogInformation("Metadata uploaded event start consuming for request {RequestId}", e.RequestId);
-        var state = await _counter.IncrementAsync(e.RequestId);
+        var message = context.Message;
+        _logger.LogInformation("Metadata uploaded event start consuming for request {RequestId}", message.RequestId);
+        var state = await _counter.IncrementAsync(message.RequestId);
         if (state == 2)
         {
-            var result = await _uploadRequestRepository.FindFileIdAsync(e.RequestId);
+            var result = await _uploadRequestRepository.FindFileIdAsync(message.RequestId);
             if (result is null)
             {
-                _logger.LogWarning("Could not find file id and metadata by provided request id ({RequestId}) in event", e.RequestId);
+                _logger.LogWarning("Could not find file id and metadata by provided request id ({RequestId}) in event", message.RequestId);
                 return;
             }
 
@@ -39,7 +39,7 @@ public class MetadataUploadedEventConsumer: IConsumer<MetadataUploadedEvent>
             {
                 await context.Publish(new FileAndMetadataUploadedEvent
                                       {
-                                          RequestId = e.RequestId,
+                                          RequestId = message.RequestId,
                                           FileId = fileId,
                                           Metadata = metadata
                                       }, 
@@ -49,7 +49,7 @@ public class MetadataUploadedEventConsumer: IConsumer<MetadataUploadedEvent>
             {
                 _logger.LogWarning(publishException, 
                                    "Error during FileAndMetadataUploadedEvent publishing for request {RequestId}", 
-                                   e.RequestId);
+                                   message.RequestId);
             }
         }
     }

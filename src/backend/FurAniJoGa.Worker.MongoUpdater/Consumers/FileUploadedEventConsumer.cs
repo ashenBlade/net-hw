@@ -22,15 +22,15 @@ public class FileUploadedEventConsumer: IConsumer<FileUploadedEvent>
     
     public async Task Consume(ConsumeContext<FileUploadedEvent> context)
     {
-        var e = context.Message;
-        _logger.LogInformation("File {FileId} was uploaded from request {RequestId}", e.FileId, e.RequestId);
-        var newValue = await _counter.IncrementAsync(e.RequestId);
+        var message = context.Message;
+        _logger.LogInformation("File {FileId} was uploaded from request {RequestId}", message.FileId, message.RequestId);
+        var newValue = await _counter.IncrementAsync(message.RequestId);
         if (newValue == 2)
         {
-            var result = await _uploadRequestRepository.FindFileIdAsync(e.RequestId);
+            var result = await _uploadRequestRepository.FindFileIdAsync(message.RequestId);
             if (result is null)
             {
-                _logger.LogWarning("Could not find file id and metadata by provided request id ({RequestId}) in event", e.RequestId);
+                _logger.LogWarning("Could not find file id and metadata by provided request id ({RequestId}) in event", message.RequestId);
                 return;
             }
 
@@ -39,7 +39,7 @@ public class FileUploadedEventConsumer: IConsumer<FileUploadedEvent>
             {
                 await context.Publish(new FileAndMetadataUploadedEvent
                                       {
-                                          RequestId = e.RequestId,
+                                          RequestId = message.RequestId,
                                           FileId = fileId,
                                           Metadata = metadata
                                       }, 
@@ -47,7 +47,7 @@ public class FileUploadedEventConsumer: IConsumer<FileUploadedEvent>
             }
             catch (PublishException publishException)
             {
-                _logger.LogWarning(publishException, "Error occured during FileAndMetadataUploadedEvent publishing for request {RequestId}", e.RequestId);
+                _logger.LogWarning(publishException, "Error occured during FileAndMetadataUploadedEvent publishing for request {RequestId}", message.RequestId);
             }
         }
     }

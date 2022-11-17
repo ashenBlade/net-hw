@@ -15,7 +15,9 @@ public class MongoFileMetadataRepository: IFileMetadataRepository
                                   {
                                       Server = new MongoServerAddress(_settings.Host, _settings.Port),
                                       Credential =
-                                          MongoCredential.CreateCredential(_settings.Database, _settings.Username,
+                                          
+                                          MongoCredential.CreateCredential("admin",
+                                                                           _settings.Username,
                                                                            _settings.Password)
                                   });
     }

@@ -23,16 +23,18 @@ public class MessagePublishedEventConsumer: IConsumer<MessagePublishedEvent>
     
     public async Task Consume(ConsumeContext<MessagePublishedEvent> context)
     {
+        var m = context.Message;
         try
         {
-            _logger.LogDebug("Requested saving message: {Message} from: {From} with file Id {FileId}", 
-                context.Message.Message, context.Message.Username, context.Message.AttachmentRequestId);
-            var message = await _messageFactory.CreateMessageAsync(context.Message.Message,
-                                                                   context.Message.Username,
-                                                                   context.Message.AttachmentRequestId,
-                                                                   context.Message.RequestId,
+            _logger.LogDebug("Requested saving message: {Message} from: {From} with requestId {FileId}", 
+                m.Message, m.Username, m.RequestId);
+            var message = await _messageFactory.CreateMessageAsync(m.Message,
+                                                                   m.Username,
+                                                                   null,
+                                                                   m.RequestId,
                                                                    context.CancellationToken);
             await _messagesRepository.AddMessageAsync(message, context.CancellationToken);
+            _logger.LogInformation("Message was added");
         }
         catch (Exception e)
         {
@@ -41,9 +43,9 @@ public class MessagePublishedEventConsumer: IConsumer<MessagePublishedEvent>
                              + "Username: \"{Username}\". "
                              + "Message: \"{Message}\""
                                + "File id: \"{FileId}\"", 
-                               context.Message.Username,
-                               context.Message.Message, 
-                               context.Message.AttachmentRequestId);
+                               m.Username,
+                               m.Message, 
+                               m.RequestId);
         }
     }
 }

@@ -21,36 +21,33 @@ public class S3FileService: IFileService, IDisposable
     
     public async Task<Guid> SaveFileToTempBucketAsync(IFormFile file, CancellationToken token = default)
     {
-        var id = Guid.NewGuid();
-        await using var stream = file.OpenReadStream();
+        var fileId = Guid.NewGuid();
         var encodedFilename = Uri.EscapeDataString(file.FileName);
-        var request = new PutObjectRequest()
-                      {
-                          BucketName = _options.TempBucket,
-                          InputStream = stream,
-                          AutoCloseStream = true,
-                          Key = id.ToString(),
-                          ContentType = file.ContentType,
-                          Headers =
-                          {
-                              ContentDisposition = $"attachment; filename=\"{encodedFilename}\""
-                          },
-                          
-                      };
-        request.Metadata.Add(OriginalFilenameMetadataField, encodedFilename);
         PutObjectResponse response;
         try
         {
-            response = await _client.PutObjectAsync(request, token);
+            response = await _client.PutObjectAsync(new PutObjectRequest()
+                                                    {
+                                                        BucketName = _options.TempBucket,
+                                                        InputStream = file.OpenReadStream(),
+                                                        AutoCloseStream = true,
+                                                        Key = fileId.ToString(),
+                                                        ContentType = file.ContentType,
+                                                        Headers =
+                                                        {
+                                                            ContentDisposition = $"attachment; filename=\"{encodedFilename}\""
+                                                        }
+                                                    }, token);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Could not save file. Error occured during PutObjectAsync method call");
             throw;
         }
+        _logger.LogInformation("File {FileId} was uploaded successfully", fileId);
 
         if (( int ) response.HttpStatusCode < 300) 
-            return id;
+            return fileId;
         
         _logger.LogWarning("Response from PutObjectAsync returned not success status code: {StatusCode}", response.HttpStatusCode);
         throw new Exception($"Response from PutObjectAsync returned not success status code");

@@ -27,7 +27,10 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
     function promptUserMetadata(names: string[]): Map<string, string> {
         const map = new Map<string, string>();
-        names.forEach(n => map.set(n, promptUserInput(n)))
+        for (const name of names) {
+            const value = promptUserInput(name);
+            map.set(name, value);
+        }
         return map;
     }
 
@@ -78,7 +81,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
                 return undefined;
             }
             const file = fileInputRef.current.files[0];
-            const metadata = await promptFileMetadata(file.type, file.name.split('.').pop() ?? file.name)
+            const metadata = promptFileMetadata(file.type, file.name.split('.').pop() ?? '')
             try {
                 let guid = await fileRepository.uploadFileAsync(file, metadata);
                 myUploadedFiles.add(guid.value);

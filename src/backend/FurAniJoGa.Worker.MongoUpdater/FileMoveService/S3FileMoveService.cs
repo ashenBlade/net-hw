@@ -21,22 +21,24 @@ public class S3FileMoveService: IFileMoveService, IDisposable
     public async Task MoveToPersistentBucketAsync(Guid fileId, CancellationToken token = default)
     {
         var fileIdString = fileId.ToString();
-        var request = new CopyObjectRequest()
-                      {
-                          SourceBucket = _options.TemporaryBucketName,
-                          SourceKey = fileIdString,
-                          DestinationBucket = _options.PersistentBucketName,
-                          DestinationKey = fileIdString,
-                      };
+        _logger.LogInformation("Requested moving file {FileId} from temp to persistent bucket", fileId);
         try
         {
             _logger.LogInformation("Sending CopyObjectRequest for file {FileId} from temp bucket to persistent", fileIdString);
-            await _client.CopyObjectAsync(request, token);
+            await _client.CopyObjectAsync(new CopyObjectRequest()
+                                          {
+                                              SourceBucket = _options.TemporaryBucketName,
+                                              SourceKey = fileIdString,
+                          
+                                              DestinationBucket = _options.PersistentBucketName,
+                                              DestinationKey = fileIdString,
+                                          }, token);
             _logger.LogInformation("File {FileId} was copied from temporary bucket to persistent bucket", fileIdString);
         }
         catch (AmazonS3Exception amazonException)
         {
             _logger.LogWarning(amazonException, "Error during file ({FileId}) copy", fileIdString);
+            throw;
         }
     }
 

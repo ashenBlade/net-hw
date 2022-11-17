@@ -31,7 +31,7 @@ public class FileAndMetadataUploadedEventConsumer: IConsumer<FileAndMetadataUplo
         }
         catch(InvalidOperationException ex)
         {
-            _logger.LogWarning(ex,$"No request id: {e.RequestId} in database", e.RequestId);
+            _logger.LogWarning(ex, "No request id: {RequestId} in database", e.RequestId);
         }
         
         try

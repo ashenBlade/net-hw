@@ -24,7 +24,6 @@ public class MessageRepository : IMessageRepository
                                            .OrderBy(msg => msg.PublishDate)
                                            .ToListAsync(token);
             return listByDesc;
-            // .OrderBy(x => x.PublishDate)
         }
 
         return await _context.Messages
@@ -36,19 +35,19 @@ public class MessageRepository : IMessageRepository
 
     public async Task AddMessageAsync(Message message, CancellationToken token = default)
     {
-        await _context.AddAsync(message, token);
+        await _context.Messages.AddAsync(message, token);
         await _context.SaveChangesAsync(token);
-    }
-
-    private async Task<Message> FindMessageByRequestId(Guid requestId, CancellationToken token = default)
-    {
-        return await _context.Messages.FirstOrDefaultAsync(msg => msg.RequestId == requestId, token) ?? throw new InvalidOperationException();
     }
 
     public async Task UpdateFileIdInMessageAsync(Guid requestId, Guid fileId, CancellationToken token = default)
     {
-        var message = await FindMessageByRequestId(requestId, token);
+        var message = await _context.Messages.FirstOrDefaultAsync(m => m.RequestId == requestId, token);
+        if (message is null)
+        {
+            throw new Exception($"Message with request id: {requestId} could not be found");
+        }
         message.FileId = fileId;
+        _context.Messages.Update(message);
         await _context.SaveChangesAsync(token);
     }
 }

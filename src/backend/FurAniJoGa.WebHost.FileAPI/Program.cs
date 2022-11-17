@@ -2,7 +2,9 @@ using FurAniJoGa.WebHost.FileAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddFileApi(builder.Configuration.GetS3FileServiceOptions(), builder.Configuration.GetRedisSettings());
+builder.Services.AddFileApi(builder.Configuration.GetS3FileServiceOptions(), 
+                            builder.Configuration.GetRedisSettings(), 
+                            builder.Configuration);
 
 if (!builder.Environment.IsProduction())
 {
@@ -20,9 +22,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(policy =>
 {
-    policy.WithOrigins(builder.Configuration["FORUM_URL"]);
-    policy.AllowAnyHeader();
-    policy.AllowAnyMethod();
+    Console.WriteLine(builder.Configuration["FORUM_URL"]);
+    policy.WithOrigins(builder.Configuration["FORUM_URL"])
+          .AllowAnyHeader()
+          .AllowCredentials()
+          .AllowAnyMethod();
 });
 
 app.MapControllers();

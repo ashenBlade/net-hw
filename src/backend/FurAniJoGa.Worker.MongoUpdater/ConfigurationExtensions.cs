@@ -40,8 +40,8 @@ public static class ConfigurationExtensions
                    Host = configuration.GetValue<Uri>("S3_HOST"),
                    Password = configuration.GetValue<string>("S3_PASSWORD"),
                    SecretKey = configuration.GetValue<string>("S3_SECRET"),
-                   PersistentBucketName = configuration.GetValue<string>("S3_TEMPORARY_BUCKET"),
-                   TemporaryBucketName = configuration.GetValue<string>("S3_PERSISTENT_BUCKET")
+                   TemporaryBucketName = configuration.GetValue<string>("S3_TEMPORARY_BUCKET"),
+                   PersistentBucketName = configuration.GetValue<string>("S3_PERSISTENT_BUCKET")
                };
     }
 }

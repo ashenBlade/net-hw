@@ -4,19 +4,19 @@ using MediatR;
 
 namespace FurAniJoGa.Worker.MongoUpdater.Handlers;
 
-public class SaveToPersistentBucketCommandHandler: IRequestHandler<MoveToPersistentBucketCommand>
+public class MoveToPersistentBucketCommandHandler: INotificationHandler<MoveToPersistentBucketCommand>
 {
     private readonly IFileMoveService _fileMoveService;
-    private readonly ILogger<SaveToPersistentBucketCommandHandler> _logger;
+    private readonly ILogger<MoveToPersistentBucketCommandHandler> _logger;
 
-    public SaveToPersistentBucketCommandHandler(IFileMoveService fileMoveService, 
-                                                ILogger<SaveToPersistentBucketCommandHandler> logger)
+    public MoveToPersistentBucketCommandHandler(IFileMoveService fileMoveService, 
+                                                ILogger<MoveToPersistentBucketCommandHandler> logger)
     {
         _fileMoveService = fileMoveService;
         _logger = logger;
     }
     
-    public async Task<Unit> Handle(MoveToPersistentBucketCommand request, CancellationToken cancellationToken)
+    public async Task Handle(MoveToPersistentBucketCommand request, CancellationToken cancellationToken)
     {
         var fileId = request.FileId;
         _logger.LogInformation("Saving file ({FileId}) to Persistent bucket command requested", fileId);
@@ -29,6 +29,5 @@ public class SaveToPersistentBucketCommandHandler: IRequestHandler<MoveToPersist
          {
              _logger.LogWarning(e, "Exception occured during moving file ({FileId}) to persistent bucket", fileId);
          }
-         return Unit.Value;
     }
 }
