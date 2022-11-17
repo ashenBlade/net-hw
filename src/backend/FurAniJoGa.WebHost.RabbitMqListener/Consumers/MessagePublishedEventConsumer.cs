@@ -26,7 +26,7 @@ public class MessagePublishedEventConsumer: IConsumer<MessagePublishedEvent>
         var m = context.Message;
         try
         {
-            _logger.LogDebug("Requested saving message: {Message} from: {From} with requestId {FileId}", 
+            _logger.LogInformation("Requested saving message: {Message} from: {From} with requestId {FileId}", 
                 m.Message, m.Username, m.RequestId);
             var message = await _messageFactory.CreateMessageAsync(m.Message,
                                                                    m.Username,

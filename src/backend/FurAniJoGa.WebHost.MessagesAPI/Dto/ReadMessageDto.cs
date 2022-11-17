@@ -8,12 +8,14 @@ public class ReadMessageDto
     public string Message { get; set; }
     public string Username { get; set; }
     public Guid? FileId { get; set; }
+    public Guid? RequestId { get; set; }
 
     public static ReadMessageDto FromMessage(Message message) => 
         new()
         {
             Message = message.Content,
             Username = message.Username!,
-            FileId = message.FileId
+            FileId = message.FileId,
+            RequestId =message.RequestId
         };
 }

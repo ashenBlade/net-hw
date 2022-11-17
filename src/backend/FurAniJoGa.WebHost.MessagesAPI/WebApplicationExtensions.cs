@@ -1,4 +1,4 @@
-﻿namespace MessagesAPI.ExtensionMethods;
+﻿namespace MessagesAPI;
 
 public static class WebApplicationExtensions
 {
@@ -14,11 +14,10 @@ public static class WebApplicationExtensions
         {
             x.WithOrigins("http://localhost:8080");
             x.AllowAnyHeader();
+            x.AllowCredentials();
             x.AllowAnyMethod();
         });
-
-        app.UseHttpsRedirection();
-
+        
         app.UseAuthorization();
 
         app.MapControllers();

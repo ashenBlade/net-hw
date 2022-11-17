@@ -41,7 +41,8 @@ public class MessageRepository : IMessageRepository
 
     public async Task UpdateFileIdInMessageAsync(Guid requestId, Guid fileId, CancellationToken token = default)
     {
-        var message = await _context.Messages.FirstOrDefaultAsync(m => m.RequestId == requestId, token);
+        var message = await _context.Messages
+                                    .FirstOrDefaultAsync(m => m.RequestId == requestId, token);
         if (message is null)
         {
             throw new Exception($"Message with request id: {requestId} could not be found");

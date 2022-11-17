@@ -38,7 +38,7 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
                     message,
                     requestId: requestId === undefined || requestId === null
                         ? undefined
-                        : new Guid(requestId)
+                        : new Guid(requestId),
                 });
             });
         this.connection.on(SignalrForumCommunicator.fileUploadedFunction,

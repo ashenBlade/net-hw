@@ -12,7 +12,7 @@ export class MessagesApiMessagesRepository implements MessagesRepository {
         return {
             username,
             message,
-            requestId: new Guid(requestId)
+            requestId: requestId ? new Guid(requestId) : undefined
         }
     }
 
