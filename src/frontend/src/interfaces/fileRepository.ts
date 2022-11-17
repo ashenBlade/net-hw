@@ -6,6 +6,5 @@ export default interface FileRepository {
 
     createContentUrl(fileId: Guid): string;
 
-    /// Returns RequestId to track
-    uploadFileAsync(file: File, metadata: Map<string, string>): Promise<Guid>
+    uploadFileAsync(file: File, metadata: Map<string, string>, requestId: Guid): Promise<void>
 }

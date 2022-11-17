@@ -25,15 +25,10 @@ public class ChatHub : Hub
             _logger.LogWarning("Published message username is null");
             return;
         }
+
         if (message is null)
         {
             _logger.LogWarning("Published message content is null");
-            return;
-        }
-
-        if (requestId is null)
-        {
-            _logger.LogWarning("RequestId is null");
             return;
         }
         
@@ -44,6 +39,7 @@ public class ChatHub : Hub
                                Message = message,
                                RequestId = requestId
                            });
+        _logger.LogInformation("Event published");
         await Clients.All.SendAsync(PublishMessageMethodName, username, message, requestId);
     }
 }

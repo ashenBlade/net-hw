@@ -7,6 +7,7 @@ import {useEffectOnce} from "../../hooks/useEffectOnce";
 import ChatMessage from "./Chat/СhatMessage";
 import Guid from "../../models/guid";
 import {UploadFile} from "../../models/uploadFile";
+import {upload} from "@testing-library/user-event/dist/upload";
 
 const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) => {
     const [userMessage, setUserMessage] = useState('');
@@ -76,14 +77,17 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
 
     async function sendMessage() {
-        async function getRequestId(): Promise<Guid | undefined> {
+        function hasFileToUpload(): boolean {
+            return (fileInputRef.current?.files?.length ?? 0) > 0;
+        }
+        async function uploadFile(guid: Guid): Promise<Guid | undefined> {
             if (!fileInputRef.current?.files?.[0]) {
                 return undefined;
             }
             const file = fileInputRef.current.files[0];
             const metadata = promptFileMetadata(file.type, file.name.split('.').pop() ?? '')
             try {
-                let guid = await fileRepository.uploadFileAsync(file, metadata);
+                await fileRepository.uploadFileAsync(file, metadata, guid);
                 myUploadedFiles.add(guid.value);
                 return guid;
             } catch (e) {
@@ -101,12 +105,15 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
         setMessageSending(true);
         try {
-            const requestId = await getRequestId();
+            let requestId = hasFileToUpload() ? Guid.generate() : undefined;
             await forumHandler.sendMessage({
                 message,
                 username,
                 requestId
             });
+            if (requestId)
+                await uploadFile(requestId);
+            
             setUserMessage('');
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';

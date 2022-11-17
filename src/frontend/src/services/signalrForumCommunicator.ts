@@ -65,7 +65,7 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
         await this.connection.send(SignalrForumCommunicator.messagePublishedFunction,
             msg.username,
             msg.message,
-            msg.requestId ?? null)
+            msg.requestId?.value ?? null)
             .catch(e => {
                 console.error('Could not send message', {
                     error: e

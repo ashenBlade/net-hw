@@ -39,8 +39,7 @@ export default class FileApiFileRepository implements FileRepository {
         });
     }
 
-    async uploadFileAsync(file: File, metadata: Map<string, string>): Promise<Guid> {
-        const requestGuid = Guid.generate();
+    async uploadFileAsync(file: File, metadata: Map<string, string>, requestGuid: Guid): Promise<void> {
         const fileUploadPromise = this.uploadFile(file, requestGuid);
         const metadataUploadPromise = this.uploadMetadata(metadata, requestGuid);
         const [fileUploadResponse, metadataUploadResponse] = await Promise.all([fileUploadPromise, metadataUploadPromise]);
@@ -50,7 +49,6 @@ export default class FileApiFileRepository implements FileRepository {
         if (!metadataUploadResponse.ok) {
             console.error('Error during metadata upload', `Status code: ${metadataUploadResponse.status}`)
         }
-        return requestGuid;
     }
 
     // https://stackoverflow.com/a/40940790/14109140
