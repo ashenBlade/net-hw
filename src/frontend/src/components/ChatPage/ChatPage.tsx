@@ -148,19 +148,19 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
             requestId: msg.requestId,
         }
     }
-
+    
     useEffect(() => {
         function onMessageCallback(msg: Message) {
             setMessages([...messages, mapMessageToChatMessage(msg)]);
         }
 
         function onFileUploadCallback(uploadFile: UploadFile) {
-            const requiredMessage = messages.find(msg => msg.requestId === uploadFile.requestId);
+            const requiredMessage = messages.find(msg => msg.requestId &&
+                msg.requestId.value === uploadFile.requestId.value);
             if (!requiredMessage) {
                 console.warn('Could not find message for onFileUploadCallback');
                 return;
             }
-            alert('Fuck go back!')
             if (myUploadedFiles.has(uploadFile.requestId.value)) {
                 alert('Your file was successfully uploaded!')
                 myUploadedFiles.delete(uploadFile.requestId.value)

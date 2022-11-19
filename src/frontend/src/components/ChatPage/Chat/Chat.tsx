@@ -12,14 +12,19 @@ function createMessageRecord(message: ChatMessage, i: number, files: Map<string,
     )
 
     const contents = message.message;
-    const attachment = message.requestId ? files.get(message.requestId.value) : undefined;
+    
+    const attachment = message.requestId 
+        ? files.get(message.requestId.value)
+        : undefined;
     return (
         <div key={i}>
             <div>{name}: {contents}</div>
             {
-                attachment && (
+                attachment ? (
                     <>
-                        <a download={attachment.name} href={attachment.contentUrl}>
+                        <a download 
+                           href={attachment.contentUrl} 
+                           target={'_blank'}>
                             {attachment.name}
                         </a>
                         <button className={'btn btn-info'} onClick={() => {
@@ -30,10 +35,11 @@ function createMessageRecord(message: ChatMessage, i: number, files: Map<string,
                                     .join('\n')
                             }`)
                         }}>
-
+                            Show metadata
                         </button>
                     </>
                 )
+                    : null
             }
         </div>
     )

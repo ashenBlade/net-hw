@@ -26,18 +26,20 @@ public class S3FileService: IFileService, IDisposable
         PutObjectResponse response;
         try
         {
-            response = await _client.PutObjectAsync(new PutObjectRequest()
-                                                    {
-                                                        BucketName = _options.TempBucket,
-                                                        InputStream = file.OpenReadStream(),
-                                                        AutoCloseStream = true,
-                                                        Key = fileId.ToString(),
-                                                        ContentType = file.ContentType,
-                                                        Headers =
-                                                        {
-                                                            ContentDisposition = $"attachment; filename=\"{encodedFilename}\""
-                                                        }
-                                                    }, token);
+            var putObjectRequest = new PutObjectRequest()
+                                   {
+                                       BucketName = _options.TempBucket,
+                                       InputStream = file.OpenReadStream(),
+                                       AutoCloseStream = true,
+                                       Key = fileId.ToString(),
+                                       ContentType = file.ContentType,
+                                       Headers =
+                                       {
+                                           ContentDisposition = $"attachment; filename=\"{encodedFilename}\"",
+                                       }
+                                   };
+            putObjectRequest.Metadata.Add(OriginalFilenameMetadataField, file.FileName);
+            response = await _client.PutObjectAsync(putObjectRequest, token);
         }
         catch (Exception e)
         {

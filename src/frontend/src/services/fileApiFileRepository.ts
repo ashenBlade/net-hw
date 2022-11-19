@@ -7,7 +7,7 @@ export default class FileApiFileRepository implements FileRepository {
                 readonly fileMetadataServerUrl: string) { }
 
     createContentUrl(fileId: Guid): string {
-        return `${this.fileServerUrl}/api/files/${fileId.value}`;
+        return `${this.fileServerUrl}/api/files/${fileId.value}/blob`;
     }
 
     private uploadFile(file: File, requestId: Guid): Promise<Response> {

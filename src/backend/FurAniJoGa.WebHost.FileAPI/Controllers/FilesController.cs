@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 using FurAniJoGa.RabbitMq.Contracts.Events;
 using FurAniJoGa.WebHost.FileAPI.RedisMetadataUploaderService;
 using MassTransit;
@@ -47,6 +48,11 @@ public class FilesController: ControllerBase
             _logger.LogDebug("File with id: {FileId} not found", id);
             return NotFound();
         }
+
+        Response.Headers.ContentDisposition = new ContentDisposition()
+                                              {
+                                                  FileName =  fileContent.Filename
+                                              }.ToString(); 
         
         return File(fileContent.Content, 
                     fileContent.ContentType,
