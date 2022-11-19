@@ -43,14 +43,14 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
             });
         this.connection.on(SignalrForumCommunicator.fileUploadedFunction,
             (requestId: string, fileId: string, metadata: string) => {
-                console.log('Received file uploaded event')
-                this.notifyFileUploaded({
+                let uploadedFile = {
                     fileId: new Guid(fileId),
                     requestId: new Guid(requestId),
                     metadata: new Map(Object.entries(JSON.parse(metadata))
                         .map(([x, y]) => ([String(x), String(y)]))),
                     contentUrl: this.fileRepository.createContentUrl(new Guid(fileId))
-                })
+                };
+                this.notifyFileUploaded(uploadedFile)
             })
         await this.connection.start();
 

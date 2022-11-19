@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useReducer, useRef, useState} from 'react';
+import React, {FC, useEffect, useMemo, useReducer, useRef, useState} from 'react';
 import {Message} from "../../models/message";
 import {ChatPageProps} from "./ChatPageProps";
 import Chat from "./Chat/Chat";
@@ -8,6 +8,7 @@ import ChatMessage from "./Chat/СhatMessage";
 import Guid from "../../models/guid";
 import {UploadFile} from "../../models/uploadFile";
 import {upload} from "@testing-library/user-event/dist/upload";
+import Attachment from "../../models/attachment";
 
 const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) => {
     const [userMessage, setUserMessage] = useState('');
@@ -15,6 +16,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploadedFiles, setUploadedFiles] = useState(new Map<Guid, Attachment>());
     const [myUploadedFiles,] = useState<Set<string>>(new Set());
     const [, rerender] = useReducer(x => x + 1, 0);
 
@@ -80,20 +82,18 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
         function hasFileToUpload(): boolean {
             return (fileInputRef.current?.files?.length ?? 0) > 0;
         }
-        async function uploadFile(guid: Guid): Promise<Guid | undefined> {
+        async function uploadFile(guid: Guid): Promise<void> {
             if (!fileInputRef.current?.files?.[0]) {
-                return undefined;
+                return ;
             }
             const file = fileInputRef.current.files[0];
             const metadata = promptFileMetadata(file.type, file.name.split('.').pop() ?? '')
             try {
                 await fileRepository.uploadFileAsync(file, metadata, guid);
                 myUploadedFiles.add(guid.value);
-                return guid;
             } catch (e) {
                 console.error('Error during file uploading', e);
                 alert('Could not upload file');
-                return undefined;
             }
         }
 
@@ -160,17 +160,19 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
                 console.warn('Could not find message for onFileUploadCallback');
                 return;
             }
+            alert('Fuck go back!')
             if (myUploadedFiles.has(uploadFile.requestId.value)) {
                 alert('Your file was successfully uploaded!')
                 myUploadedFiles.delete(uploadFile.requestId.value)
             }
-            requiredMessage.attachment = {
-                name: 'Attachment',
+            const attachment: Attachment = {
                 contentUrl: uploadFile.contentUrl,
+                name: 'Attachment',
                 metadata: uploadFile.metadata
             }
-            setMessages(messages);
-            rerender();
+            const newMap = new Map(uploadedFiles);
+            newMap.set(uploadFile.requestId, attachment);
+            setUploadedFiles(newMap);
         }
 
         forumHandler.registerOnMessageCallback(onMessageCallback);
@@ -194,7 +196,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
     return (
         <div className={'h-100 chat-page'}>
-            <Chat messages={messages}/>
+            <Chat messages={messages} files={uploadedFiles}/>
             <div className={'user-input'}>
                 <input className={'form-control'}
                        placeholder={'Введите сообщение другим участникам'}

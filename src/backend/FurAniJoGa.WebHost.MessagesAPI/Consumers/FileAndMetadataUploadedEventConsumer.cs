@@ -1,3 +1,4 @@
+using System.Text.Json;
 using FurAniJoGa.Domain;
 using FurAniJoGa.RabbitMq.Contracts.Events;
 using MassTransit;
@@ -37,7 +38,7 @@ public class FileAndMetadataUploadedEventConsumer : IConsumer<FileAndMetadataUpl
 
         try
         {
-            await _hubContext.Clients.All.SendAsync(EventHandlerFunctionName, e.RequestId, e.FileId, e.Metadata);
+            await _hubContext.Clients.All.SendAsync(EventHandlerFunctionName, e.RequestId.ToString(), e.FileId.ToString(), JsonSerializer.Serialize( e.Metadata ));
         }
         catch (HubException ex)
         {

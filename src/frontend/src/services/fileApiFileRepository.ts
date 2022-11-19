@@ -82,6 +82,7 @@ export default class FileApiFileRepository implements FileRepository {
         return {
             contentUrl: `${this.fileServerUrl}/api/files/${fileId}/blob`,
             name: json.filename,
+            metadata: json.metadata ?? new Map<string, string>()
         }
     }
 }

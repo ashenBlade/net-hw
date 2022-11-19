@@ -1,8 +1,10 @@
 import React, {FC} from 'react';
 import {ChatProps} from "./ChatProps";
 import ChatMessage from "./СhatMessage";
+import Attachment from "../../../models/attachment";
+import Guid from "../../../models/guid";
 
-function createMessageRecord(message: ChatMessage, i: number) {
+function createMessageRecord(message: ChatMessage, i: number, files: Map<Guid, Attachment>) {
     const name = (
         <b>
             {message.username ?? 'Unknown'}
@@ -10,20 +12,20 @@ function createMessageRecord(message: ChatMessage, i: number) {
     )
 
     const contents = message.message;
-
+    const attachment = message.requestId ? files.get(message.requestId) : undefined;
     return (
         <div key={i}>
             <div>{name}: {contents}</div>
             {
-                message.attachment && (
+                attachment && (
                     <>
-                        <a download={message.attachment.name} href={message.attachment.contentUrl}>
-                            {message.attachment.name}
+                        <a download={attachment.name} href={attachment.contentUrl}>
+                            {attachment.name}
                         </a>
                         <button className={'btn btn-info'} onClick={() => {
                             alert(`Metadata:\n${
-                                message.attachment && 
-                                Array.from(message.attachment.metadata.entries())
+                                attachment && 
+                                Array.from(attachment.metadata.entries())
                                     .map(([x, y]) => `${x}: ${y}`)
                                     .join('\n')
                             }`)
@@ -37,10 +39,10 @@ function createMessageRecord(message: ChatMessage, i: number) {
     )
 }
 
-const Chat: FC<ChatProps> = ({messages}) => {
+const Chat: FC<ChatProps> = ({messages, files}) => {
     return (
         <div className={'h-100'}>
-            {messages.map((m, i) => createMessageRecord(m, i))}
+            {messages.map((m, i) => createMessageRecord(m, i, files))}
         </div>
     );
 };
