@@ -11,15 +11,15 @@ public class FileAndMetadataUploadedEventConsumer : IConsumer<FileAndMetadataUpl
     public const string EventHandlerFunctionName = "onFileUploaded";
     private readonly IHubContext<ChatHub> _hubContext;
     private readonly ILogger<FileAndMetadataUploadedEventConsumer> _logger;
-    private readonly IMessageRepository _messageRepository;
+    private readonly IRequestRepository _requestRepository;
 
     public FileAndMetadataUploadedEventConsumer(IHubContext<ChatHub> hubContext,
                                                 ILogger<FileAndMetadataUploadedEventConsumer> logger,
-                                                IMessageRepository messageRepository)
+                                                IRequestRepository requestRepository)
     {
         _hubContext = hubContext;
         _logger = logger;
-        _messageRepository = messageRepository;
+        _requestRepository = requestRepository;
     }
 
     public async Task Consume(ConsumeContext<FileAndMetadataUploadedEvent> context)
@@ -27,15 +27,8 @@ public class FileAndMetadataUploadedEventConsumer : IConsumer<FileAndMetadataUpl
         var e = context.Message;
         _logger.LogInformation("Received FileAndMetadataUploadedEvent for request: {RequestId}", e.RequestId);
 
-        try
-        {
-            await _messageRepository.UpdateFileIdInMessageAsync(e.RequestId, e.FileId);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogWarning(ex, "No request id: {RequestId} in database", e.RequestId);
-        }
-
+        await _requestRepository.UpsertFileIdAsync(e.RequestId, e.FileId);
+        
         try
         {
             await _hubContext.Clients.All.SendAsync(EventHandlerFunctionName, e.RequestId.ToString(), e.FileId.ToString(), JsonSerializer.Serialize( e.Metadata ));

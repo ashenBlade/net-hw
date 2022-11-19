@@ -4,7 +4,7 @@ import ChatMessage from "./СhatMessage";
 import Attachment from "../../../models/attachment";
 import Guid from "../../../models/guid";
 
-function createMessageRecord(message: ChatMessage, i: number, files: Map<Guid, Attachment>) {
+function createMessageRecord(message: ChatMessage, i: number, files: Map<string, Attachment>) {
     const name = (
         <b>
             {message.username ?? 'Unknown'}
@@ -12,7 +12,7 @@ function createMessageRecord(message: ChatMessage, i: number, files: Map<Guid, A
     )
 
     const contents = message.message;
-    const attachment = message.requestId ? files.get(message.requestId) : undefined;
+    const attachment = message.requestId ? files.get(message.requestId.value) : undefined;
     return (
         <div key={i}>
             <div>{name}: {contents}</div>

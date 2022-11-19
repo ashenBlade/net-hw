@@ -22,32 +22,47 @@ public class MessageRepository : IMessageRepository
                                            .Skip((page - 1) * size)
                                            .Take(size)
                                            .OrderBy(msg => msg.PublishDate)
+                                           .Include(m => m.Request)
                                            .ToListAsync(token);
             return listByDesc;
         }
 
         return await _context.Messages
-                                 .OrderBy(msg => msg.PublishDate)
-                                 .Skip((page - 1) * size)
-                                 .Take(size)
-                                 .ToListAsync(token);
+                             .OrderBy(msg => msg.PublishDate)
+                             .Skip((page - 1) * size)
+                             .Take(size)
+                             .Include(m => m.Request)
+                             .ToListAsync(token);
     }
 
     public async Task AddMessageAsync(Message message, CancellationToken token = default)
     {
         await _context.Messages.AddAsync(message, token);
+        if (message.RequestId is not null && message.Request is null)
+        {
+            message.Request = new(message.RequestId.Value);
+        }
         await _context.SaveChangesAsync(token);
     }
 
     public async Task UpdateFileIdInMessageAsync(Guid requestId, Guid fileId, CancellationToken token = default)
     {
-        var message = await _context.Messages
-                                    .FirstOrDefaultAsync(m => m.RequestId == requestId, token);
-        if (message is null)
+        var existing = await _context.Requests.SingleOrDefaultAsync(f => f.Id == requestId, token);
+        var file = new Request(requestId, fileId);
+        if (existing is null)
         {
-            throw new Exception($"Message with request id: {requestId} could not be found");
+            await _context.Requests.AddAsync(file, token);
         }
-        message.FileId = fileId;
+        else
+        {
+            _context.Requests.Update(file);
+        }
+        await _context.SaveChangesAsync(token);
+    }
+
+    public async Task AddFileInfo(Message message, Request request, CancellationToken token = default)
+    {
+        message.Request = request;
         _context.Messages.Update(message);
         await _context.SaveChangesAsync(token);
     }

@@ -16,7 +16,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [uploadedFiles, setUploadedFiles] = useState(new Map<Guid, Attachment>());
+    const [uploadedFiles, setUploadedFiles] = useState(new Map<string, Attachment>());
     const [myUploadedFiles,] = useState<Set<string>>(new Set());
     const [, rerender] = useReducer(x => x + 1, 0);
 
@@ -171,7 +171,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
                 metadata: uploadFile.metadata
             }
             const newMap = new Map(uploadedFiles);
-            newMap.set(uploadFile.requestId, attachment);
+            newMap.set(uploadFile.requestId.value, attachment);
             setUploadedFiles(newMap);
         }
 

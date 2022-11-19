@@ -50,6 +50,7 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
                         .map(([x, y]) => ([String(x), String(y)]))),
                     contentUrl: this.fileRepository.createContentUrl(new Guid(fileId))
                 };
+                console.log('Received file info', uploadedFile)
                 this.notifyFileUploaded(uploadedFile)
             })
         await this.connection.start();

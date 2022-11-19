@@ -34,6 +34,7 @@ public static class ServicesExtensions
             x.UseNpgsql($"User Id={username};Password={password};Host={host};Database={database};Port={port}");
         });
         services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IRequestRepository, RequestsRepository>();
         services.AddSignalR();
 
         services.AddMassTransit(configurator =>
@@ -49,7 +50,7 @@ public static class ServicesExtensions
             {
                 throw new ArgumentNullException(nameof(exchange), "RabbitMq Exchange name is not provided");
             }
-
+            
             configurator.AddConsumer<FileAndMetadataUploadedEventConsumer>();
             configurator.UsingRabbitMq((registrationContext, factory) =>
             {

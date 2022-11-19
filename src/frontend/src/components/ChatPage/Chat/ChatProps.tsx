@@ -4,5 +4,5 @@ import Attachment from "../../../models/attachment";
 
 export interface ChatProps {
     messages: ChatMessage[],
-    files: Map<Guid, Attachment>
+    files: Map<string, Attachment>
 }

@@ -5,12 +5,18 @@ namespace FurAniJoGa.Infrastructure;
 
 public class SampleMessageFactory: IMessageFactory
 {
-    public Task<Message> CreateMessageAsync(string content,
-                                            string? username,
-                                            Guid? fileId,
-                                            Guid? requestId,
-                                            CancellationToken token = default)
+    public async Task<Message> CreateMessageAsync(string content,
+                                                  string? username,
+                                                  Guid? fileId,
+                                                  Guid? requestId,
+                                                  CancellationToken token = default)
     {
-        return Task.FromResult(new Message(DateTime.UtcNow, username, content, fileId, requestId));
+        return new Message(Guid.NewGuid(),
+                           DateTime.UtcNow,
+                           username, 
+                           content,
+                           requestId is null
+                               ? null
+                               : new Request(requestId.Value, fileId));
     }
 }

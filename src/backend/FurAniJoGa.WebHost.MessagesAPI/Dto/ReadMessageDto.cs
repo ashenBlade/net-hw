@@ -15,7 +15,7 @@ public class ReadMessageDto
         {
             Message = message.Content,
             Username = message.Username!,
-            FileId = message.FileId,
-            RequestId =message.RequestId
+            RequestId =message.Request?.Id,
+            FileId = message.Request?.FileId,
         };
 }
