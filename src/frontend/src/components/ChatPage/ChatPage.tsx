@@ -7,8 +7,8 @@ import {useEffectOnce} from "../../hooks/useEffectOnce";
 import ChatMessage from "./Chat/СhatMessage";
 import Guid from "../../models/guid";
 import {UploadFile} from "../../models/uploadFile";
-import {upload} from "@testing-library/user-event/dist/upload";
 import Attachment from "../../models/attachment";
+import {upload} from "@testing-library/user-event/dist/upload";
 
 const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) => {
     const [userMessage, setUserMessage] = useState('');
@@ -185,7 +185,32 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
 
     useEffectOnce(() => {
         setMessageSending(true)
+        function addAttachment(fileId: Guid) {
+            const newUploadedFiles = new Map(uploadedFiles);
+            newUploadedFiles.set(fileId.value, {
+                name: 'Attachment',
+                metadata: new Map<string, string>(),
+                contentUrl: fileRepository.createContentUrl(fileId)
+            });
+            
+        }
         forumHandler.getPreviousMessages(1, 40).then(received => {
+            const newUploadedFiles = new Map(uploadedFiles);
+            for (const obj of received.map(r =>  r.fileId && r.requestId ? {
+                    name: 'Attachment',
+                    metadata: new Map<string, string>(),
+                    contentUrl: fileRepository.createContentUrl(r.fileId),
+                    requestId: r.requestId
+                } : undefined)) {
+                if (obj) {
+                    newUploadedFiles.set(obj.requestId.value, {
+                        name: obj.name,
+                        metadata: obj.metadata,
+                        contentUrl: obj.contentUrl
+                    });
+                }
+            }
+            setUploadedFiles(newUploadedFiles);
             setMessages([...received.map(mapMessageToChatMessage), ...messages]);
         }).catch(e => {
             console.error('Error while retrieving message history', e);

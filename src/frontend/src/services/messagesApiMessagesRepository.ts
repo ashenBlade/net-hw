@@ -8,11 +8,13 @@ export class MessagesApiMessagesRepository implements MessagesRepository {
     async parseMessage(obj: any): Promise<Message> {
         const message = obj.message;
         const username = obj.username;
-        const requestId = obj.requestId;
+        const requestId = obj.requestId ? new Guid(obj.requestId) : undefined;
+        const fileId = obj.fileId ? new Guid(obj.fileId) : undefined;
         return {
             username,
             message,
-            requestId: requestId ? new Guid(requestId) : undefined
+            requestId,
+            fileId
         }
     }
 
