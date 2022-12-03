@@ -1,3 +1,3 @@
 namespace MessagesAPI.Models;
 
-public delegate void ChatEventHandler(ChatEndedEventArgs args);
+public delegate void ChatEventHandler(ChatEventArgs args);

@@ -1,6 +1,6 @@
 namespace MessagesAPI.Models;
 
-public class ChatEndedEventArgs: EventArgs
+public class ChatEventArgs: EventArgs
 {
     public string UserConnectionId { get; set; }
     public string SupportConnectionId { get; set; }

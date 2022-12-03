@@ -48,7 +48,7 @@ public class Forum
         _freeSupportIds.Remove(freeSupportId);
         _freeUserIds.Remove(freeUserId);
             
-        OnChatStarted(new ChatEndedEventArgs()
+        OnChatStarted(new ChatEventArgs()
                       {
                           ChatId = chatId,
                           SupportConnectionId = freeSupportId,
@@ -87,7 +87,7 @@ public class Forum
         _freeUserIds.Add(chat.User.UserId);
         _freeSupportIds.Add(chat.Support.UserId);
             
-        OnChatEnded(new ChatEndedEventArgs()
+        OnChatEnded(new ChatEventArgs()
                     {
                         ChatId = chat.ChatId,
                         SupportConnectionId = chat.Support.UserId,
@@ -105,7 +105,7 @@ public class Forum
         _freeSupportIds.Add(chat.Support.UserId);
         _freeUserIds.Add(chat.User.UserId);
         
-        OnChatEnded(new ChatEndedEventArgs()
+        OnChatEnded(new ChatEventArgs()
                     {
                         ChatId = chat.ChatId,
                         SupportConnectionId = chat.Support.UserId,
@@ -126,12 +126,12 @@ public class Forum
         return username;
     }
 
-    protected virtual void OnChatEnded(ChatEndedEventArgs args)
+    protected virtual void OnChatEnded(ChatEventArgs args)
     {
         ChatEnded?.Invoke(args);
     }
 
-    protected virtual void OnChatStarted(ChatEndedEventArgs args)
+    protected virtual void OnChatStarted(ChatEventArgs args)
     {
         ChatStarted?.Invoke(args);
     }

@@ -11,6 +11,4 @@ public record Chat(User User,
     {
         return HashCode.Combine(User.UserId, Support.UserId, ChatId);
     }
-    
-    
 }
