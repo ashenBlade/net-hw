@@ -9,6 +9,7 @@ import Guid from "../../models/guid";
 import {UploadFile} from "../../models/uploadFile";
 import Attachment from "../../models/attachment";
 import {upload} from "@testing-library/user-event/dist/upload";
+import ChatLoadingBackground from "./ChatLoadingBackground/ChatLoadingBackground";
 
 const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) => {
     const [userMessage, setUserMessage] = useState('');
@@ -17,8 +18,9 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
     const inputRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploadedFiles, setUploadedFiles] = useState(new Map<string, Attachment>());
-    const [myUploadedFiles,] = useState<Set<string>>(new Set());
+    const [myUploadedFiles, setMyUploadedFiles] = useState<Set<string>>(new Set());
     const [, rerender] = useReducer(x => x + 1, 0);
+    const [chatStarted, setChatStarted] = useState(false);
 
     function promptUserInput(name: string): string {
         let value = prompt(`${name}`);
@@ -75,9 +77,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
         }
         return promptUserMetadata(toPrompt)
     }
-
-
-
+    
     async function sendMessage() {
         function hasFileToUpload(): boolean {
             return (fileInputRef.current?.files?.length ?? 0) > 0;
@@ -175,72 +175,77 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
             setUploadedFiles(newMap);
         }
 
+        function onChatStartedCallback() {
+            console.log('Chat started')
+            setChatStarted(true);
+        }
+
+        function onChatEndedCallback() {
+            console.log('Chat ended')
+            setChatStarted(false);
+            setMessages([]);
+            setMyUploadedFiles(new Set<string>());
+            setUploadedFiles(new Map());
+        }
+
+        forumHandler.registerOnChatEndedCallback(onChatEndedCallback);
+        forumHandler.registerOnChatStartedCallback(onChatStartedCallback);
         forumHandler.registerOnMessageCallback(onMessageCallback);
         forumHandler.registerOnFileUploadedCallback(onFileUploadCallback);
         return () => {
             forumHandler.unregisterOnMessageCallback(onMessageCallback);
             forumHandler.unregisterOnFileUploadCallback(onFileUploadCallback);
+            forumHandler.unregisterOnChatEndedCallback(onChatEndedCallback);
+            forumHandler.unregisterOnChatStartedCallback(onChatStartedCallback);
         }
     }, [forumHandler, messages]);
 
     useEffectOnce(() => {
-        setMessageSending(true)
-        function addAttachment(fileId: Guid) {
-            const newUploadedFiles = new Map(uploadedFiles);
-            newUploadedFiles.set(fileId.value, {
-                name: 'Attachment',
-                metadata: new Map<string, string>(),
-                contentUrl: fileRepository.createContentUrl(fileId)
-            });
-            
-        }
-        forumHandler.getPreviousMessages(1, 40).then(received => {
-            const newUploadedFiles = new Map(uploadedFiles);
-            for (const obj of received.map(r =>  r.fileId && r.requestId ? {
-                    name: 'Attachment',
-                    metadata: new Map<string, string>(),
-                    contentUrl: fileRepository.createContentUrl(r.fileId),
-                    requestId: r.requestId
-                } : undefined)) {
-                if (obj) {
-                    newUploadedFiles.set(obj.requestId.value, {
-                        name: obj.name,
-                        metadata: obj.metadata,
-                        contentUrl: obj.contentUrl
-                    });
-                }
-            }
-            setUploadedFiles(newUploadedFiles);
-            setMessages([...received.map(mapMessageToChatMessage), ...messages]);
-        }).catch(e => {
-            console.error('Error while retrieving message history', e);
-        }).finally(() => {
-            setMessageSending(false);
+        forumHandler.login(username).then(() => setChatStarted(false)).catch(e => {
+            console.error('Ошибка при логине', e)
         })
     })
 
+    const onEndChatButtonClick = async () => {
+        setMessageSending(true)
+        try {
+            await forumHandler.endChat()
+        }catch (e) {
+            alert('Ошибка отключения от чата. Ты здесь навеки')
+        } finally {
+            setMessageSending(false)
+        }
+    }
+
     return (
-        <div className={'h-100 chat-page'}>
-            <Chat messages={messages} files={uploadedFiles}/>
-            <div className={'user-input'}>
-                <input className={'form-control'}
-                       placeholder={'Введите сообщение другим участникам'}
-                       value={userMessage}
-                       onChange={e => setUserMessage(e.currentTarget.value)}
-                       onKeyDown={onInputKeyDown}
-                       autoFocus={true}
-                       disabled={messageSending}
-                       ref={inputRef}/>
-                <input type={'file'}
-                       className={'form-control mt-1'}
-                       ref={fileInputRef}/>
+        chatStarted 
+            ? <div className={'h-100 chat-page'}>
+                <Chat messages={messages} files={uploadedFiles}/>
+                <div className={'user-input'}>
+                    <input className={'form-control'}
+                           placeholder={'Введите сообщение другим участникам'}
+                           value={userMessage}
+                           onChange={e => setUserMessage(e.currentTarget.value)}
+                           onKeyDown={onInputKeyDown}
+                           autoFocus={true}
+                           disabled={messageSending}
+                           ref={inputRef}/>
+                    <input type={'file'}
+                           className={'form-control mt-1'}
+                           ref={fileInputRef}/>
+                </div>
+                <button className={'btn btn-success my-1'}
+                        disabled={messageSending}
+                        onClick={onSendMessageButtonClick}>
+                    Отправить
+                </button>
+                <button className={'btn btn-danger my-1'}
+                        disabled={messageSending}
+                        onClick={onEndChatButtonClick}>
+                    Выйти из чата
+                </button>
             </div>
-            <button className={'btn btn-success my-1'}
-                    disabled={messageSending}
-                    onClick={onSendMessageButtonClick}>
-                Отправить
-            </button>
-        </div>
+            : <ChatLoadingBackground/>
     );
 };
 

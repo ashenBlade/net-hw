@@ -4,8 +4,33 @@ import {MessageCallback} from "../interfaces/messageCallback";
 import {MessagesRepository} from "../interfaces/messagesRepository";
 import {ForumCommunicator} from "../interfaces/forumCommunicator";
 import {FileUploadedCallback} from "../interfaces/fileUploadedCallback";
+import {ChatEndedCallback} from "../interfaces/chatEndedCallback";
+import {ChatStartedCallback} from "../interfaces/chatStartedCallback";
 
 export class AggregatedForumHandler implements ForumHandler {
+    endChat(): Promise<void> {
+        return this.communicator.endChat();
+    }
+
+    login(username: string): Promise<void> {
+        return this.communicator.login(username);
+    }
+
+    registerOnChatEndedCallback(cb: ChatEndedCallback): void {
+        this.communicator.registerOnChatEndedCallback(cb);
+    }
+
+    registerOnChatStartedCallback(cb: ChatStartedCallback): void {
+        this.communicator.registerOnChatEndedCallback(cb);
+    }
+
+    unregisterOnChatEndedCallback(cb: ChatEndedCallback): void {
+        this.communicator.unregisterOnChatEndedCallback(cb);
+    }
+
+    unregisterOnChatStartedCallback(cb: ChatStartedCallback): void {
+        this.communicator.unregisterOnChatStartedCallback(cb);
+    }
     constructor(readonly repository: MessagesRepository,
                 readonly communicator: ForumCommunicator) {
     }

@@ -10,6 +10,11 @@ import Guid from "../models/guid";
 export class SignalrForumCommunicator extends BaseForumCommunicator {
     static messagePublishedFunction = "publishMessage";
     static fileUploadedFunction = "onFileUploaded";
+    static onChatStartedFunction = "onChatStarted";
+    static onChatEndedFunction = "onChatEnded";
+    static endChatFunction = "endChat";
+    static loginFunction = "login";
+
     connection: HubConnection
 
     constructor(readonly url: string,
@@ -72,5 +77,13 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
                     error: e
                 });
         });
+    }
+
+    async endChat(): Promise<void> {
+        await this.connection.send(SignalrForumCommunicator.endChatFunction);
+    }
+
+    async login(username: string): Promise<void> {
+        await this.connection.send(SignalrForumCommunicator.loginFunction, username);
     }
 }
