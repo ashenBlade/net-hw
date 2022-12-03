@@ -4,14 +4,19 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace MessagesAPI;
 
-public class ChatHub : Hub
+public class SupportChatHub : Hub
 {
-    private const string PublishMessageMethodName = "publishMessage";
+    public const string PublishMessageMethodName = "publishMessage";
+    public const string EndChatFunctionName = "endChat";
     
-    private readonly IBus _bus;
-    private readonly ILogger<ChatHub> _logger;
+    public const string OnChatStartedFunctionName = "onChatStarted";
+    public const string OnChatEndedFunctionName = "onChatEnded";
+    
 
-    public ChatHub(IBus bus, ILogger<ChatHub> logger)
+    private readonly IBus _bus;
+    private readonly ILogger<SupportChatHub> _logger;
+
+    public SupportChatHub(IBus bus, ILogger<SupportChatHub> logger)
     {
         _bus = bus;
         _logger = logger;
@@ -42,4 +47,6 @@ public class ChatHub : Hub
         _logger.LogInformation("Event published");
         await Clients.All.SendAsync(PublishMessageMethodName, username, message, requestId);
     }
+    
+    
 }

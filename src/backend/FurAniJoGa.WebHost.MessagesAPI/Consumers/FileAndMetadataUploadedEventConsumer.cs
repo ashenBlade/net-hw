@@ -9,11 +9,11 @@ namespace MessagesAPI.Consumers;
 public class FileAndMetadataUploadedEventConsumer : IConsumer<FileAndMetadataUploadedEvent>
 {
     public const string EventHandlerFunctionName = "onFileUploaded";
-    private readonly IHubContext<ChatHub> _hubContext;
+    private readonly IHubContext<SupportChatHub> _hubContext;
     private readonly ILogger<FileAndMetadataUploadedEventConsumer> _logger;
     private readonly IRequestRepository _requestRepository;
 
-    public FileAndMetadataUploadedEventConsumer(IHubContext<ChatHub> hubContext,
+    public FileAndMetadataUploadedEventConsumer(IHubContext<SupportChatHub> hubContext,
                                                 ILogger<FileAndMetadataUploadedEventConsumer> logger,
                                                 IRequestRepository requestRepository)
     {
