@@ -150,6 +150,9 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
     
     useEffect(() => {
         function onMessageCallback(msg: Message) {
+            console.log('onMessageCallback', {
+                msg
+            })
             setMessages([...messages, mapMessageToChatMessage(msg)]);
         }
 
@@ -173,8 +176,7 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
             newMap.set(uploadFile.requestId.value, attachment);
             setUploadedFiles(newMap);
         }
-
-
+        
         forumHandler.registerOnMessageCallback(onMessageCallback);
         forumHandler.registerOnFileUploadedCallback(onFileUploadCallback);
         
@@ -188,7 +190,6 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
         function onChatStartedCallback() {
             console.log('Chat started')
             setChatStarted(true);
-            rerender();
         }
 
         function onChatEndedCallback() {
@@ -197,13 +198,12 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
             setMessages([]);
             setMyUploadedFiles(new Set<string>());
             setUploadedFiles(new Map());
-            rerender();
         }
         forumHandler.registerOnChatStartedCallback(onChatStartedCallback);
         forumHandler.registerOnChatEndedCallback(onChatEndedCallback);
         forumHandler.login(username).then(() => setChatStarted(false)).catch(e => {
             console.error('Ошибка при логине', e)
-        })
+        });
         return () => {
             forumHandler.unregisterOnChatEndedCallback(onChatEndedCallback);
             forumHandler.unregisterOnChatStartedCallback(onChatStartedCallback);

@@ -32,12 +32,13 @@ public class SupportChatHub : Hub
     {
         var (chatId, user, support) = args;
         _logger.LogInformation("Начался чат {ChatId}", chatId);
-        await Task.WhenAll(Groups.AddToGroupAsync(user, chatId),
-                           Groups.AddToGroupAsync(support, chatId));
-        await Task.WhenAll(Clients.Client(user).SendAsync(OnChatStartedFunctionName, "user"),
-                           Clients.Client(support).SendAsync(OnChatStartedFunctionName, "support"));
+        await Groups.AddToGroupAsync(user, chatId);
+        await Groups.AddToGroupAsync(support, chatId);
+        _logger.LogInformation("Пользователь {UserId} и поддержка {SupportId} добавлены в чат {ChatId}", user, support, chatId);
+        await Clients.Client(user).SendAsync(OnChatStartedFunctionName, "user");
+        await Clients.Client(support).SendAsync(OnChatStartedFunctionName, "support");
     }
-
+    
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         _forum.DisconnectUser(Context.ConnectionId);
@@ -95,12 +96,16 @@ public class SupportChatHub : Hub
         var chatId = _forum.FindGroupIdByConnectionId(Context.ConnectionId);
         if (chatId is null)
         {
+            _logger.LogWarning("Невозможно найти ChatId для соединения {ConnectionId}", Context.ConnectionId);
             return;
         }
+        
+        _logger.LogInformation("Сообщение для группы {ChatId}", chatId);
         
         var username = _forum.GetUsername(Context.ConnectionId);
         if (username is null)
         {
+            _logger.LogWarning("Невозможно найти имя пользователя для подключения {ConnectionId}", Context.ConnectionId);
             return;
         }
         
@@ -112,7 +117,8 @@ public class SupportChatHub : Hub
                                RequestId = requestId
                            });
         _logger.LogInformation("Event published");
-        await Clients.Group(chatId).SendAsync(PublishMessageMethodName, username, message, requestId.ToString());
+        await Clients.Group(chatId).SendAsync(PublishMessageMethodName, username, message, requestId?.ToString());
+        _logger.LogInformation("Сообщение отправлено в чат");
     }
 
     protected override void Dispose(bool disposing)

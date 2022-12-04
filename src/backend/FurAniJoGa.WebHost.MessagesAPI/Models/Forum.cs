@@ -129,6 +129,13 @@ public class Forum
                    : null;
     }
 
+    public (string chatId, string userId, string supportId)? FindChatByConnectionId(string connectionId)
+    {
+        return _connectionIdChat.TryGetValue(connectionId, out var chat)
+                   ? ( chat.ChatId, chat.User.UserId, chat.Support.UserId )
+                   : null;
+    }
+
     public string? GetUsername(string connectionId)
     {
         _connectionIdUsername.TryGetValue(connectionId, out var username);

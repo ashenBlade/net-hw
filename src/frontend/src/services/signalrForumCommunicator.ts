@@ -7,6 +7,9 @@ import {ConsoleLogger} from "@microsoft/signalr/dist/esm/Utils";
 import FileRepository from "../interfaces/fileRepository";
 import Guid from "../models/guid";
 
+const supportRole = 'support'
+const userRole = 'user'
+
 export class SignalrForumCommunicator extends BaseForumCommunicator {
     static messagePublishedFunction = "publishMessage";
     static fileUploadedFunction = "onFileUploaded";
@@ -16,6 +19,8 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
     static loginFunction = "login";
 
     connection: HubConnection
+    role?: string
+    username?: string
 
     constructor(readonly url: string,
                 readonly fileRepository: FileRepository,
@@ -33,18 +38,26 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
     get endpoint() {
         return `${this.url}${this.chatEndpoint}`
     }
+    
+    private getUsername(messageUsername: string): string {
+        const oppositeName = this.role == supportRole ? 'Клиент' : 'Поддержка';
+        return this.username === messageUsername ? 'Вы' : oppositeName;
+    }
 
     async open() {
         this.connection.on(SignalrForumCommunicator.messagePublishedFunction,
             (username, message, requestId) => {
-                console.log('Received published message');
-                this.notifyMessage({
-                    username,
+            
+                let receivedMessage = {
+                    username: this.getUsername(username),
                     message,
-                    requestId: requestId === undefined || requestId === null
+                    requestId: requestId === undefined || requestId === null || requestId === ''
                         ? undefined
                         : new Guid(requestId),
-                });
+                };
+                
+                console.log('Received published message', receivedMessage);
+                this.notifyMessage(receivedMessage);
             });
         this.connection.on(SignalrForumCommunicator.fileUploadedFunction,
             (requestId: string, fileId: string, metadata: string) => {
@@ -58,12 +71,12 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
                 console.log('Received file info', uploadedFile)
                 this.notifyFileUploaded(uploadedFile)
             });
-        
         this.connection.on(SignalrForumCommunicator.onChatStartedFunction, 
             (role: string) => {
                 console.log('Чат стартовал', {
                     role
                 })
+                this.role = role
                 this.notifyChatStarted();
             })
 
@@ -82,7 +95,6 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
 
     async sendMessage(msg: Message): Promise<void> {
         await this.connection.send(SignalrForumCommunicator.messagePublishedFunction,
-            msg.username,
             msg.message,
             msg.requestId?.value ?? null)
             .catch(e => {
@@ -98,5 +110,6 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
 
     async login(username: string): Promise<void> {
         await this.connection.send(SignalrForumCommunicator.loginFunction, username);
+        this.username = username
     }
 }
