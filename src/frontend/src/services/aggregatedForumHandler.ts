@@ -21,7 +21,7 @@ export class AggregatedForumHandler implements ForumHandler {
     }
 
     registerOnChatStartedCallback(cb: ChatStartedCallback): void {
-        this.communicator.registerOnChatEndedCallback(cb);
+        this.communicator.registerOnChatStartedCallback(cb);
     }
 
     unregisterOnChatEndedCallback(cb: ChatEndedCallback): void {

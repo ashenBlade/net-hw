@@ -8,7 +8,6 @@ import ChatMessage from "./Chat/СhatMessage";
 import Guid from "../../models/guid";
 import {UploadFile} from "../../models/uploadFile";
 import Attachment from "../../models/attachment";
-import {upload} from "@testing-library/user-event/dist/upload";
 import ChatLoadingBackground from "./ChatLoadingBackground/ChatLoadingBackground";
 
 const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) => {
@@ -175,9 +174,21 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
             setUploadedFiles(newMap);
         }
 
+
+        forumHandler.registerOnMessageCallback(onMessageCallback);
+        forumHandler.registerOnFileUploadedCallback(onFileUploadCallback);
+        
+        return () => {
+            forumHandler.unregisterOnMessageCallback(onMessageCallback);
+            forumHandler.unregisterOnFileUploadCallback(onFileUploadCallback);
+        }
+    }, [forumHandler, messages]);
+    
+    useEffect(() => {
         function onChatStartedCallback() {
             console.log('Chat started')
             setChatStarted(true);
+            rerender();
         }
 
         function onChatEndedCallback() {
@@ -186,25 +197,18 @@ const ChatPage: FC<ChatPageProps> = ({forumHandler, username, fileRepository}) =
             setMessages([]);
             setMyUploadedFiles(new Set<string>());
             setUploadedFiles(new Map());
+            rerender();
         }
-
-        forumHandler.registerOnChatEndedCallback(onChatEndedCallback);
         forumHandler.registerOnChatStartedCallback(onChatStartedCallback);
-        forumHandler.registerOnMessageCallback(onMessageCallback);
-        forumHandler.registerOnFileUploadedCallback(onFileUploadCallback);
-        return () => {
-            forumHandler.unregisterOnMessageCallback(onMessageCallback);
-            forumHandler.unregisterOnFileUploadCallback(onFileUploadCallback);
-            forumHandler.unregisterOnChatEndedCallback(onChatEndedCallback);
-            forumHandler.unregisterOnChatStartedCallback(onChatStartedCallback);
-        }
-    }, [forumHandler, messages]);
-
-    useEffectOnce(() => {
+        forumHandler.registerOnChatEndedCallback(onChatEndedCallback);
         forumHandler.login(username).then(() => setChatStarted(false)).catch(e => {
             console.error('Ошибка при логине', e)
         })
-    })
+        return () => {
+            forumHandler.unregisterOnChatEndedCallback(onChatEndedCallback);
+            forumHandler.unregisterOnChatStartedCallback(onChatStartedCallback);
+        }
+    }, [forumHandler])
 
     const onEndChatButtonClick = async () => {
         setMessageSending(true)

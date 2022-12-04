@@ -5,6 +5,7 @@ using FurAniJoGa.Infrastructure.Repositories;
 using FurAniJoGa.RabbitMq.Contracts.Events;
 using MassTransit;
 using MessagesAPI.Consumers;
+using MessagesAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MessagesAPI;
@@ -19,6 +20,7 @@ public static class ServicesExtensions
         });
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddSingleton(new Forum());
         services.AddDbContext<MessagesDbContext>(x =>
         {
             var database = configuration["DB_DATABASE"] ?? throw new ArgumentNullException(null, "Database name is not provided");

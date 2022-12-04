@@ -21,7 +21,7 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
                 readonly fileRepository: FileRepository,
                 readonly chatEndpoint: string = '/chat') {
         super();
-        let fetchHttpClient = new FetchHttpClient(new ConsoleLogger(LogLevel.Information));
+        let fetchHttpClient = new FetchHttpClient(new ConsoleLogger(LogLevel.Debug));
         this.connection = new signalR.HubConnectionBuilder()
             .withUrl(this.endpoint, {
                 withCredentials: false,
@@ -57,17 +57,30 @@ export class SignalrForumCommunicator extends BaseForumCommunicator {
                 };
                 console.log('Received file info', uploadedFile)
                 this.notifyFileUploaded(uploadedFile)
+            });
+        
+        this.connection.on(SignalrForumCommunicator.onChatStartedFunction, 
+            (role: string) => {
+                console.log('Чат стартовал', {
+                    role
+                })
+                this.notifyChatStarted();
             })
-        await this.connection.start();
 
+        this.connection.on(SignalrForumCommunicator.onChatEndedFunction, () => {
+            console.log('Чат окончен')
+            this.notifyChatEnded()
+        })
+        console.log('Соединение открывается')
+        await this.connection.start();
     }
 
     async close() {
+        console.log('Соединение закрывается')
         await this.connection.stop();
     }
 
     async sendMessage(msg: Message): Promise<void> {
-        
         await this.connection.send(SignalrForumCommunicator.messagePublishedFunction,
             msg.username,
             msg.message,

@@ -62,6 +62,7 @@ public class Forum
         {
             return;
         }
+        
 
         _connectionIdUsername[connectionId] = username;
         _freeSupportIds.Add(connectionId);
@@ -69,7 +70,7 @@ public class Forum
         UpdateChats();
     }
     
-    public void RemoveUser(string connectionId)
+    public void DisconnectUser(string connectionId)
     {
         if (!_connectionIdUsername.Remove(connectionId, out var username))
         {
@@ -84,9 +85,17 @@ public class Forum
             return;
         }
         
-        _freeUserIds.Add(chat.User.UserId);
-        _freeSupportIds.Add(chat.Support.UserId);
-            
+
+        if (chat.User.UserId == connectionId)
+        {
+            _freeSupportIds.Add(chat.Support.UserId);
+        }
+        else
+        {
+            _freeUserIds.Add(chat.User.UserId);
+        }
+        
+        
         OnChatEnded(new ChatEventArgs()
                     {
                         ChatId = chat.ChatId,

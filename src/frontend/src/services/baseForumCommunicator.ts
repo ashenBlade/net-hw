@@ -5,6 +5,7 @@ import {FileUploadedCallback} from "../interfaces/fileUploadedCallback";
 import {UploadFile} from "../models/uploadFile";
 import {ChatEndedCallback} from "../interfaces/chatEndedCallback";
 import {ChatStartedCallback} from "../interfaces/chatStartedCallback";
+import {log} from "util";
 
 export abstract class BaseForumCommunicator implements ForumCommunicator {
     messageCallbacks: MessageCallback[] = []
@@ -51,15 +52,25 @@ export abstract class BaseForumCommunicator implements ForumCommunicator {
         this.messageCallbacks.forEach(cb => cb(msg));
     }
 
+    protected notifyChatStarted() {
+        this.chatStartedCallbacks.forEach(cb => cb());
+    }
+
+    protected notifyChatEnded() {
+        this.chatEndedCallbacks.forEach(cb => cb());
+    }
+
     abstract sendMessage(msg: Message): Promise<void>;
     abstract endChat(): Promise<void>;
     abstract login(username: string): Promise<void>;
 
     registerOnChatEndedCallback(cb: ChatEndedCallback): void {
+        console.log('Регистрируем ChatEndedCallback')
         this.chatEndedCallbacks.push(cb)
     }
 
     registerOnChatStartedCallback(cb: ChatStartedCallback): void {
+        console.log('Регистрируем ChatStartedCallback')
         this.chatStartedCallbacks.push(cb)
     }
 

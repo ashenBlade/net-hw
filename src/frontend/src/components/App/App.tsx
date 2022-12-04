@@ -24,11 +24,13 @@ const App: FC<AppProps> = ({forumHandler, fileRepository}) => {
     });
 
     return (
-        <div className={'container-lg h-100'}>
-            <ChatPage forumHandler={forumHandler}
-                      username={username}
-                      fileRepository={fileRepository}/>
-        </div>
+        username 
+            ? <div className={'container-lg h-100'}>
+                <ChatPage forumHandler={forumHandler}
+                          username={username}
+                          fileRepository={fileRepository}/>
+            </div>
+            : <h1>Введите свое имя</h1>
     );
 };
 
