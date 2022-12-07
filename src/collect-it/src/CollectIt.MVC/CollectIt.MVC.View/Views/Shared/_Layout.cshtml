@@ -1,0 +1,41 @@
+﻿@using CollectIt.Database.Entities.Account
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - CollectIt.MVC.View</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/colors.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/ResourceStyles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/Sizes.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true"/>
+    <link href="~/lib/fontawesome-free-6.0.0-web/css/all.css" rel="stylesheet">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @* This is not error *@
+    @* ReSharper disable once Html.PathError *@
+    <link rel="stylesheet" href="~/CollectIt.MVC.View.styles.css" asp-append-version="true"/>
+</head>
+<body id="banner" class="h-100 body">
+
+<header class="header reveal alt">
+    @await Html.PartialAsync("_Navbar")
+</header>
+
+<section class="section">
+    <main role="main" class="container">
+        <div class="p-3 h-100">
+            @RenderBody()
+        </div>
+    </main>
+</section>
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

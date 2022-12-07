@@ -1,0 +1,90 @@
+﻿@model CollectIt.MVC.View.ViewModels.VideoViewModel
+
+@{
+    ViewData["Title"] = $"Video Page";
+    Layout = "_ImagesLayout";
+}
+
+<div class="rounded bg-light mb-2">
+    <div class="mb-3 p-3">
+        <h2 class="h2">@Model.Name</h2>
+        <div>
+            <video playsinline controls loop muted height="100%" width="100%">
+                <source src="@Model.PreviewAddress" type="video/mp4"/>
+            </video>
+        </div>
+        <div class="d-flex m-0 mb-2 mt-3">
+            <div class="action-btn">
+                @if (Model.IsAcquired)
+                {
+                    <a href="@Model.DownloadAddress"
+                       class="action-btn text-light border-0 rounded-pill bg-success btn text-decoration-none p-1 ps-3 pe-3"
+                       download>Загрузить</a>
+                }
+                else
+                {
+                    <form method="post" asp-controller="ResourceAcquiring"
+                          asp-action="BuyVideo" asp-route-videoId="@Model.VideoId">
+                        <input type="submit"
+                               class="text-decoration-none btn btn-danger action-btn border-0 rounded-pill p-1 ps-3 pe-3 ps-2 pe-2"
+                               value="Приобрести">
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="rounded border blur-light p-2 info-block mb-3">
+    <div class="date">
+        <h6>Дата загрузки</h6>
+        <data value="@Model.UploadDate">@Model.UploadDate</data>
+    </div>
+    <div class="author">
+        <h6>Автор</h6>
+        @Model.OwnerName
+    </div>
+    <ul class="row p-2 m-0 l-s-t-none tags-block">
+        @foreach (var tag in Model.Tags)
+        {
+            <li class="rounded-pill blur-dark wh-0 maw-2 mah-1 me-2 mt-2">
+                @tag
+            </li>
+        }
+    </ul>
+</div>
+<div class="text-decoration-none">
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="container rounded blur text-blur shadow mb-3 py-2 text-start">
+            <div class="row pb-1 border-bottom m-0 text-start">
+                <div class="text-blur" style="width: auto; height: auto">
+                    @comment.Author
+                </div>
+                <div class="text-blur ms-auto" style="width: auto; height: auto">
+                    @comment.PostTime
+                </div>
+            </div>
+            <div class="h-auto w-100 line">
+                @comment.Comment
+            </div>
+        </div>
+    }
+</div>
+@if (User.Identity!.IsAuthenticated)
+{
+    <form asp-controller="Videos" asp-action="LeaveComment" method="post" class="text-start p-2">
+        <label class="text-blur">Добавить комментарий:</label>
+        <input type="hidden" name="ImageId" value="@Model.VideoId"/>
+        <textarea name="Content" class="form-control blur-light p-3" placeholder="Оставить комментарий"></textarea>
+        <button type="submit" class="btn btn-light rounded border-0 mt-3">Отправить комментарий</button>
+    </form>
+}
+else
+{
+    <div class="text-start p-2 bg-light rounded">
+        <p>Войдите, чтобы оставить комментарии</p>
+        <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Войти</a>
+        <a asp-controller="Account" asp-action="Register" class="btn-primary btn">Зарегистрироваться</a>
+    </div>
+}

@@ -1,0 +1,29 @@
+﻿@model CollectIt.MVC.View.ViewModels.ProfileAccountViewModel
+
+<div class="text-start">
+    <h2 class="h2 pb-2">Профиль</h2>
+    <h4 class="h5 pb-2">Сведения об аккаунте</h4>
+    <form method="post" asp-action="EditAccount" enctype="multipart/form-data" class="w-100">
+        <div class="border rounded p-3">
+            <div class="w-100">
+                <div class="account-input mb-3 p-2 border-bottom">
+                    <label for="username" class="col-4">Имя пользователя</label>
+                    <input asp-for="Username" id="username" class="form-control"/>
+                </div>
+                <div class="account-input ps-2 pe-2">
+                    <label for="email" class="col-4">Почта</label>
+                    <input asp-for="Email" id="email" class="form-control"/>
+                </div>
+            </div>
+            @Html.ValidationSummary(false)
+            <input class="btn btn-primary" value="Сохранить" type="submit"/>
+        </div>
+    </form>
+    @if (!Model.EmailConfirmed)
+    {
+        <form asp-action="SendEmailConfirmation">
+            Ваша почта не подтверждена
+            <input type="submit" class="btn btn-success p-2 ms-2" value="Отправить письмо с подтверждением"/>
+        </form>
+    }
+</div>

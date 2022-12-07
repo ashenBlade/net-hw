@@ -1,0 +1,154 @@
+.btn-color{
+    background: #bbbbbb;
+}
+
+.btn-color:hover{
+    background: #9a9a9a;
+}
+
+.blur{
+    background: rgba(0, 0, 0, 0.57);
+}
+
+body{
+    background: #eeeeee;
+}
+
+.c-0{
+    background: #d2d2d2;
+    color: var(--bs-body-color);;
+}
+
+.c-0:hover{
+    background: rgba(0, 0, 0, 0.51);
+    color: rgba(255, 255, 255, 0.49) !important;
+}
+
+.c-1{
+    background: #bbbbbb;
+}
+
+.blur-dark{
+    background: rgba(0, 0, 0, 0.24);
+}
+
+.blur-dark:hover{
+    cursor: default;
+}
+
+.blur-light{
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.transparent{
+    background: transparent;
+}
+
+.transparent:hover{
+    background: rgba(255, 255, 255, 0.54);
+}
+
+.wh-0{
+    color: white;
+}
+
+.wh-0:hover{
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.tool:hover{
+    background: rgba(0, 0, 0, 0.75);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.res-prev{
+    background: #bbbbbb;
+}
+
+.more:hover{
+    background: rgba(0, 0, 0, 0.57);
+}
+
+.red{
+    background: red;
+}
+
+/*PathOfVerse additions*/
+.w-0{
+    background: #ced4da;
+}
+
+.white{
+    background: white;
+}
+
+.w-2{
+    background: #f5f5f5;
+}
+
+.transparent {
+    background-color: transparent;
+}
+
+body{
+    background-image: url("../img/povback.jpg");
+    background-size: 100%;
+}
+
+.blur{
+    background: rgba(0, 0, 0, 0.38);
+}
+
+.nav-blur{
+    background: rgba(0, 0, 0, 0.51);
+}
+
+.text-blur{
+    color: #f5f5f5 !important;
+}
+
+.btn-light:not(:disabled):not(.disabled).active, .btn-light:not(:disabled):not(.disabled):active, .show>.btn-light.dropdown-toggle {
+    background-color: rgba(0, 0, 0, 0.67);
+}
+
+.nav-link:hover{
+    background: rgba(0, 0, 0, 0.67);
+    color: #f5f5f5 !important;
+}
+
+.nav-tabs .nav-link.active {
+    border-bottom: 1px;
+    border-bottom-right-radius: 0;
+    background-color: rgba(0, 0, 0, 0.67);
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.80);
+}
+
+.nav-pills .nav-link.active {
+    border-bottom: 1px;
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: rgba(0, 0, 0, 0.67);
+}
+
+.nav-pills .nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.80);
+}
+
+.blur-light{
+    background: rgba(255, 255, 255, 0.7);
+    color: #1f1f1f;
+}
+
+.table-blur,
+.table-blur > th,
+.table-blur > td {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.e-d-btn{
+    background: rgba(255, 255, 255, 0.6);
+}

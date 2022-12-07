@@ -1,0 +1,112 @@
+﻿@using CollectIt.MVC.View.ViewModels
+@model CollectIt.MVC.View.ViewModels.AccountViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "_Layout";
+}
+
+<div class="bg-light rounded shadow p-4 d-flex align-items-start text-dark text-black mt-5 wrapper">
+    <div class="menu">
+        <a href="#" class="menu-btn triangle-right"></a>
+        <nav class="menu-list" role="tablist">
+            <div role="presentation">
+                <a class="nav-link text-dark-custom rounded active d-flex align-items-center mih-2 tabs-nav-btn" data-tab="#account">
+                    <i class="fas fa-xl fa-user-circle t-s-1  me-1"></i><span class="text">Аккаунт</span>
+                </a>
+            </div>
+            <div role="presentation">
+                <a class="nav-link text-dark-custom rounded d-flex align-items-center mih-2 tabs-nav-btn" data-tab="#subscribes">
+                    <i class="fas fa-xl fa-users t-s-1 me-1"></i><span class="text">Мои подписки</span>
+                </a>
+            </div>
+            <div role="presentation">
+                <a class="nav-link text-dark-custom rounded d-flex align-items-center mih-2 tabs-nav-btn" data-tab="#acquired-resources">
+                    <i class="fas fa-xl fa-folder t-s-1 me-1"></i><span class="text">Купленный контент</span>
+                </a>
+            </div>
+            <div role="presentation">
+                <a class="nav-link text-dark-custom rounded d-flex align-items-center mih-2 tabs-nav-btn" data-tab="#upload">
+                    <i class="fas fa-xl fa-file-arrow-up t-s-1 me-1"></i><span class="text">Добавить ресурс</span>
+                </a>
+            </div>
+            <div role="presentation">
+                <a class="nav-link text-dark-custom rounded d-flex align-items-center mih-2 tabs-nav-btn" data-tab="#my-resources">
+                    <i class="fas fa-xl fa-paint-brush t-s-1 me-1"></i><span class="text">Мои работы</span>
+                </a>
+            </div>
+            <div role="presentation">
+                <a class="nav-link text-dark-custom rounded d-flex align-items-center mih-2 tabs-nav-btn" data-tab="#tech-support-tab">
+                    <i class="fas fa-xl fa-hands-helping t-s-1 me-1"></i><span class="text">Тех поддержка</span>
+                </a>
+            </div>
+            
+            <a class="nav-item" title="Выход" role="logout">
+                <a asp-controller="Account" asp-action="LogOut" class="text-dark btn btn-danger">Выйти</a>
+            </a>
+        </nav>
+         
+    </div>
+
+    <div class=" w-100 content">
+        <div class="tab active " id="account" role="tabpanel">
+            <div class="p-2">
+                @await Html.PartialAsync("Account", new ProfileAccountViewModel()
+
+                                                    {
+                                                        Username = Model.UserName,
+                                                        Email = Model.Email,
+                                                        EmailConfirmed = Model.EmailConfirmed
+                                                    })
+            </div>
+        </div>
+        <div class="tab" id="subscribes" role="tabpanel">
+            <div class="p-2">
+                @await Html.PartialAsync("Subscribtions", new AccountSubscriptionsViewModel()
+                {
+                    Subscriptions = Model.Subscriptions.ToArray()
+                })
+            </div>
+        </div>
+        <div class="tab" id="acquired-resources" role="tabpanel">
+            <div class="p-2">
+                @await Html.PartialAsync("Resources", new AccountResourcesViewModel()
+                {
+                    Resources = Model.AcquiredResources.ToArray()
+                })
+            </div>
+        </div>
+        <div class="tab" id="upload" role="tabpanel">
+            <div class="p-2">
+                @await Html.PartialAsync("UploadResource", new ImageViewModel())
+            </div>
+        </div>
+        <div class="tab" id="my-resources" role="tabpanel">
+            <div class="p-2">
+                @await Html.PartialAsync("MyResources", new AccountResourcesViewModel()
+                {
+                    Resources = Model.UsersResources.ToArray()
+                })
+            </div>
+        </div>
+        <div class="tab" id="tech-support-tab" role="tabpanel">
+            <div class="p-2">
+                @await Html.PartialAsync("TechSupportTab", new TechSupportViewModel()
+                {
+                    IsTechSupport = Model.Roles.Any(r => r == "Technical Support")
+                })
+            </div>
+        </div>
+    </div>
+   
+</div>
+<script src="js/site.js"></script>
+<script>
+
+    $('.menu-btn').on('click', function (e){
+        e.preventDefault();
+        $('.menu').toggleClass('menu-active');
+        $('.menu-btn').toggleClass('triangle-right').toggleClass('triangle-left');
+        $('.content').toggleClass('content-active');
+    })
+</script>

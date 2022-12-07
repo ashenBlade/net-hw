@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - Collect It</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/colors.css" asp-append-version="true"/>
+    <link href="~/lib/fontawesome-free-6.0.0-web/css/all.css" rel="stylesheet">
+</head>
+<body class="h-100 d-flex flex-column">
+
+<header id="header" class="reveal alt">
+    @await Html.PartialAsync("_Navbar")
+</header>
+
+
+<div class="h-100">
+    <main role="main" class="h-auto main mt-6 flex-shrink-0">
+        <div>
+            @RenderBody()
+        </div>
+    </main>
+    </div>
+
+
+<footer class="border-top mt-auto py-3 footer text-muted">
+    <div class="container">
+        &copy; 2022 - Collect It - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

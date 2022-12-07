@@ -1,0 +1,133 @@
+@using CollectIt.Database.Entities.Account
+@model CollectIt.MVC.View.ViewModels.SearchBarViewModel
+
+@{
+    var selected = Model.ResourceType;
+    var text = selected switch
+    {
+        ResourceType.Music => "Музыка",
+        ResourceType.Video => "Видео",
+        _ => "Изображения"
+    };
+    
+    var value = selected switch
+    {
+        ResourceType.Music => "musics",
+        ResourceType.Video => "videos",
+        _ => "images"
+    };
+
+    var check = Json.Serialize(value); 
+}
+
+<form asp-controller="@Model.Controller"
+      asp-action="@Model.Action"
+      method="get"
+      id="search-bar-form"
+      asp-antiforgery="false"
+      class="input-group rounded-pill px-6 row m-0">
+    <div class="select btn bg-light rounded-start-1 rounded-end-0 p-2 col-2 miw-1 border-end">
+    	<div class="select__header">
+            <span class="select__current">
+                <input type="hidden" id="resource-type-select" value="@value"/>
+                <span class="img ps-3" id="first-load"></span>
+                <span class="text ps-2">@text</span>
+            </span>
+    		<div class="select__icon"><i class="fa-solid fa-caret-down"></i></div>
+    	</div>
+    
+    	<div class="select__body white miw-2">
+    		<div class="select__item">Изображения</div>
+    		<div class="select__item">Видео</div>
+    		<div class="select__item">Музыка</div>
+    	</div>
+    </div>
+    <input id="search-bar-query"
+           asp-for="Query"
+           placeholder="Название, тэг, гэг..."
+           class="form-control col-6 rounded-start-0 rounded-end-0"/>
+    <button type="button" id="search-bar-button" class="btn bg-light border rounded-end-1 rounded-start-0 col-2"><span class="img"><i class="fa-solid fa-magnifying-glass"></i></span><span class="text">Найти</span></button>
+</form>
+<script>
+if (@check !== ''){
+    let img = @check === 'images'? '<i class="fa-solid fa-image"></i>':
+        @check === 'musics' ? '<i class="fa-solid fa-music"></i>' :
+        @check === 'videos' ? '<i class="fa-solid fa-video"></i>' : '';
+    $('#first-load').append(img);
+}
+
+let select = function () {
+    let selectHeader = document.querySelectorAll('.select__header');
+    let selectItem = document.querySelectorAll('.select__item');
+
+    selectHeader.forEach(item => {
+        item.addEventListener('click', selectToggle)
+    });
+
+    selectItem.forEach(item => {
+        item.addEventListener('click', selectChoose)
+    });
+
+    function selectToggle() {
+        this.parentElement.classList.toggle('is-active');
+    }
+
+    function selectChoose() {
+        let text = this.innerText,
+            select = this.closest('.select');
+        let img;
+        if (text === ''){ 
+            text = '';
+            $('.select__current').empty();
+            $('.select__current').append(text);
+            select.classList.remove('is-active');
+        }
+        if (text !== ''){
+            if (text === "Изображения") 
+                img = '<input type="hidden" id="resource-type-select" value="images"/><span class="ps-3 img"><i class="fa-solid fa-image"></i></span>';
+            if (text === "Музыка") 
+                img = '<input type="hidden" id="resource-type-select" value="musics"/><span class="ps-3 img"><i class="fa-solid fa-music"></i></span>';
+            if (text === "Видео") 
+                img = '<input type="hidden" id="resource-type-select" value="videos"/><span class="ps-3 img"><i class="fa-solid fa-video"></i></span>';
+            text = '<span class="text ps-2">' + text + '</span>';
+            text = '' + img + text;
+            $('.select__current').empty();
+            $('.select__current').append(text);
+            select.classList.remove('is-active');  
+        }
+    }
+};
+
+
+select();
+
+const form = $('#search-bar-form');
+
+const searchBarButton = $('#search-bar-button');
+const input = $("#search-bar-query");
+
+const onSubmit = () => {
+    const selected = $('#resource-type-select');
+    const path = selected.val() 
+    
+    console.log(`path is ${path}`);
+    if (path === '') throw new Error('FUCK');
+    const query = input.val();
+    console.log(query);
+    const url = `/${path}?q=${encodeURIComponent(query)}&p=1`;
+    console.log(url)
+    window.location.href = url;
+}
+
+input.keypress(e => {
+    if (e.which === 13) {
+        onSubmit();
+        e.preventDefault()
+    }
+})
+
+searchBarButton.on('click', e => {
+    e.preventDefault();
+    onSubmit();
+})
+</script>

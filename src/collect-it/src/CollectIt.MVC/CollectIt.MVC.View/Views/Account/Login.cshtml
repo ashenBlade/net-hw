@@ -1,0 +1,52 @@
+﻿@model CollectIt.MVC.View.ViewModels.LoginViewModel
+@{
+    Layout = null;
+}
+@{
+    <title>Вход в аккаунт</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/colors.css" asp-append-version="true"/>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans"/>
+}
+
+<div class="registration">
+    <form asp-action="Login" asp-controller="Account" method="post">
+        <h3 class="text-center">Вход</h3>
+        <div class="form-group">
+            @Html.EditorFor(x => x.Email, new {htmlAttributes = new {@class = "form-control item", placeholder = "Почта"}})
+            @Html.ValidationMessageFor(x => x.Email, null, new {@class = "text-danger text-center"})
+        </div>
+        <div class="form-group">
+            @Html.EditorFor(x => x.Password, new {htmlAttributes = new {@class = "form-control item", placeholder = "Пароль"}})
+            @Html.ValidationMessageFor(x => x.Password, null, new {@class = "text-danger text-center"})
+        </div>
+        <div>
+            <label class="align-content-center justify-content-center d-flex">
+                @Html.EditorFor(x => x.RememberMe, new {htmlAttributes = new {@class = "form-check-input"}})
+                <label class="form-check-label ms-2" asp-for="RememberMe">Запомнить меня</label>
+            </label>
+        </div>
+        @Html.ValidationSummary(true, null, new {@class = "text-danger text-center text-decoration-none"}, "p")
+        <div class="form-group">
+            <button class="create-account btn-primary" type="submit">Войти</button>
+        </div>
+        <div class="mb-4 w-100 btn btn-primary google-btn">
+            <img alt="google icon" class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+            <a class="btn-text text-white text-decoration-none" asp-action="GoogleLogin">
+                <b>Sign in with google</b>
+            </a>
+        </div>
+        <div class="text-center">
+            <p>
+                Нет аккаунта?
+                <a asp-area="" asp-controller="Account" asp-action="Register">
+                    Регистрация
+                </a>
+            </p>
+        </div>
+        
+        @* <a asp-action="GoogleLogin" class="btn btn-primary">Google enter</a> *@
+    </form>
+</div>

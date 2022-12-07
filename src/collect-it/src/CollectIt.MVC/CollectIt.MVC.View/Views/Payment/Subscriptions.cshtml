@@ -1,0 +1,22 @@
+﻿@using CollectIt.MVC.View.Views.Shared.Components.SubscriptionCards
+@model CollectIt.MVC.View.ViewModels.SubscriptionsViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Подписки";
+}
+
+<ul class="text-decoration-none d-flex justify-content-around flex-xl-row flex-column p-0">
+    <li class="btn btn-light mb-temp">
+        <a asp-action="GetPageWithSubscriptionCards" asp-route-type="Any" class="text-decoration-none text-dark">Any</a>
+    </li>
+    <li class="btn btn-light mb-temp">
+        <a asp-action="GetPageWithSubscriptionCards" asp-route-type="Image" class="text-decoration-none text-dark">Image</a>
+    </li>
+    <li class="btn btn-light mb-temp">
+        <a asp-action="GetPageWithSubscriptionCards" asp-route-type="Video" class="text-decoration-none text-dark">Video</a>
+    </li>
+    <li class="btn btn-light">
+        <a asp-action="GetPageWithSubscriptionCards" asp-route-type="Music" class="text-decoration-none text-dark">Music</a>
+    </li>
+</ul>
+<vc:subscription-cards model="@(new SubscriptionCardsViewModel() {Subscriptions = Model.Subscriptions})"/>
