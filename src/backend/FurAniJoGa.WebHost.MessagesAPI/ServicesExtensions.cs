@@ -39,6 +39,7 @@ public static class ServicesExtensions
         services.AddScoped<IRequestRepository, RequestsRepository>();
         services.AddSignalR();
 
+
         services.AddMassTransit(configurator =>
         {
             var host = configuration["RABBITMQ_HOST"];

@@ -1,17 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace MessagesAPI.Models;
 
 public class Forum
 {
     private readonly Dictionary<string, string> _connectionIdUsername = new();
     
-    private readonly HashSet<string> _freeUserIds = new();
-    private readonly HashSet<string> _freeSupportIds = new();
+    private Queue<string> _freeUserIds = new();
+    private Queue<string> _freeSupportIds = new();
     
     
     private readonly Dictionary<string, Chat> _connectionIdChat = new();
-
-    public event ChatEventHandler? ChatStarted;
-    public event ChatEventHandler? ChatEnded;
+    
+    public event EventHandler<ChatEventArgs>? ChatStarted;
+    public event EventHandler<ChatEventArgs>? ChatEnded;
     
     
     public void AddUser(string connectionId, string username)
@@ -22,18 +24,37 @@ public class Forum
         }
 
         _connectionIdUsername[connectionId] = username;
-        _freeUserIds.Add(connectionId);
+        _freeUserIds.Enqueue(connectionId);
+
+        if (_freeSupportIds.Count == 0)
+        {
+            return;
+        }
+
+        var freeSupportId = _freeSupportIds.Dequeue();
+        var chatId = Guid.NewGuid().ToString();
+        var chat = new Chat(new User(username, connectionId), 
+                            new Support(_connectionIdUsername[freeSupportId], freeSupportId), 
+                            chatId);
+        _connectionIdChat[freeSupportId] = _connectionIdChat[connectionId] = chat;
         
-        UpdateChats();
+        OnChatStarted(new ChatEventArgs()
+                      {
+                          ChatId = chatId,
+                          SupportConnectionId = freeSupportId,
+                          UserConnectionId = connectionId
+                      });
     }
 
-    private void UpdateChats()
+    public void ForceUpdateChats()
     {
-        if (_freeSupportIds.Count <= 0 || _freeUserIds.Count <= 0) 
+        if (_freeSupportIds.Count == 0 || _freeUserIds.Count == 0)
+        {
             return;
-        
-        var freeSupportId = _freeSupportIds.First();
-        var freeUserId = _freeUserIds.First();
+        }
+
+        var freeSupportId = _freeSupportIds.Dequeue();
+        var freeUserId = _freeUserIds.Dequeue();
 
         var user = new User(_connectionIdUsername[freeUserId], freeUserId);
         var support = new Support(_connectionIdUsername[freeSupportId], freeSupportId);
@@ -42,11 +63,7 @@ public class Forum
                             support, 
                             chatId);
             
-        _connectionIdChat[freeSupportId] = chat;
-        _connectionIdChat[freeUserId] = chat;
-            
-        _freeSupportIds.Remove(freeSupportId);
-        _freeUserIds.Remove(freeUserId);
+        _connectionIdChat[freeSupportId] = _connectionIdChat[freeUserId] = chat;
             
         OnChatStarted(new ChatEventArgs()
                       {
@@ -56,20 +73,42 @@ public class Forum
                       });
     }
     
-    public void AddSupport(string connectionId, string username)
+    public void AddSupport(string supportConnectionId, string username)
     {
-        if (_connectionIdUsername.ContainsKey(connectionId))
+        if (_connectionIdUsername.ContainsKey(supportConnectionId))
         {
             return;
         }
         
 
-        _connectionIdUsername[connectionId] = username;
-        _freeSupportIds.Add(connectionId);
+        _connectionIdUsername[supportConnectionId] = username;
+        _freeSupportIds.Enqueue(supportConnectionId);
         
-        UpdateChats();
+        if (_freeUserIds.Count == 0)
+        {
+            return;
+        }
+
+        var freeUserId = _freeUserIds.Dequeue();
+        var user = new User(_connectionIdUsername[freeUserId], freeUserId);
+        var support = new Support(username, supportConnectionId);
+        var chatId = Guid.NewGuid().ToString();
+        var chat = new Chat(user, support, chatId);
+        _connectionIdChat[freeUserId] = _connectionIdChat[supportConnectionId] = chat;
+        OnChatStarted(new ChatEventArgs()
+                      {
+                          ChatId = chatId,
+                          SupportConnectionId = supportConnectionId,
+                          UserConnectionId = freeUserId
+                      });
     }
-    
+
+    private static Queue<string> RemoveFrom(Queue<string> original, string item)
+    {
+        var removed = new Queue<string>(original.Where(i => i != item));
+        return removed;
+    }
+
     public void DisconnectUser(string connectionId)
     {
         if (!_connectionIdUsername.Remove(connectionId, out var username))
@@ -78,21 +117,24 @@ public class Forum
             return;
         }
 
-
+        _freeSupportIds = RemoveFrom(_freeSupportIds, connectionId);
+        _freeUserIds = RemoveFrom(_freeUserIds, connectionId);
+        
         if (!_connectionIdChat.Remove(connectionId, out var chat))
         {
             // Не состоит ни в одном в чате
             return;
         }
         
-
         if (chat.User.UserId == connectionId)
         {
-            _freeSupportIds.Add(chat.Support.UserId);
+            _connectionIdChat.Remove(chat.Support.UserId);
+            _freeSupportIds.Enqueue(chat.Support.UserId);
         }
         else
         {
-            _freeUserIds.Add(chat.User.UserId);
+            _connectionIdChat.Remove(chat.User.UserId);
+            _freeUserIds.Enqueue(chat.User.UserId);
         }
         
         
@@ -102,6 +144,8 @@ public class Forum
                         SupportConnectionId = chat.Support.UserId,
                         UserConnectionId = chat.User.UserId
                     });
+        
+        ForceUpdateChats();
     }
 
     public void EndChatForUser(string connectionId)
@@ -111,8 +155,8 @@ public class Forum
             return;
         }
 
-        _freeSupportIds.Add(chat.Support.UserId);
-        _freeUserIds.Add(chat.User.UserId);
+        _freeSupportIds.Enqueue(chat.Support.UserId);
+        _freeUserIds.Enqueue(chat.User.UserId);
         
         OnChatEnded(new ChatEventArgs()
                     {
@@ -144,11 +188,11 @@ public class Forum
 
     protected virtual void OnChatEnded(ChatEventArgs args)
     {
-        ChatEnded?.Invoke(args);
+        ChatEnded?.Invoke(this, args);
     }
 
     protected virtual void OnChatStarted(ChatEventArgs args)
     {
-        ChatStarted?.Invoke(args);
+        ChatStarted?.Invoke(this, args);
     }
 }

@@ -28,7 +28,7 @@ public class SupportChatHub : Hub
         _forum.ChatStarted += ForumOnChatStarted;
     }
 
-    private async void ForumOnChatStarted(ChatEventArgs args)
+    private async void ForumOnChatStarted(object? sender, ChatEventArgs args)
     {
         var (chatId, user, support) = args;
         _logger.LogInformation("Начался чат {ChatId}", chatId);
@@ -44,13 +44,14 @@ public class SupportChatHub : Hub
         _forum.DisconnectUser(Context.ConnectionId);
     }
 
-    private async void ForumOnChatEnded(ChatEventArgs args)
+    private async void ForumOnChatEnded(object? sender, ChatEventArgs? args)
     {
         var (chatId, user, support) = args;
         _logger.LogInformation("Чат {ChatId} заканчивается", chatId);
         await Clients.Group(chatId).SendAsync(OnChatEndedFunctionName);
         await Task.WhenAll(Groups.RemoveFromGroupAsync(user, chatId),
                            Groups.RemoveFromGroupAsync(support, chatId));
+        _forum.ForceUpdateChats();
     }
 
     [HubMethodName(EndChatFunctionName)]
