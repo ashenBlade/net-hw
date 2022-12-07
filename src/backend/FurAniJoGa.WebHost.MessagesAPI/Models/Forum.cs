@@ -59,9 +59,7 @@ public class Forum
         var user = new User(_connectionIdUsername[freeUserId], freeUserId);
         var support = new Support(_connectionIdUsername[freeSupportId], freeSupportId);
         var chatId = Guid.NewGuid().ToString();
-        var chat = new Chat(user,
-                            support, 
-                            chatId);
+        var chat = new Chat(user, support, chatId);
             
         _connectionIdChat[freeSupportId] = _connectionIdChat[freeUserId] = chat;
             
@@ -144,8 +142,6 @@ public class Forum
                         SupportConnectionId = chat.Support.UserId,
                         UserConnectionId = chat.User.UserId
                     });
-        
-        ForceUpdateChats();
     }
 
     public void EndChatForUser(string connectionId)
