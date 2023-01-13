@@ -31,7 +31,8 @@ services:
       RMQ_USERNAME: guest
       RMQ_PASSWORD: guest
       RMQ_PORT: 5672
-      
+      RMQ_EXCHANGE: amq.fanout
+        
       FRONTEND_URLS: https://localhost:8080,http://localhost:8080
       
     depends_on:
