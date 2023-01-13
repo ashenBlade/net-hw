@@ -1,22 +1,41 @@
+using MassTransit;
+using TicTacToe.Web;
+using TicTacToe.Web.Consumers.TicTacToe;
+
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddMassTransit(configurator =>
+{
+    configurator.AddConsumer<UserStepEventConsumer>();
+    configurator.UsingRabbitMq((ctx, factory) =>
+    {
+        var rabbitOptions = builder.Configuration.GetRabbitMqOptions();
+        factory.Host(rabbitOptions.Host, "/", h =>
+        {
+            h.Username(rabbitOptions.Username);
+            h.Password(rabbitOptions.Password);
+        });
+
+        factory.ReceiveEndpoint(e =>
+        {
+            e.Bind(rabbitOptions.Exchange);
+            e.ConfigureConsumer<UserStepEventConsumer>(ctx);
+        });
+        
+        factory.ConfigureEndpoints(ctx);
+    });
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

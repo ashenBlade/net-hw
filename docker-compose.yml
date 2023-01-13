@@ -12,146 +12,36 @@ services:
     ports:
       - '8080:80'
     depends_on:
-      - messages-api
-
-  messages-api:
+      - backend
+  
+  backend:
     build:
       context: src/backend
-      dockerfile: FurAniJoGa.WebHost.MessagesAPI/Dockerfile
+      dockerfile: TicTacToe.Web/Dockerfile
     ports:
       - '8081:80'
     environment:
-      - RABBITMQ_HOST=rabbit-mq
-      - RABBITMQ_EXCHANGE=amq.fanout
-    
-      - DB_HOST=database
-      - DB_PORT=5432
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-      - DB_DATABASE=postgres
+      POSTGRES_HOST: database
+      POSTGRES_USER: postgres
+      POSTGRES_PASS: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PORT: 5432
+      
+      RMQ_HOST: rabbit-mq
+      RMQ_USER: guest
+      RMQ_PASS: guest
+      RMQ_PORT: 5672
+      
     depends_on:
-      - rabbit-mq
-    
-  
-  rabbit-listener:
-    build:
-      context: src/backend
-      dockerfile: FurAniJoGa.WebHost.RabbitMqListener/Dockerfile
-    ports:
-      - '8082:80'
-    depends_on:
-      - rabbit-mq
       - database
-    environment:
-      - RABBITMQ_HOST=rabbit-mq
-      - RABBITMQ_EXCHANGE=amq.fanout
-    
-      - DB_HOST=database
-      - DB_PORT=5432
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-      - DB_DATABASE=postgres
-  
-  file-api:
-    build:
-      context: src/backend
-      dockerfile: FurAniJoGa.WebHost.FileAPI/Dockerfile
-    depends_on:
-      - minio
-      - redis
       - rabbit-mq
-    ports:
-      - '8083:80'
-    environment:
-      S3_SECRET: minio_user
-      S3_PASSWORD: minio_password
-      S3_TEMPORARY_BUCKET: temp-user-files
-      S3_PERSISTENT_BUCKET: user-files
-      S3_HOST: http://minio:9000
-
-      RABBITMQ_HOST: rabbit-mq
-      RABBITMQ_EXCHANGE: amq.fanout
-      
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      
-      FORUM_URL: http://localhost:8080
-      
-  mongo-db:
-    image: mongo:6.0.2
-    ports:
-      - '27017:27017'
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD: mongopassword
-    volumes:
-      - mongo-db-files:/data/db
-      
-  mongo-updater:
-    build:
-      context: src/backend
-      dockerfile: FurAniJoGa.Worker.MongoUpdater/Dockerfile
-    environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      
-      MONGO_HOST: mongo-db
-      MONGO_PORT: 27017
-      MONGO_USERNAME: mongoadmin
-      MONGO_PASSWORD: mongopassword
-      MONGO_DATABASE: filesDb
-      MONGO_COLLECTION: filesInfo
-      
-      RABBITMQ_HOST: rabbit-mq
-      RABBITMQ_EXCHANGE: amq.fanout
-      
-      S3_SECRET: minio_user
-      S3_PASSWORD: minio_password
-      S3_TEMPORARY_BUCKET: temp-user-files
-      S3_PERSISTENT_BUCKET: user-files
-      S3_HOST: http://minio:9000 
-      
-    depends_on:
-      - redis
-      - rabbit-mq
-      - mongo-db
-  
-  redis:
-    image: bitnami/redis
-    ports:
-      - '6379:6379'
-        
-    environment:
-      REDIS_REPLICATION_MODE: 'master'
-      ALLOW_EMPTY_PASSWORD: 'yes'
-    volumes:
-      - redis:/data 
-    
-    
-  minio:
-    image: minio/minio
-    command: server --console-address ":9001" /data/
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    environment:
-      MINIO_ROOT_USER: minio_user
-      MINIO_ROOT_PASSWORD: minio_password
-    volumes:
-      - minio-storage:/data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
   
   rabbit-mq:
     image: rabbitmq:3.7-management
     ports:
       - "5672:5672"
       - "15672:15672"
-    
-  
+      
   database:
     image: postgres:14-alpine
     environment:
@@ -161,26 +51,6 @@ services:
       - "5432:5432"
     volumes:
       - database:/var/lib/postgresql/data
-  
-  collect-it:
-    build:
-      context: src/collect-it/src
-      dockerfile: CollectIt.MVC/CollectIt.MVC.View/Dockerfile
-    ports:
-      - '8085:80'
-    environment:
-      ConnectionStrings:Postgresql:Development: 'User ID=postgres;Password=postgres;Host=collect-it-db;Port=5432;Database=postgres;'
-      SUPPORT_ADDRESS: https://localhost:8080
-  
-  database-collect-it:
-    image: postgres:14-alpine
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USERNAME: postgres
-    ports:
-      - '5433:5432'
-    volumes:
-      - collect-it-db:/var/lib/postgresql/data
   
 volumes:
   database:
@@ -193,3 +63,24 @@ volumes:
     driver: local
   collect-it-db:
     driver: local
+      
+#  mongo-db:
+#    image: mongo:6.0.2
+#    ports:
+#      - '27017:27017'
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+#      MONGO_INITDB_ROOT_PASSWORD: mongopassword
+#    volumes:
+#      - mongo-db-files:/data/db
+      
+#  redis:
+#    image: bitnami/redis
+#    ports:
+#      - '6379:6379'
+#        
+#    environment:
+#      REDIS_REPLICATION_MODE: 'master'
+#      ALLOW_EMPTY_PASSWORD: 'yes'
+#    volumes:
+#      - redis:/data 
