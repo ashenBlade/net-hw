@@ -22,14 +22,14 @@ services:
       - '8081:80'
     environment:
       POSTGRES_HOST: database
-      POSTGRES_USER: postgres
-      POSTGRES_PASS: postgres
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
       POSTGRES_PORT: 5432
       
       RMQ_HOST: rabbit-mq
-      RMQ_USER: guest
-      RMQ_PASS: guest
+      RMQ_USERNAME: guest
+      RMQ_PASSWORD: guest
       RMQ_PORT: 5672
       
     depends_on:
