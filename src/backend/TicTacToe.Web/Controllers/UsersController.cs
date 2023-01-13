@@ -7,11 +7,11 @@ using TicTacToe.Web.ViewModels;
 namespace TicTacToe.Web.Controllers;
 
 [ApiController]
-public class UserController : Controller
+public class UsersController : Controller
 {
     private readonly UserManger _userManager;
     
-    public UserController(UserManger userManager)
+    public UsersController(UserManger userManager)
     {
         _userManager = userManager;
     }
@@ -46,11 +46,10 @@ public class UserController : Controller
     }
     
     [HttpGet("/users")]
-    public IActionResult GetUsersPaged([FromQuery(Name = "q")] string? query,
-        [Required] [FromQuery(Name = "page")] [Range(1, int.MaxValue)]
-        int pageNumber,
-        [Required] [FromQuery(Name = "size")] [Range(1, int.MaxValue)]
-        int pageSize)
+    public IActionResult GetUsersPaged([Required] [FromQuery(Name = "page")] [Range(1, int.MaxValue)]
+                                       int pageNumber,
+                                       [Required] [FromQuery(Name = "size")] [Range(1, int.MaxValue)]
+                                       int pageSize)
     {
         var users = _userManager.GetUsersPaged(pageNumber, pageSize);
         return Ok(users);

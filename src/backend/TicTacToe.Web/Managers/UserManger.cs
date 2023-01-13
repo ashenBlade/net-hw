@@ -7,6 +7,7 @@ namespace TicTacToe.Web.Managers;
 
 public class UserManger : UserManager<User>
 {
+    private readonly ILogger<UserManager<User>> _logger;
     private readonly TicTacToeDbContext _context;
 
     public UserManger(IUserStore<User> store, IOptions<IdentityOptions> optionsAccessor, 
@@ -16,14 +17,12 @@ public class UserManger : UserManager<User>
         : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, 
             keyNormalizer, errors, services, logger)
     {
+        _logger = logger;
         _context = context;
     }
-
-    public void ChangeRank(User user, int difference)
-    {
-        user.Rank += difference;
-    }
     
+    
+
     public Task<List<User>> GetUsersPaged(int pageNumber, int pageSize)
     {
         return _context.Users
