@@ -3,13 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
+import BackendAuthorizer from "./services/backendAuthorizer";
+import SignalRGameCommunicator from "./services/signalRGameCommunicator";
+import BackendGamesRepository from "./services/backendGamesRepository";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const authorizer = new BackendAuthorizer('http://localhost:8081');
+const communicator = new SignalRGameCommunicator('http://localhost:8081', '/game');
+const repo = new BackendGamesRepository('http://localhost:8081');
+
 root.render(
   <React.StrictMode>
-    <App />
+    <App authorizer={authorizer} communicator={communicator} repository={repo} />
   </React.StrictMode>
 );
 
