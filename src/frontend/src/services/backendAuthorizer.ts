@@ -40,11 +40,13 @@ export default class BackendAuthorizer implements IAuthorizer {
 
     async registerAsync(username: string, password: string): Promise<string> {
         const loginUrl = `${this.backendUrl}/api/users/register`;
+        let value = {
+            username, password
+        };
+        console.log('gay', value)
         const response = await fetch(loginUrl, {
             method: 'POST',
-            body: JSON.stringify({
-                username, password
-            }),
+            body: JSON.stringify(value),
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'

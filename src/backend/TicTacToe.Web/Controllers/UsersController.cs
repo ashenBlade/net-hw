@@ -33,7 +33,7 @@ public class UsersController : Controller
     [HttpPost("register")]
     public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDTO dto)
     {
-        var (username, password) = ( dto.Name, dto.Password );
+        var (username, password) = ( Name: dto.Username, dto.Password );
         var user = new User()
         {
             UserName = username,
