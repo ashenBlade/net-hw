@@ -9,7 +9,7 @@ export default class BackendGamesRepository implements IGamesRepository {
         const url = `${this.serverUrl}/api/games?page=${page}&size=${size}`;
         const response = await fetch (url, {
             mode: 'cors',
-            credentials: 'include',
+            // credentials: 'include',
             headers: {
                 'Authorization': `Bearer ${this.jwt}`
             }

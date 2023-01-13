@@ -24,8 +24,7 @@ export default class BackendAuthorizer implements IAuthorizer {
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'
-            }
-            // credentials: 'include',
+            },
         })
         if (!response.ok) {
             throw new Error('От сервера вернулся неверный ответ')

@@ -21,7 +21,7 @@ export default class SignalRGameCommunicator extends BaseGameCommunicator {
         super();
         this.connection = new HubConnectionBuilder()
             .withUrl(this.endpoint, {
-                // withCredentials: true,
+                withCredentials: false,
                 httpClient: new FetchHttpClient(new ConsoleLogger(LogLevel.Debug)),
                 accessTokenFactory(): string | Promise<string> {
                     return jwt;

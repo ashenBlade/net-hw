@@ -24,6 +24,20 @@ builder.Services
        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
        .AddJwtBearer(jwt =>
         {
+            jwt.Events = new JwtBearerEvents()
+                         {
+                             OnMessageReceived = ctx =>
+                             {
+                                 var path = ctx.HttpContext.Request.Path;
+                                 if (!string.IsNullOrWhiteSpace(path) && path.StartsWithSegments("/game"))
+                                 {
+                                     var token = ctx.Request.Query["access_token"];
+                                     ctx.Token = token;
+                                 }
+
+                                 return Task.CompletedTask;
+                             }
+                         };
             jwt.TokenValidationParameters = new TokenValidationParameters()
                                             {
                                                 ValidateAudience = false,
