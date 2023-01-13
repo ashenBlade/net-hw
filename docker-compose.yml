@@ -170,6 +170,7 @@ services:
       - '8085:80'
     environment:
       ConnectionStrings:Postgresql:Development: 'User ID=postgres;Password=postgres;Host=collect-it-db;Port=5432;Database=postgres;'
+      SUPPORT_ADDRESS: https://localhost:8080
   
   database-collect-it:
     image: postgres:14-alpine
