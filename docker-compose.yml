@@ -32,6 +32,8 @@ services:
       RMQ_PASSWORD: guest
       RMQ_PORT: 5672
       
+      FRONTEND_URLS: https://localhost:8080,http://localhost:8080
+      
     depends_on:
       - database
       - rabbit-mq

@@ -6,7 +6,7 @@ using TicTacToe.Web.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
-
+builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddMassTransit(configurator =>
 {
@@ -40,7 +40,6 @@ builder.Services.AddDbContext<TicTacToeDbContext>((provider, options) =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -49,6 +48,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(cors =>
+{
+    var frontEnd = builder.Configuration.GetFrontEndOptions();
+    cors.WithOrigins(frontEnd.Urls.Split(','));
+    cors.AllowAnyMethod();
+    cors.AllowAnyHeader();
+});
 app.UseAuthorization();
 
 app.MapControllers();

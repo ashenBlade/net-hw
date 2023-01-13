@@ -4,6 +4,10 @@ namespace TicTacToe.Web;
 
 public static class ConfigurationExtensions
 {
+    public static FrontEndOptions GetFrontEndOptions(this IConfiguration config)
+    {
+        return new FrontEndOptions() {Urls = config.GetValue<string>("FRONTEND_URL")};
+    }
     public static RabbitMqOptions GetRabbitMqOptions(this IConfiguration config)
     {
         return new RabbitMqOptions()
