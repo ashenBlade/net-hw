@@ -33,7 +33,10 @@ public class DatabaseGameRepository: IGameRepository
 
     public async Task<Game?> FindActiveGameByIdAsync(int gameId)
     {
-        return await _context.Games.SingleOrDefaultAsync(g => g.Id == gameId && g.Status == GameStatus.Started);
+        return await _context.Games
+                             .Include(g => g.Owner)
+                             .Include(g => g.SecondPlayer)
+                             .SingleOrDefaultAsync(g => g.Id == gameId && g.Status == GameStatus.Started);
     }
 
     public async Task<Game> UpdateGameAsync(Game game)

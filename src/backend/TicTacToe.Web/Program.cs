@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using TicTacToe.Web;
 using TicTacToe.Web.Consumers.TicTacToe;
+using TicTacToe.Web.GameRepository;
 using TicTacToe.Web.JwtService;
 using TicTacToe.Web.Managers;
 using TicTacToe.Web.Models;
@@ -58,6 +59,9 @@ builder.Services.AddDbContext<TicTacToeDbContext>((provider, options) =>
 builder.Services.AddIdentityCore<User>()
        .AddUserManager<TicTacUserManger>();
 
+builder.Services.AddScoped<IJwtService, SimpleJwtService>();
+builder.Services.AddScoped<IGameRepository, DatabaseGameRepository>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
@@ -66,6 +70,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+{
+    await using var scope = app.Services.CreateAsyncScope();
+    var provider = scope.ServiceProvider;
+    var context = provider.GetRequiredService<TicTacToeDbContext>();
+    await context.Database.EnsureCreatedAsync();
 }
 
 app.UseCors(cors =>

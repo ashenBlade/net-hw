@@ -6,7 +6,7 @@ public static class ConfigurationExtensions
 {
     public static FrontEndOptions GetFrontEndOptions(this IConfiguration config)
     {
-        return new FrontEndOptions() {Urls = config.GetValue<string>("FRONTEND_URL")};
+        return new FrontEndOptions() {Urls = config.GetValue<string>("FRONTEND_URLS")};
     }
     public static RabbitMqOptions GetRabbitMqOptions(this IConfiguration config)
     {
