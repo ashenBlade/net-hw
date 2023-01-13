@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState} from 'react';
 import MainPageProps from "./MainPageProps";
-import Game from "../Game";
 import {GameStatus} from "../../../models/gameStatus";
+import Game from "../../../models/game";
 
 const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent, gamesRepository, gameCommunicator}) => {
     const [allGames, setAllGames] = useState<Game[]>([]);

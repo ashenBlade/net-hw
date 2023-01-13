@@ -1,12 +1,11 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useState} from 'react';
 import GameProps from "./GameProps";
-import Game from "../../models/game";
-import {GameStatus} from "../../models/gameStatus";
 import RealGamePage from "./RealGame/RealGamePage";
 import MainPage from "./MainPage/MainPage";
 import GameResult from "../../models/gameResult";
+import Game from "../../models/game";
 
-const Game: FC<GameProps> = ({gamesRepository, gameCommunicator}) => {
+export const GamePage: FC<GameProps> = ({gamesRepository, gameCommunicator}) => {
     const [game, setGame] = useState<Game>();
 
     function onGameStarted(game: Game) {
@@ -31,4 +30,3 @@ const Game: FC<GameProps> = ({gamesRepository, gameCommunicator}) => {
     );
 };
 
-export default Game;

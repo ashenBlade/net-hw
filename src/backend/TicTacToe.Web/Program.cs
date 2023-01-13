@@ -1,9 +1,14 @@
 using MassTransit;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using TicTacToe.Web;
 using TicTacToe.Web.Consumers.TicTacToe;
 using TicTacToe.Web.GameRepository;
+using TicTacToe.Web.Hubs;
 using TicTacToe.Web.JwtService;
 using TicTacToe.Web.Managers;
 using TicTacToe.Web.Models;
@@ -13,8 +18,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
 builder.Services.AddCors();
 builder.Services.AddControllers();
+builder.Services.AddMvcCore()
+       .AddAuthorization();
 builder.Services
-       .AddAuthentication()
+       .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
        .AddJwtBearer(jwt =>
         {
             jwt.TokenValidationParameters = new TokenValidationParameters()
@@ -56,21 +63,59 @@ builder.Services.AddDbContext<TicTacToeDbContext>((provider, options) =>
     options.UseNpgsql(dbOptions.ToConnectionString());
 });
 
-builder.Services.AddIdentityCore<User>()
-       .AddUserManager<TicTacUserManger>();
+builder.Services.AddIdentityCore<User>(identity =>
+        {
+            identity.Password = new PasswordOptions()
+                                {
+                                    RequireDigit = false,
+                                    RequiredLength = 1,
+                                    RequireLowercase = false,
+                                    RequireUppercase = false,
+                                    RequireNonAlphanumeric = false,
+                                };
+            identity.User = new UserOptions() {RequireUniqueEmail = false,};
+        })
+       .AddUserManager<TicTacUserManger>()
+       .AddSignInManager()
+       .AddDefaultTokenProviders()
+       .AddEntityFrameworkStores<TicTacToeDbContext>();
 
 builder.Services.AddScoped<IJwtService, SimpleJwtService>();
 builder.Services.AddScoped<IGameRepository, DatabaseGameRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                                      {
+                                          In = ParameterLocation.Header,
+                                          Description = "JWT токен",
+                                          Name = "Authorization",
+                                          Type = SecuritySchemeType.ApiKey,
+                                          
+                                          
+                                      });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                             {
+                                 {new OpenApiSecurityScheme()
+                                  {
+                                      Reference = new OpenApiReference()
+                                                  {
+                                                      Type = ReferenceType.SecurityScheme,
+                                                      Id = "Bearer"
+                                                  }
+                                  },
+                                     Array.Empty<string>()
+                                 }
+                             });
+});
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+app.UseSwagger();
+app.UseSwaggerUI();
+// }
 
 {
     await using var scope = app.Services.CreateAsyncScope();
@@ -89,6 +134,7 @@ app.UseCors(cors =>
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<TicTacToeHub>("/game");
 app.MapControllers();
 
 app.Run();

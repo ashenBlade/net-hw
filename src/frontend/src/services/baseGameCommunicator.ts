@@ -4,6 +4,7 @@ import {StepMadeCallback} from "../interfaces/stepMadeCallback";
 import {GameEndedCallback} from "../interfaces/gameEndedCallback";
 import GameResult from "../models/gameResult";
 import Game from "../models/game";
+import {GameSign} from "../models/gameSign";
 
 export abstract class BaseGameCommunicator implements IGameCommunicator {
     private gameEndedCbs: GameEndedCallback[] = []
@@ -50,7 +51,7 @@ export abstract class BaseGameCommunicator implements IGameCommunicator {
         this.basePushCb(cb, this.stepMadeCbs);
     }
 
-    onStepMade(x: number, y: number, sign: string) {
+    onStepMade(x: number, y: number, sign: GameSign) {
         this.stepMadeCbs.forEach(cb => cb(x, y, sign));
     }
 

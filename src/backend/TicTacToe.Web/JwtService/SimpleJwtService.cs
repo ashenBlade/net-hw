@@ -8,7 +8,7 @@ namespace TicTacToe.Web.JwtService;
 
 public class SimpleJwtService: IJwtService
 {
-    public static readonly SymmetricSecurityKey SecurityKey = new(Encoding.UTF8.GetBytes("FUCK YOU"));
+    public static readonly SymmetricSecurityKey SecurityKey = new(new byte[500]);
     public SecurityKey Key => SecurityKey;
     public string CreateJwt(User user)
     {

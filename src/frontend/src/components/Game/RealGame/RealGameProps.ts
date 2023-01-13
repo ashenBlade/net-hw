@@ -1,6 +1,6 @@
 import IGameCommunicator from "../../../interfaces/IGameCommunicator";
 import GameResult from "../../../models/gameResult";
-import Game from "../Game";
+import Game from "../../../models/game";
 
 export default interface RealGameProps {
     gameCommunicator: IGameCommunicator;

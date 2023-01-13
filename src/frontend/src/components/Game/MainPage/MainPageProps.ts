@@ -1,6 +1,6 @@
 import IGamesRepository from "../../../interfaces/iGamesRepository";
-import Game from "../Game";
 import IGameCommunicator from "../../../interfaces/IGameCommunicator";
+import Game from "../../../models/game";
 
 export default interface MainPageProps {
     gamesRepository: IGamesRepository

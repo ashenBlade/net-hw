@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.XPath;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TicTacToe.Web.JwtService;
@@ -11,16 +9,17 @@ using TicTacToe.Web.ViewModels;
 namespace TicTacToe.Web.Controllers;
 
 [ApiController]
+[Route("/api/users")]
 public class UsersController : Controller
 {
-    private readonly TicTacUserManger _ticTacUserManager;
+    private readonly TicTacUserManger _userManager;
     private readonly IJwtService _jwtService;
     private readonly SignInManager<User> _signInManager;
 
 
-    public UsersController(TicTacUserManger ticTacUserManager, IJwtService jwtService, SignInManager<User> signInManager)
+    public UsersController(TicTacUserManger userManager, IJwtService jwtService, SignInManager<User> signInManager)
     {
-        _ticTacUserManager = ticTacUserManager;
+        _userManager = userManager;
         _jwtService = jwtService;
         _signInManager = signInManager;
     }
@@ -32,7 +31,7 @@ public class UsersController : Controller
     /// <response code="400">Something went wrong</response>
     /// <response code="204">User registered</response>
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser([FromForm] RegisterUserDTO dto)
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDTO dto)
     {
         var (username, password) = ( dto.Name, dto.Password );
         var user = new User()
@@ -40,7 +39,7 @@ public class UsersController : Controller
             UserName = username,
             NormalizedUserName = username.ToUpper(),
         };
-        var result = await _ticTacUserManager.CreateAsync(user, password);
+        var result = await _userManager.CreateAsync(user, password);
         if (!result.Succeeded)
         {
             return BadRequest(new
@@ -58,10 +57,10 @@ public class UsersController : Controller
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginUserAsync(LoginDto dto)
+    public async Task<IActionResult> LoginUserAsync([FromBody] LoginDto dto)
     {
         var (username, password) = ( dto.Username, dto.Password );
-        var user = await _ticTacUserManager.FindByNameAsync(username);
+        var user = await _userManager.FindByNameAsync(username);
         if (user is null)
         {
             return NotFound();
@@ -76,13 +75,13 @@ public class UsersController : Controller
         return Unauthorized();
     }
     
-    [HttpGet("/users")]
+    [HttpGet("")]
     public IActionResult GetUsersPaged([Required] [FromQuery(Name = "page")] [Range(1, int.MaxValue)]
                                        int pageNumber,
                                        [Required] [FromQuery(Name = "size")] [Range(1, int.MaxValue)]
                                        int pageSize)
     {
-        var users = _ticTacUserManager.GetUsersPaged(pageNumber, pageSize);
+        var users = _userManager.GetUsersPaged(pageNumber, pageSize);
         return Ok(users);
     }
 }

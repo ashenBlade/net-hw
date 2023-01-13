@@ -12,12 +12,10 @@ const root = ReactDOM.createRoot(
 );
 
 const authorizer = new BackendAuthorizer('http://localhost:8081');
-const communicator = new SignalRGameCommunicator('http://localhost:8081', '/game');
-const repo = new BackendGamesRepository('http://localhost:8081');
 
 root.render(
   <React.StrictMode>
-    <App authorizer={authorizer} communicator={communicator} repository={repo} />
+    <App authorizer={authorizer}/>
   </React.StrictMode>
 );
 

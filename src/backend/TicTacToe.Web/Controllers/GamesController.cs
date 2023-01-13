@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicTacToe.Web.GameRepository;
@@ -9,16 +10,20 @@ namespace TicTacToe.Web.Controllers;
 
 [ApiController]
 [Route("/api/games")]
+[Authorize]
 public class GamesController : ControllerBase
 {
+    private readonly TicTacUserManger _userManager;
     private readonly IGameRepository _gameManager;
 
-    public GamesController(TicTacUserManger ticTacUserManager, IGameRepository gameManager)
+    public GamesController(TicTacUserManger userManager, IGameRepository gameManager)
     {
+        _userManager = userManager;
         _gameManager = gameManager;
     }
     
     [HttpGet("")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetGamesAsync([Required] 
                                                    [FromQuery(Name = "page")] [Range(1, int.MaxValue)]
                                                    int pageNumber,
@@ -31,7 +36,6 @@ public class GamesController : ControllerBase
     }
 
     [HttpPost("")]
-    [Authorize]
     public async Task<IActionResult> CreateGame([Required][Range(1, int.MaxValue)]
                                                 int rank)
     {

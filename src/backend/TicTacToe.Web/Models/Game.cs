@@ -20,7 +20,6 @@ public class Game
     public GameSign OwnerSign => GameSign.X;
     public GameSign SecondPlayerSign => OwnerSign.GetAlternateSign();
 
-    [Required]
     public int? SecondPlayerId { get; set; }
     [ForeignKey(nameof(SecondPlayerId))]
     public User? SecondPlayer { get; set; }
@@ -28,6 +27,7 @@ public class Game
     [Required]
     public DateTime StartDate { get; set; } = DateTime.UtcNow;
 
+    [Required]
     public GameSign CurrentSign { get; set; } = GameSign.O;
     
     [Required]

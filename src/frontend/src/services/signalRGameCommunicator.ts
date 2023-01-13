@@ -14,23 +14,22 @@ export default class SignalRGameCommunicator extends BaseGameCommunicator {
     static EndGameFunction = 'EndGame';
 
     connection: HubConnection
-    jwt: string | null = null;
     
     constructor(readonly url: string,
+                readonly jwt: string,
                 readonly gameEndpoint: string = '/game') {
         super();
         this.connection = new HubConnectionBuilder()
             .withUrl(this.endpoint, {
-                withCredentials: true,
-                httpClient: new FetchHttpClient(new ConsoleLogger(LogLevel.Debug))
+                // withCredentials: true,
+                httpClient: new FetchHttpClient(new ConsoleLogger(LogLevel.Debug)),
+                accessTokenFactory(): string | Promise<string> {
+                    return jwt;
+                }
             })
             .build();
     }
     
-    setJwt(jwt: string) {
-        this.jwt = jwt;
-    }
-
     get endpoint() {
         return `${this.url}${this.gameEndpoint}`;
     }
@@ -51,7 +50,7 @@ export default class SignalRGameCommunicator extends BaseGameCommunicator {
             console.debug('Ход сделан', {
                 x, y, sign
             })
-            this.onStepMade(x, y, sign);
+            this.onStepMade(x, y, sign === 'O' ? GameSign.O : GameSign.X);
         })
         this.connection.on(SignalRGameCommunicator.GameEndedFunction, (myPoints: number, opponentPoints: number) => {
             console.error('Игра закончена', {
