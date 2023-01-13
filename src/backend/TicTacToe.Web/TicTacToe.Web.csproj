@@ -11,6 +11,10 @@
         <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.10" />
         <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
@@ -19,6 +23,12 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="ConfigurationExtensions.cs">
+        <DependentUpon>Program.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

@@ -1,9 +1,12 @@
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using TicTacToe.Web;
 using TicTacToe.Web.Consumers.TicTacToe;
+using TicTacToe.Web.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
+
 builder.Services.AddControllers();
 builder.Services.AddMassTransit(configurator =>
 {
@@ -26,6 +29,15 @@ builder.Services.AddMassTransit(configurator =>
         factory.ConfigureEndpoints(ctx);
     });
 });
+
+builder.Services.AddSingleton(builder.Configuration.GetPostgresOptions());
+
+builder.Services.AddDbContext<TicTacToeDbContext>((provider, options) =>
+{
+    var dbOptions = provider.GetRequiredService<PostgresOptions>();
+    options.UseNpgsql(dbOptions.ToConnectionString());
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
