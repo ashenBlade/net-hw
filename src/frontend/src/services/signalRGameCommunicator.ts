@@ -14,6 +14,8 @@ export default class SignalRGameCommunicator extends BaseGameCommunicator {
     static EndGameFunction = 'EndGame';
 
     connection: HubConnection
+    jwt: string | null = null;
+    
     constructor(readonly url: string,
                 readonly gameEndpoint: string = '/game') {
         super();
@@ -23,6 +25,10 @@ export default class SignalRGameCommunicator extends BaseGameCommunicator {
                 httpClient: new FetchHttpClient(new ConsoleLogger(LogLevel.Debug))
             })
             .build();
+    }
+    
+    setJwt(jwt: string) {
+        this.jwt = jwt;
     }
 
     get endpoint() {

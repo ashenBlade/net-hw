@@ -30,4 +30,23 @@ public class DatabaseGameRepository: IGameRepository
         await _context.SaveChangesAsync();
         return entity.Entity;
     }
+
+    public async Task<Game?> FindActiveGameByIdAsync(int gameId)
+    {
+        return await _context.Games.SingleOrDefaultAsync(g => g.Id == gameId && g.Status == GameStatus.Started);
+    }
+
+    public async Task<Game> UpdateGameAsync(Game game)
+    {
+        _context.Games.Update(game);
+        await _context.SaveChangesAsync();
+        return game;
+    }
+
+    public async Task<Game?> FindGameByUserIdAsync(int userId)
+    {
+        return await _context.Games
+                             .Where(g => g.OwnerId == userId || g.SecondPlayerId == userId)
+                             .FirstOrDefaultAsync();
+    }
 }

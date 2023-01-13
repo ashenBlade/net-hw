@@ -48,6 +48,11 @@ public class Game
 
     public StepResult MakeStep(int x, int y)
     {
+        if (Status == GameStatus.Ended)
+        {
+            throw new InvalidOperationException("Игра закончена");
+        }
+        
         var index = GetFieldIndex(x, y);
         if (Field[index] != GameSign.None)
         {
@@ -57,7 +62,26 @@ public class Game
         Field[index] = CurrentSign;
         CurrentSign = CurrentSign.GetAlternateSign();
         var winner = CheckWinner();
+        if (winner is not null)
+        {
+            var looser = winner == Owner
+                             ? SecondPlayer!
+                             : Owner;
+            looser.Rank -= 1;
+            winner.Rank += 3;
+            Status = GameStatus.Ended;
+        }
+
+        if (IsDraw())
+        {
+            Status = GameStatus.Ended;
+        }
         return new StepResult() {Winner = winner};
+    }
+
+    public bool IsDraw()
+    {
+        return Field.All(x => x != GameSign.None);
     }
 
     public User? CheckWinner()
@@ -101,5 +125,36 @@ public class Game
         }
 
         return null;
+    }
+
+    public void Start(User opponent)
+    {
+        if (Status != GameStatus.Created)
+        {
+            throw new InvalidOperationException("Нельзя присоединиться к запущеной игре");
+        }
+
+        if (SecondPlayer is not null)
+        {
+            throw new InvalidOperationException("В игре уже присутстсует 2 пользователь");
+        }
+
+        if (opponent.Id == OwnerId)
+        {
+            throw new InvalidOperationException("Владелец уже в игре");
+        }
+
+        SecondPlayer = opponent;
+        Status = GameStatus.Started;
+    }
+
+    public void ForceEndGame(User quited)
+    {
+        User quit, other;
+        if (quited == Owner)
+        {
+            
+        }
+        Status = GameStatus.Ended;
     }
 }

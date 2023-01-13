@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicTacToe.Web.GameRepository;
 using TicTacToe.Web.Managers;
-using TicTacToe.Web.ViewModels;
 
 namespace TicTacToe.Web.Controllers;
 
@@ -13,20 +13,30 @@ public class GamesController : ControllerBase
 {
     private readonly IGameRepository _gameManager;
 
-    public GamesController(UserManger userManager, IGameRepository gameManager)
+    public GamesController(TicTacUserManger ticTacUserManager, IGameRepository gameManager)
     {
         _gameManager = gameManager;
     }
     
     [HttpGet("")]
-    public IActionResult GetGames([Required] 
-                                  [FromQuery(Name = "page")] [Range(1, int.MaxValue)]
-                                  int pageNumber,
-                                  [Required] 
-                                  [FromQuery(Name = "size")] [Range(1, int.MaxValue)]
-                                  int pageSize)
+    public async Task<IActionResult> GetGamesAsync([Required] 
+                                                   [FromQuery(Name = "page")] [Range(1, int.MaxValue)]
+                                                   int pageNumber,
+                                                   [Required] 
+                                                   [FromQuery(Name = "size")] [Range(1, int.MaxValue)]
+                                                   int pageSize)
     {
-        var games = _gameManager.GetGamesPagedAsync(pageNumber, pageSize);
+        var games = await _gameManager.GetGamesPagedAsync(pageNumber, pageSize);
         return Ok(games);
+    }
+
+    [HttpPost("")]
+    [Authorize]
+    public async Task<IActionResult> CreateGame([Required][Range(1, int.MaxValue)]
+                                                int rank)
+    {
+        var ownerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var game = await _gameManager.CreateGameAsync(ownerId, rank);
+        return Ok(game);
     }
 }

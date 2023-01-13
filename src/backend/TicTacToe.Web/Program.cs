@@ -1,8 +1,9 @@
 using MassTransit;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TicTacToe.Web;
 using TicTacToe.Web.Consumers.TicTacToe;
+using TicTacToe.Web.JwtService;
 using TicTacToe.Web.Managers;
 using TicTacToe.Web.Models;
 using TicTacToe.Web.Options;
@@ -11,6 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
 builder.Services.AddCors();
 builder.Services.AddControllers();
+builder.Services
+       .AddAuthentication()
+       .AddJwtBearer(jwt =>
+        {
+            jwt.TokenValidationParameters = new TokenValidationParameters()
+                                            {
+                                                ValidateAudience = false,
+                                                ValidateIssuer = false,
+                                                IssuerSigningKey = SimpleJwtService.SecurityKey,
+                                                ValidateIssuerSigningKey = true
+                                            };
+        });
+
 builder.Services.AddMassTransit(configurator =>
 {
     configurator.AddConsumer<UserStepEventConsumer>();
@@ -41,8 +55,8 @@ builder.Services.AddDbContext<TicTacToeDbContext>((provider, options) =>
     options.UseNpgsql(dbOptions.ToConnectionString());
 });
 
-builder.Services.AddIdentityCore<User>().AddUserManager<UserManger>();
-builder.Services.AddSingleton<IGameManager,GameManager>();
+builder.Services.AddIdentityCore<User>()
+       .AddUserManager<TicTacUserManger>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -61,6 +75,7 @@ app.UseCors(cors =>
     cors.AllowAnyMethod();
     cors.AllowAnyHeader();
 });
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

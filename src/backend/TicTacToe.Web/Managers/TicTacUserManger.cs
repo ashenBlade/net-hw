@@ -5,12 +5,12 @@ using TicTacToe.Web.Models;
 
 namespace TicTacToe.Web.Managers;
 
-public class UserManger : UserManager<User>
+public class TicTacUserManger : UserManager<User>
 {
     private readonly ILogger<UserManager<User>> _logger;
     private readonly TicTacToeDbContext _context;
 
-    public UserManger(IUserStore<User> store, IOptions<IdentityOptions> optionsAccessor, 
+    public TicTacUserManger(IUserStore<User> store, IOptions<IdentityOptions> optionsAccessor, 
         IPasswordHasher<User> passwordHasher, IEnumerable<IUserValidator<User>> userValidators, 
         IEnumerable<IPasswordValidator<User>> passwordValidators, ILookupNormalizer keyNormalizer, 
         IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<User>> logger, TicTacToeDbContext context) 
