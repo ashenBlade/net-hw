@@ -1,7 +1,10 @@
 using MassTransit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TicTacToe.Web;
 using TicTacToe.Web.Consumers.TicTacToe;
+using TicTacToe.Web.Managers;
+using TicTacToe.Web.Models;
 using TicTacToe.Web.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +40,9 @@ builder.Services.AddDbContext<TicTacToeDbContext>((provider, options) =>
     var dbOptions = provider.GetRequiredService<PostgresOptions>();
     options.UseNpgsql(dbOptions.ToConnectionString());
 });
+
+builder.Services.AddIdentityCore<User>().AddUserManager<UserManger>();
+builder.Services.AddSingleton<IGameManager,GameManager>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
