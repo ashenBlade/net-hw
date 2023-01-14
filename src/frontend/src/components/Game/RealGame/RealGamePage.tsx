@@ -23,7 +23,7 @@ const RealGamePage: FC<RealGameProps> = ({gameCommunicator, onGameEnded: parentG
     const [, rerender] = useReducer(prevState => prevState + 1, 0);
 
     function onGameEnded(result: GameResult) {
-        alert('Игра закончена. Пошел нахуй. Ваши очки: ' + result.myPoints + '. Очки соперника: ' + result.opponentPoints)
+        alert('Игра закончена. Ваши очки: ' + result.myPoints + '. Очки соперника: ' + result.opponentPoints)
         parentGameEnded(result);
     }
 
