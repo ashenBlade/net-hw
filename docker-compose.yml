@@ -39,6 +39,22 @@ services:
       - database
       - rabbit-mq
   
+  rabbit-listener:
+    build:
+      context: src/backend
+      dockerfile: TicTacToe.RabbitListener/Dockerfile
+    environment:
+      RMQ_HOST: rabbit-mq
+      RMQ_USERNAME: guest
+      RMQ_PASSWORD: guest
+      RMQ_PORT: 5672
+      RMQ_EXCHANGE: amq.fanout
+      
+      REDIS_HOST: redis:6379
+    depends_on:
+      - redis
+      - rabbit-mq
+  
   rabbit-mq:
     image: rabbitmq:3.7-management
     ports:
@@ -55,6 +71,18 @@ services:
     volumes:
       - database:/var/lib/postgresql/data
   
+  redis:
+    image: bitnami/redis
+    ports:
+      - '6379:6379'
+    
+    environment:
+      REDIS_REPLICATION_MODE: 'master'
+      ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - redis:/data
+      
+  
 volumes:
   database:
     driver: local
@@ -67,23 +95,3 @@ volumes:
   collect-it-db:
     driver: local
       
-#  mongo-db:
-#    image: mongo:6.0.2
-#    ports:
-#      - '27017:27017'
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-#      MONGO_INITDB_ROOT_PASSWORD: mongopassword
-#    volumes:
-#      - mongo-db-files:/data/db
-      
-#  redis:
-#    image: bitnami/redis
-#    ports:
-#      - '6379:6379'
-#        
-#    environment:
-#      REDIS_REPLICATION_MODE: 'master'
-#      ALLOW_EMPTY_PASSWORD: 'yes'
-#    volumes:
-#      - redis:/data 

@@ -1,12 +1,10 @@
 using MassTransit;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TicTacToe.Web;
-using TicTacToe.Web.Consumers.TicTacToe;
 using TicTacToe.Web.GameRepository;
 using TicTacToe.Web.Hubs;
 using TicTacToe.Web.JwtService;
@@ -49,7 +47,6 @@ builder.Services
 
 builder.Services.AddMassTransit(configurator =>
 {
-    configurator.AddConsumer<UserStepEventConsumer>();
     configurator.UsingRabbitMq((ctx, factory) =>
     {
         var rabbitOptions = builder.Configuration.GetRabbitMqOptions();
@@ -62,7 +59,6 @@ builder.Services.AddMassTransit(configurator =>
         factory.ReceiveEndpoint(e =>
         {
             e.Bind(rabbitOptions.Exchange);
-            e.ConfigureConsumer<UserStepEventConsumer>(ctx);
         });
         
         factory.ConfigureEndpoints(ctx);

@@ -6,6 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["TicTacToe.Web/TicTacToe.Web.csproj", "TicTacToe.Web/"]
+COPY ["TicTacToe.Events/TicTacToe.Events.csproj", "TicTacToe.Events/"]
 RUN dotnet restore "TicTacToe.Web/TicTacToe.Web.csproj"
 COPY . .
 WORKDIR "/src/TicTacToe.Web"

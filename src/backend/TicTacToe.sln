@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe.Web", "TicTacToe.Web\TicTacToe.Web.csproj", "{7B60DACF-F8BB-4A4A-A0D2-7AF040AB2DEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe.RabbitListener", "TicTacToe.RabbitListener\TicTacToe.RabbitListener.csproj", "{12D921DE-7120-4961-B8B0-A2536104BB46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToe.Events", "TicTacToe.Events\TicTacToe.Events.csproj", "{DC6DED12-93F2-4CF4-A5F5-BA5274A3E786}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{7B60DACF-F8BB-4A4A-A0D2-7AF040AB2DEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B60DACF-F8BB-4A4A-A0D2-7AF040AB2DEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B60DACF-F8BB-4A4A-A0D2-7AF040AB2DEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12D921DE-7120-4961-B8B0-A2536104BB46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12D921DE-7120-4961-B8B0-A2536104BB46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12D921DE-7120-4961-B8B0-A2536104BB46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12D921DE-7120-4961-B8B0-A2536104BB46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC6DED12-93F2-4CF4-A5F5-BA5274A3E786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6DED12-93F2-4CF4-A5F5-BA5274A3E786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6DED12-93F2-4CF4-A5F5-BA5274A3E786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6DED12-93F2-4CF4-A5F5-BA5274A3E786}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

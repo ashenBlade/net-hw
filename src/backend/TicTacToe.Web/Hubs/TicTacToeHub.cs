@@ -4,6 +4,7 @@ using System.Security.Claims;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using TicTacToe.Events;
 using TicTacToe.Web.GameRepository;
 using TicTacToe.Web.Managers;
 using TicTacToe.Web.Models;
@@ -50,6 +51,15 @@ public class TicTacToeHub: Hub
             {
                 await Clients.Client(connId).SendAsync("GameEnded");
             }
+
+            await _bus.Publish(new GameEndedEvent()
+                               {
+                                   OwnerId = game.OwnerId,
+                                   SecondPlayerId = game.SecondPlayerId!.Value,
+                                   GameId = game.Id,
+                                   OwnerRank = game.Owner.Rank,
+                                   SecondPlayerRank = game.SecondPlayer!.Rank
+                               });
         }
         await base.OnDisconnectedAsync(exception);
     }
@@ -144,6 +154,14 @@ public class TicTacToeHub: Hub
                                 .SendAsync("GameEnded", stepResult.OwnerPoints, stepResult.SecondPlayerPoints),
                              FindClient(game.SecondPlayerId!.Value)
                                 .SendAsync("GameEnded", stepResult.SecondPlayerPoints, stepResult.OwnerPoints));
+            await _bus.Publish(new GameEndedEvent()
+                               {
+                                   OwnerId = game.OwnerId,
+                                   SecondPlayerId = game.SecondPlayerId!.Value,
+                                   GameId = game.Id,
+                                   OwnerRank = game.Owner.Rank,
+                                   SecondPlayerRank = game.SecondPlayer!.Rank
+                               });
         }
     }
 
@@ -168,5 +186,13 @@ public class TicTacToeHub: Hub
         await Clients.Clients(UserIdToConnectionId[game.OwnerId.ToString()],
                               UserIdToConnectionId[game.SecondPlayerId.ToString()!])
                      .SendAsync("EndGame");
+        await _bus.Publish(new GameEndedEvent()
+                           {
+                               OwnerId = game.OwnerId,
+                               SecondPlayerId = game.SecondPlayerId!.Value,
+                               GameId = game.Id,
+                               OwnerRank = game.Owner.Rank,
+                               SecondPlayerRank = game.SecondPlayer!.Rank
+                           });
     }
 }
