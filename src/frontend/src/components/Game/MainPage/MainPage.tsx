@@ -8,9 +8,10 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
                                          gameCommunicator}) => {
     function onGameStarted(game: Game) {
         setFreeze(false);
+        setIsGameFinding(false);
         onGameStartedParent(game);
     }
-    
+    const [currentPage, setCurrentPage] = useState(1)
     const [allGames, setAllGames] = useState<Game[]>([]);
     useEffect(() => {
         gamesRepository.getGamesPagedAsync(1, 20)
@@ -21,11 +22,12 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
             gameCommunicator.unregisterOnGameStartedCallback(onGameStarted);
         }
     }, [gamesRepository])
+    
+    
 
     const [freeze, setFreeze] = useState(false);
-
-
-
+    const [isGameFinding, setIsGameFinding] = useState(false);
+    
     async function onGameStartClick(gameId: string) {
         if (freeze || !gameId) {
             return;
@@ -36,6 +38,7 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
             success = await gameCommunicator.connectToGameAsync(gameId);
         } finally {
             if (!success) {
+                alert('Не удалось присоединиться к игре')
                 setFreeze(false);
             }
         }
@@ -47,34 +50,54 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
             return;
         }
         setFreeze(true);
+        setIsGameFinding(true);
         await gamesRepository.createGameAsync(rank)
             .catch(() => setFreeze(false));
     }
     
     const [rank, setRank] = useState(0);
     
+    const onListUpdateButtonClick = async () => {
+        if (freeze || isGameFinding) return;
+        setFreeze(true);
+
+        try {
+            const games = await gamesRepository.getGamesPagedAsync(currentPage, 20)
+            setAllGames(games);
+        } finally {
+            setFreeze(false)
+        }
+        
+    }
+    
     return (
         <div>
+            <p>
+                {isGameFinding ? "Игра ищется. Жди" : ""}
+            </p>
             <form>
                 <label>
                     Максимальный ранг
                     <input type={'number'} value={rank} onChange={x => setRank(Number.parseInt(x.currentTarget.value))}/>
                 </label>
-                <button type={'button'} onClick={createGame}>Создать игру</button>
+                <button type={'button'} disabled={freeze || isGameFinding} onClick={createGame}>Создать игру</button>
             </form>
             {
                 allGames.map(g => (
                     <li>
-                        {g.id} - {g.status}
+                        Id: {g.id} - Статус: {g.status} {g.startDate.toString()}
                         {
                             g.status === GameStatus.Created
-                            && <button onClick={async () => await onGameStartClick(g.id)}>
+                            && <button disabled={freeze || isGameFinding} onClick={async () => await onGameStartClick(g.id)}>
                                 Присоединиться
                             </button>
                         }
                     </li>
                 ))
             }
+            <button onClick={onListUpdateButtonClick} disabled={freeze || isGameFinding}>
+                Обновить список
+            </button>
         </div>
     );
 };

@@ -82,8 +82,8 @@ export default class SignalRGameCommunicator extends BaseGameCommunicator {
     }
 
     async connectToGameAsync(gameId: string): Promise<boolean> {
-        await this.connection.send(SignalRGameCommunicator.ConnectToGameFunction, gameId);
-        return true;
+        const result = await this.connection.invoke<boolean>(SignalRGameCommunicator.ConnectToGameFunction, gameId);
+        return result;
     }
 
     async endGameAsync(): Promise<boolean> {

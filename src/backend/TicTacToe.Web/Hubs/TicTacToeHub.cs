@@ -69,7 +69,7 @@ public class TicTacToeHub: Hub
     private string UserIdString => Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
     [HubMethodName("ConnectToGame")]
-    public async Task ConnectToGameAsync(string gameIdString)
+    public async Task<bool> ConnectToGameAsync(string gameIdString)
     {
         try
         {
@@ -95,9 +95,9 @@ public class TicTacToeHub: Hub
             _logger.LogInformation("Обновляю данные об игре, Статус = {Status}", game.Status switch
                                                                                  {
                                                                                      GameStatus.Created => "Created",
-                                                                                     GameStatus.Ended => "Ended",
+                                                                                     GameStatus.Ended   => "Ended",
                                                                                      GameStatus.Playing => "Playing",
-                                                                                     _ => "Блять"
+                                                                                     _                  => "Блять"
                                                                                  });
             await _gameRepository.UpdateGameAsync(game);
             if (game.OwnerId is not 0 && game.SecondPlayerId is not null )
@@ -110,16 +110,16 @@ public class TicTacToeHub: Hub
                                     FindClient(game.SecondPlayerId!.Value)
                                        .SendAsync("GameStarted", game.Id, game.Owner?.UserName ?? "Противник", game.SecondPlayerSign  == GameSign.O ? "O" : "X",
                                                   startDate) );
+                return true;
             }
-            else
-            {
-                _logger.LogError("Пользователя нет в кеше");
-            }
+
+            _logger.LogError("Пользователя нет в кеше");
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Ошибка во время присоединения к игре");
         }
+        return false;
     }
 
     private IClientProxy FindClient(int userId)
