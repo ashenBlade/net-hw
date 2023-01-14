@@ -165,6 +165,11 @@ public class Game
             throw new InvalidOperationException("Владелец уже в игре");
         }
 
+        if (opponent.Rank > MaxRank)
+        {
+            throw new InvalidOperationException("Ранг чела высокий. Понизь планку, чел.");
+        }
+
         SecondPlayer = opponent;
         Status = GameStatus.Playing;
     }
