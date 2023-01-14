@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useReducer, useState} from 'react';
+import React, {FC, useEffect, useReducer, useRef, useState} from 'react';
 import MainPageProps from "./MainPageProps";
 import {GameStatus} from "../../../models/gameStatus";
 import Game from "../../../models/game";
@@ -15,9 +15,12 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
     const [,rerender] = useReducer(prevState => prevState + 1, 0);
     
     const [currentPage, setCurrentPage] = useState(1)
+    const [hasMore, setHasMore] = useState(true);
     const [allGames, setAllGames] = useState<Game[]>([]);
+    const lastLiRef = useRef<HTMLLIElement | null>(null);
+    const pageSize = 5;
     useEffect(() => {
-        gamesRepository.getGamesPagedAsync(1, 20)
+        gamesRepository.getGamesPagedAsync(1, pageSize)
             .then(games => setAllGames(games))
             .catch(e => alert(e));
         gameCommunicator.registerOnGameStartedCallback(onGameStarted);
@@ -25,8 +28,33 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
             gameCommunicator.unregisterOnGameStartedCallback(onGameStarted);
         }
     }, [gamesRepository])
+    const observer = useRef<IntersectionObserver | null>(null);
     
+    async function loadNextPage() {
+        if (!hasMore) return;
+        const nextPage = currentPage + 1;
+        const nextGames = await gamesRepository.getGamesPagedAsync(nextPage, pageSize);
+        if (nextGames.length < pageSize) {
+            setHasMore(false);
+        }
+        setCurrentPage(nextPage);
+        allGames.push(...nextGames);
+        rerender();
+    }
     
+    useEffect(() => {
+        if (observer.current) 
+            observer.current?.disconnect();
+        
+        observer.current = new IntersectionObserver(async e => {
+            if (e[0].isIntersecting) {
+                await loadNextPage()
+            }
+        })
+        if (lastLiRef.current) {
+            observer.current?.observe(lastLiRef.current)
+        }
+    }, [allGames])
 
     const [freeze, setFreeze] = useState(false);
     const [isGameFinding, setIsGameFinding] = useState(false);
@@ -59,13 +87,12 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
     }
     
     const [rank, setRank] = useState(0);
-    
     const onListUpdateButtonClick = async () => {
         if (freeze || isGameFinding) return;
         setFreeze(true);
 
         try {
-            const games = await gamesRepository.getGamesPagedAsync(currentPage, 20)
+            const games = await gamesRepository.getGamesPagedAsync(currentPage, pageSize)
             setAllGames(games);
         } finally {
             setFreeze(false)
@@ -111,7 +138,11 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
                         }
                     </li>
                 ))
-            }</ul>
+            }
+            <li style={{
+                display: 'hidden'
+            }} ref={lastLiRef}/>
+            </ul>
             <button onClick={onListUpdateButtonClick} disabled={freeze || isGameFinding}>
                 Обновить список
             </button>
