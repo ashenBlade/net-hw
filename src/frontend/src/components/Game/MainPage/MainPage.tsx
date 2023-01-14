@@ -68,7 +68,7 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
                     <li>
                         {g.id} - {g.status}
                         {
-                            g.status === GameStatus.Started
+                            g.status === GameStatus.Created
                             && <button onClick={async () => await onGameStartClick(g.id)}>
                                 Присоединиться
                             </button>

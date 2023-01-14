@@ -35,24 +35,33 @@ export default class SignalRGameCommunicator extends BaseGameCommunicator {
     }
 
     async open() {
-        this.connection.on(SignalRGameCommunicator.GameStartedFunction, (gameId: string, opponent: string, sign: string) => {
-            console.debug("Игра началась");
+        this.connection.on(SignalRGameCommunicator.GameStartedFunction, 
+            (gameId: string, opponent: string, sign: string, startDate: string) => {
+            console.debug("Игра началась", {
+                gameId, opponent, sign, startDate
+            });
+            
             this.onGameStarted({
                 id: gameId,
+                startDate: new Date(Date.parse(startDate)),
                 mySign: sign === 'O'
                     ? GameSign.O
                     : GameSign.X,
                 opponentName: opponent,
-                status: GameStatus.Started
+                status: GameStatus.Created
             })
         })
-        this.connection.on(SignalRGameCommunicator.MakeStepFunction, (x: number, y: number, sign: string) => {
+        this.connection.on(SignalRGameCommunicator.MakeStepFunction, 
+            (x: number, y: number, sign: string) => {
             console.debug('Ход сделан', {
                 x, y, sign
             })
-            this.onStepMade(x, y, sign === 'O' ? GameSign.O : GameSign.X);
+            this.onStepMade(x, y, sign === 'O' 
+                ? GameSign.O 
+                : GameSign.X);
         })
-        this.connection.on(SignalRGameCommunicator.GameEndedFunction, (myPoints: number, opponentPoints: number) => {
+        this.connection.on(SignalRGameCommunicator.GameEndedFunction, 
+            (myPoints: number, opponentPoints: number) => {
             console.error('Игра закончена', {
                 myPoints, opponentPoints
             })
@@ -68,13 +77,13 @@ export default class SignalRGameCommunicator extends BaseGameCommunicator {
     }
 
     async connectToGameAsync(gameId: string): Promise<boolean> {
-        const result = await this.connection.invoke<boolean>(SignalRGameCommunicator.ConnectToGameFunction, gameId);
-        return result;
+        await this.connection.send(SignalRGameCommunicator.ConnectToGameFunction, gameId);
+        return true;
     }
 
     async endGameAsync(): Promise<boolean> {
-        const result = await this.connection.invoke<boolean>(SignalRGameCommunicator.EndGameFunction);
-        return result;
+        await this.connection.send(SignalRGameCommunicator.EndGameFunction);
+        return true;
     }
 
     async makeStepAsync(x: number, y: number): Promise<void> {

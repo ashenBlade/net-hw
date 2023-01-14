@@ -36,7 +36,7 @@ public class DatabaseGameRepository: IGameRepository
         return await _context.Games
                              .Include(g => g.Owner)
                              .Include(g => g.SecondPlayer)
-                             .SingleOrDefaultAsync(g => g.Id == gameId && g.Status == GameStatus.Started);
+                             .SingleOrDefaultAsync(g => g.Id == gameId && g.Status == GameStatus.Created);
     }
 
     public async Task<Game> UpdateGameAsync(Game game)

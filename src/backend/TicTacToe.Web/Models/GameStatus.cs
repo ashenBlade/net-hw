@@ -2,7 +2,7 @@ namespace TicTacToe.Web.Models;
 
 public enum GameStatus
 {
-    Created,
-    Started,
-    Ended,
+    Created = 0,
+    Playing = 1,
+    Ended = 2,
 }

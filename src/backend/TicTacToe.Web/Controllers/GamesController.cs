@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicTacToe.Web.GameRepository;
 using TicTacToe.Web.Managers;
+using TicTacToe.Web.Models;
 using TicTacToe.Web.ViewModels;
 
 namespace TicTacToe.Web.Controllers;
@@ -35,7 +36,18 @@ public class GamesController : ControllerBase
                                                    int size)
     {
         var games = await _gameManager.GetGamesPagedAsync(page, size);
-        return Ok(games);
+        return Ok(games.Select(g => new
+                                    {
+                                        Status = g.Status switch
+                                                 {
+                                                        GameStatus.Created => "created",
+                                                        GameStatus.Playing => "playing",
+                                                        GameStatus.Ended => "ended",
+                                                        _ => throw new ArgumentOutOfRangeException(nameof(g.Status))
+                                                 },
+                                        Id = g.Id.ToString(),
+                                        StartDate = g.StartDate
+                                    }));
     }
 
     [HttpPost("")]

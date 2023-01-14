@@ -7,4 +7,5 @@ export default interface Game {
     opponentName: string,
     /// Мой символ
     mySign: GameSign
+    startDate: Date
 }

@@ -145,7 +145,7 @@ public class Game
         }
 
         SecondPlayer = opponent;
-        Status = GameStatus.Started;
+        Status = GameStatus.Playing;
     }
 
     public void ForceEndGame(User quited)

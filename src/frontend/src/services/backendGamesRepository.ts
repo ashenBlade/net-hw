@@ -1,5 +1,7 @@
 import IGamesRepository from "../interfaces/iGamesRepository";
 import Game from "../models/game";
+import {GameSign} from "../models/gameSign";
+import {GameStatus} from "../models/gameStatus";
 
 export default class BackendGamesRepository implements IGamesRepository {
     constructor(readonly serverUrl: string, 
@@ -38,7 +40,18 @@ export default class BackendGamesRepository implements IGamesRepository {
         if (!response.ok) {
             throw new Error('Ошибка при получении списка игр')
         }
-        return await response.json();
+        let games: any[] = await response.json();
+        const mapped: Game[] = games.map((g: any) => ({
+            startDate: new Date(Date.parse(g.startDate)),
+            mySign: g.mySign === 'X' ? GameSign.X : GameSign.O,
+            status: g.status === 'ended' ? GameStatus.Ended : g.status === 'created' ? GameStatus.Created : GameStatus.Playing,
+            opponentName: g.opponentName,
+            id: g.id
+        })); 
+        console.log('Полученые игры', {
+            mapped
+        })
+        return mapped;
     }
     
     
