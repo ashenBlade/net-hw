@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useReducer, useState} from 'react';
 import MainPageProps from "./MainPageProps";
 import {GameStatus} from "../../../models/gameStatus";
 import Game from "../../../models/game";
@@ -11,6 +11,9 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
         setIsGameFinding(false);
         onGameStartedParent(game);
     }
+    
+    const [,rerender] = useReducer(prevState => prevState + 1, 0);
+    
     const [currentPage, setCurrentPage] = useState(1)
     const [allGames, setAllGames] = useState<Game[]>([]);
     useEffect(() => {
@@ -82,19 +85,33 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
                 </label>
                 <button type={'button'} disabled={freeze || isGameFinding} onClick={createGame}>Создать игру</button>
             </form>
-            {
+            <button onClick={() => {
+                let games = allGames.sort((a, b) => a.startDate.toString() > b.startDate.toString() ? 1 : -1);
+                console.log('По дате', {
+                    games
+                })
+                
+                setAllGames(games)
+                rerender()
+            }}>По дате</button>
+            <button onClick={() => {
+                setAllGames(allGames.sort((a, b) => a.status.toString() > b.status.toString() ? 1 : -1))
+                rerender();
+            }}>По статусу</button>
+            <ul>{
                 allGames.map(g => (
-                    <li>
+                    <li key={g.id}>
                         Id: {g.id} - Статус: {g.status} {g.startDate.toString()}
                         {
                             g.status === GameStatus.Created
-                            && <button disabled={freeze || isGameFinding} onClick={async () => await onGameStartClick(g.id)}>
+                            && <button disabled={freeze || isGameFinding}
+                                       onClick={async () => await onGameStartClick(g.id)}>
                                 Присоединиться
                             </button>
                         }
                     </li>
                 ))
-            }
+            }</ul>
             <button onClick={onListUpdateButtonClick} disabled={freeze || isGameFinding}>
                 Обновить список
             </button>
