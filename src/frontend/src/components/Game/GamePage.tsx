@@ -7,9 +7,14 @@ import Game from "../../models/game";
 
 export const GamePage: FC<GameProps> = ({gamesRepository, gameCommunicator}) => {
     const [game, setGame] = useState<Game>();
+    const [runGame, setRunGame] = useState(false);
 
     function onGameStarted(game: Game) {
+        console.log('Игра началась обработчик', {
+            game
+        })
         setGame(game);
+        setRunGame(true)
     }
 
     function onGameEnded(result: GameResult) {
@@ -17,13 +22,14 @@ export const GamePage: FC<GameProps> = ({gamesRepository, gameCommunicator}) => 
             result
         });
         setGame(undefined);
+        setRunGame(false);
     }
 
     return (
         <div>
             {
-                game
-                    ? <RealGamePage onGameEnded={onGameEnded} gameCommunicator={gameCommunicator} game={game}/>
+                runGame
+                    ? <RealGamePage onGameEnded={onGameEnded} gameCommunicator={gameCommunicator} game={game!}/>
                     : <MainPage gamesRepository={gamesRepository} gameCommunicator={gameCommunicator} onGameStarted={onGameStarted}/>
             }
         </div>

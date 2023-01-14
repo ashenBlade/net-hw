@@ -6,6 +6,11 @@ import Game from "../../../models/game";
 const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent, 
                                          gamesRepository, 
                                          gameCommunicator}) => {
+    function onGameStarted(game: Game) {
+        setFreeze(false);
+        onGameStartedParent(game);
+    }
+    
     const [allGames, setAllGames] = useState<Game[]>([]);
     useEffect(() => {
         gamesRepository.getGamesPagedAsync(1, 20)
@@ -20,17 +25,11 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
     const [freeze, setFreeze] = useState(false);
 
 
-    function onGameStarted(game: Game) {
-        setFreeze(false);
-        onGameStartedParent(game);
-    }
 
     async function onGameStartClick(gameId: string) {
         if (freeze || !gameId) {
             return;
         }
-
-
         setFreeze(true);
         let success = false;
         try {

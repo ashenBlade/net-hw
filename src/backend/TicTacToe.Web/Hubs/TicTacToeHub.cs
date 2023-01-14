@@ -36,8 +36,11 @@ public class TicTacToeHub: Hub
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var game = await _gameRepository.FindGameByUserIdAsync(UserId);
+        _logger.LogWarning(exception, "Пользователь отключился");
         if (game is not null)
         {
+            game.ForceEndGame(game.OwnerId == UserId ? game.Owner : game.SecondPlayer!);
+            await _gameRepository.UpdateGameAsync(game);
             if (UserIdToConnectionId.TryRemove(game.OwnerId.ToString(), out var connId))
             {
                 await Clients.Client(connId).SendAsync("GameEnded");
@@ -46,8 +49,6 @@ public class TicTacToeHub: Hub
             {
                 await Clients.Client(connId).SendAsync("GameEnded");
             }
-            game.ForceEndGame(game.OwnerId == UserId ? game.Owner : game.SecondPlayer!);
-            await _gameRepository.UpdateGameAsync(game);
         }
         await base.OnDisconnectedAsync(exception);
     }

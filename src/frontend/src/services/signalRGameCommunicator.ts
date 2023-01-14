@@ -37,38 +37,43 @@ export default class SignalRGameCommunicator extends BaseGameCommunicator {
     async open() {
         this.connection.on(SignalRGameCommunicator.GameStartedFunction, 
             (gameId: string, opponent: string, sign: string, startDate: string) => {
-            console.debug("Игра началась", {
-                gameId, opponent, sign, startDate
-            });
-            
-            this.onGameStarted({
-                id: gameId,
-                startDate: new Date(Date.parse(startDate)),
-                mySign: sign === 'O'
-                    ? GameSign.O
-                    : GameSign.X,
-                opponentName: opponent,
-                status: GameStatus.Created
+
+                let game = {
+                    id: gameId,
+                    startDate: new Date(Date.parse(startDate)),
+                    mySign: sign === 'O'
+                        ? GameSign.O
+                        : GameSign.X,
+                    opponentName: opponent,
+                    status: GameStatus.Created
+                };
+                console.debug("Игра началась", {
+                    gameId, 
+                    opponent,
+                    sign,
+                    startDate,
+                    game
+                });
+                this.onGameStarted(game)
             })
-        })
         this.connection.on(SignalRGameCommunicator.MakeStepFunction, 
             (x: number, y: number, sign: string) => {
-            console.debug('Ход сделан', {
-                x, y, sign
+                console.debug('Ход сделан', {
+                    x, y, sign
+                })
+                this.onStepMade(x, y, sign === 'O' 
+                    ? GameSign.O 
+                    : GameSign.X);
             })
-            this.onStepMade(x, y, sign === 'O' 
-                ? GameSign.O 
-                : GameSign.X);
-        })
         this.connection.on(SignalRGameCommunicator.GameEndedFunction, 
             (myPoints: number, opponentPoints: number) => {
-            console.error('Игра закончена', {
-                myPoints, opponentPoints
+                console.error('Игра закончена', {
+                    myPoints, opponentPoints
+                })
+                this.onGameEnded({
+                    myPoints, opponentPoints
+                })
             })
-            this.onGameEnded({
-                myPoints, opponentPoints
-            })
-        })
         await this.connection.start();
     }
 

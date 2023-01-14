@@ -5,6 +5,7 @@ import {GameEndedCallback} from "../interfaces/gameEndedCallback";
 import GameResult from "../models/gameResult";
 import Game from "../models/game";
 import {GameSign} from "../models/gameSign";
+import {log} from "util";
 
 export abstract class BaseGameCommunicator implements IGameCommunicator {
     private gameEndedCbs: GameEndedCallback[] = []
@@ -19,7 +20,7 @@ export abstract class BaseGameCommunicator implements IGameCommunicator {
 
     private basePushCb<T>(cb: T, array: T[]): void {
         const index = array.indexOf(cb);
-        if (index !== -1) {
+        if (index === -1) {
             array.push(cb)
         }
     }
@@ -44,6 +45,9 @@ export abstract class BaseGameCommunicator implements IGameCommunicator {
     }
 
     onGameStarted(game: Game) {
+        console.log('onGameStarted(game: Game)', {
+            asdf: this.gameStartedCbs
+        })
         this.gameStartedCbs.forEach(cb => cb(game));
     }
 
