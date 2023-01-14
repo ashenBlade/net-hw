@@ -17,15 +17,17 @@ public class DatabaseGameRepository: IGameRepository
         return await _context.Games
                              .Skip(( page - 1 ) * size)
                              .Take(size)
+                             .Include(g => g.Owner)
+                             .Include(g => g.SecondPlayer)
                              .ToListAsync(token);
     }
 
     public async Task<Game> CreateGameAsync(int ownerId, int rank)
     {
         var insert = new Game()
-                   {
-                       Name = "", OwnerId = ownerId, MaxRank = rank, Status = GameStatus.Created,
-                   };
+                     {
+                         Name = "", OwnerId = ownerId, MaxRank = rank, Status = GameStatus.Created,
+                     };
         var entity = await _context.Games.AddAsync(insert);
         await _context.SaveChangesAsync();
         return entity.Entity;
@@ -49,7 +51,10 @@ public class DatabaseGameRepository: IGameRepository
     public async Task<Game?> FindGameByUserIdAsync(int userId)
     {
         return await _context.Games
-                             .Where(g => g.OwnerId == userId || g.SecondPlayerId == userId)
+                             .Where(g => ( g.OwnerId == userId || g.SecondPlayerId == userId ) && 
+                                         ( g.Status == GameStatus.Playing || g.Status == GameStatus.Created ))
+                             .Include(g => g.Owner)
+                             .Include(g => g.SecondPlayer)
                              .FirstOrDefaultAsync();
     }
 }

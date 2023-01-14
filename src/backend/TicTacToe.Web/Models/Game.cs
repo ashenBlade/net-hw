@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MassTransit.Futures.Contracts;
+using Npgsql.PostgresTypes;
 
 namespace TicTacToe.Web.Models;
 
@@ -43,16 +45,25 @@ public class Game
                                                 GameSign.None, GameSign.None, GameSign.None
                                             };
 
-    private int GetFieldIndex(int x, int y) => ( x - 1 ) * 3 + (y - 1);
+    private int GetFieldIndex(int x, int y) => ( x ) * 3 + (y );
     private (int x, int y) ToUserIndex(int index) => ( index / 3 + 1, index % 3 + 1 );
 
+    private void PrintField()
+    {
+        string GetSign(GameSign s) => s switch
+                                      {
+                                          GameSign.None => " ",
+                                          GameSign.O    => "O",
+                                          GameSign.X    => "X"
+                                      };
+        for (int i = 0; i < 7; i+=3)
+        {
+            Console.WriteLine($"{GetSign(Field[i])}{GetSign(Field[i + 1])}{GetSign(Field[i + 2])}");
+        }
+    }
+    
     public StepResult MakeStep(int x, int y)
     {
-        if (Status == GameStatus.Ended)
-        {
-            throw new InvalidOperationException("Игра закончена");
-        }
-        
         var index = GetFieldIndex(x, y);
         if (Field[index] != GameSign.None)
         {
@@ -64,6 +75,7 @@ public class Game
         var winner = CheckWinner();
         if (winner is not null)
         {
+            Console.WriteLine($"Победитель есть");
             var looser = winner == Owner
                              ? SecondPlayer!
                              : Owner;
@@ -72,11 +84,19 @@ public class Game
             Status = GameStatus.Ended;
         }
 
-        if (IsDraw())
+        var isDraw = IsDraw();
+        if (isDraw)
         {
             Status = GameStatus.Ended;
         }
-        return new StepResult() {Winner = winner};
+        PrintField();
+        return new StepResult()
+               {
+                   Winner = winner,
+                   IsDraw = isDraw,
+                   OwnerPoints = Owner.Rank,
+                   SecondPlayerPoints = SecondPlayer?.Rank ?? -1
+               };
     }
 
     public bool IsDraw()
@@ -89,8 +109,9 @@ public class Game
         for (int i = 0; i < 3; i++)
         {
             var sign = Field[i];
-            if (Field[i] == Field[i + 3] && Field[i + 3] == Field[i + 6])
+            if (sign is not GameSign.None && Field[i] == Field[i + 3] && Field[i + 3] == Field[i + 6])
             {
+                
                 return sign == OwnerSign
                            ? Owner
                            : SecondPlayer;
@@ -99,16 +120,16 @@ public class Game
 
         for (int i = 0; i < 7; i+=3)
         {
-            if (Field[i] == Field[i + 1] && Field[i + 1] == Field[i + 2])
+            var sign = Field[i];
+            if (sign is not GameSign.None && Field[i] == Field[i + 1] && Field[i + 1] == Field[i + 2])
             {
-                var sign = Field[i];
                 return sign == OwnerSign
                            ? Owner
                            : SecondPlayer;
             }
         }
 
-        if (Field[0] == Field[4] && Field[4] == Field[8])
+        if (Field[0] is not GameSign.None && Field[0] == Field[4] && Field[4] == Field[8])
         {
             var sign = Field[0];
             return sign == OwnerSign
@@ -116,7 +137,7 @@ public class Game
                        : SecondPlayer;
         }
         
-        if (Field[2] == Field[4] && Field[4] == Field[6])
+        if (Field[2] is not GameSign.None && Field[2] == Field[4] && Field[4] == Field[6])
         {
             var sign = Field[0];
             return sign == OwnerSign
@@ -134,9 +155,9 @@ public class Game
             throw new InvalidOperationException("Нельзя присоединиться к запущеной игре");
         }
 
-        if (SecondPlayer is not null)
+        if (SecondPlayerId is not null or 0)
         {
-            throw new InvalidOperationException("В игре уже присутстсует 2 пользователь");
+            throw new InvalidOperationException("В игре уже присутстсвует 2 пользователь");
         }
 
         if (opponent.Id == OwnerId)
@@ -150,11 +171,6 @@ public class Game
 
     public void ForceEndGame(User quited)
     {
-        User quit, other;
-        if (quited == Owner)
-        {
-            
-        }
         Status = GameStatus.Ended;
     }
 }

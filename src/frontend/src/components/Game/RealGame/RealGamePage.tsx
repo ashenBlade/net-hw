@@ -3,7 +3,7 @@ import RealGameProps from './RealGameProps';
 import GameResult from "../../../models/gameResult";
 import {GameSign} from "../../../models/gameSign";
 
-enum GameField {
+enum GameFieldSign {
     None = '',
     X = 'X',
     O = 'O'
@@ -14,9 +14,9 @@ function getAlternateSign(sign: GameSign): GameSign {
 }
 const RealGamePage: FC<RealGameProps> = ({gameCommunicator, onGameEnded: parentGameEnded, game}) => {
     const [field, setField] = useState([
-        [GameField.None, GameField.None, GameField.None],
-        [GameField.None, GameField.None, GameField.None],
-        [GameField.None, GameField.None, GameField.None]
+        [GameFieldSign.None, GameFieldSign.None, GameFieldSign.None],
+        [GameFieldSign.None, GameFieldSign.None, GameFieldSign.None],
+        [GameFieldSign.None, GameFieldSign.None, GameFieldSign.None]
     ]);
     const [currentSign, setCurrentSign] = useState(GameSign.O);
 
@@ -40,15 +40,18 @@ const RealGamePage: FC<RealGameProps> = ({gameCommunicator, onGameEnded: parentG
     const [uiFreeze, setUiFreeze] = useState(false);
     const toGameField = (sign: GameSign) =>
         sign === GameSign.X
-            ? GameField.X
+            ? GameFieldSign.X
             : sign === GameSign.O
-                ? GameField.O
-                : GameField.None;
+                ? GameFieldSign.O
+                : GameFieldSign.None;
 
-    function onStepMade(x: number, y: number, sign: GameSign) {
-        field[x][y] = toGameField(sign);
-        setUiFreeze(sign === game.mySign);
-        setCurrentSign(getAlternateSign(sign));
+    function onStepMade(x: number, y: number, signMadeStep: GameSign) {
+        console.log({
+            x, y, signMadeStep
+        })
+        field[x][y] = toGameField(signMadeStep);
+        setUiFreeze(signMadeStep === game.mySign);
+        setCurrentSign(getAlternateSign(signMadeStep));
         rerender();
     }
 
@@ -69,14 +72,24 @@ const RealGamePage: FC<RealGameProps> = ({gameCommunicator, onGameEnded: parentG
             <p>
                 Ваш знак: {game.mySign}
             </p>
-            <table>
+            <table style={{
+                border: '1px solid black'
+            }}>
                 {
                     field.map((row, i) => (
                         <tr>
                             {
                                 row.map((cell, j) => (
-                                    <td onClick={async () => {
-                                        if (!isMyTurn() || uiFreeze || cell !== GameField.None) return;
+                                    <td style={{
+                                        padding: '10px',
+                                        border: '1px solid black'
+                                    }} onClick={async () => {
+                                        let b = !isMyTurn();
+                                        let b1 = cell !== GameFieldSign.None;
+                                        console.log('fuck', {
+                                            b, uiFreeze, b1
+                                        })
+                                        if (b || uiFreeze || b1) return;
                                         setUiFreeze(true);
                                         try {
                                             await gameCommunicator.makeStepAsync(i, j);

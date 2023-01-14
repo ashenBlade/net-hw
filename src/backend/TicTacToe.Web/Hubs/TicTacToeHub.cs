@@ -30,6 +30,7 @@ public class TicTacToeHub: Hub
     public override Task OnConnectedAsync()
     {
         UserIdToConnectionId[UserIdString] = Context.ConnectionId;
+        _logger.LogInformation("{Value}", Context.User.FindFirstValue(ClaimTypes.NameIdentifier));
         return base.OnConnectedAsync();
     }
 
@@ -73,10 +74,23 @@ public class TicTacToeHub: Hub
 
             _logger.LogInformation("Нахожу пользователя по ID {Id}", UserIdString);
             var user = await _userManager.FindByIdAsync(UserIdString);
+            _logger.LogInformation("Обновляю данные об игре, Статус = {Status}", game.Status switch
+                                                                                 {
+                                                                                     GameStatus.Created => "Created",
+                                                                                     GameStatus.Ended   => "Ended",
+                                                                                     GameStatus.Playing => "Playing",
+                                                                                     _                  => "Блять"
+                                                                                 });
             game.Start(user);
-            _logger.LogInformation("Обновляю данные об игре");
+            _logger.LogInformation("Обновляю данные об игре, Статус = {Status}", game.Status switch
+                                                                                 {
+                                                                                     GameStatus.Created => "Created",
+                                                                                     GameStatus.Ended => "Ended",
+                                                                                     GameStatus.Playing => "Playing",
+                                                                                     _ => "Блять"
+                                                                                 });
             await _gameRepository.UpdateGameAsync(game);
-            if (game.OwnerId is not 0 && game.SecondPlayerId is not 0)
+            if (game.OwnerId is not 0 && game.SecondPlayerId is not null )
             {
                 _logger.LogInformation("Посылаю информацию о начале игры");
                 var startDate = game.StartDate.ToString(CultureInfo.InvariantCulture);
@@ -86,6 +100,10 @@ public class TicTacToeHub: Hub
                                     FindClient(game.SecondPlayerId!.Value)
                                        .SendAsync("GameStarted", game.Id, game.Owner?.UserName ?? "Противник", game.SecondPlayerSign  == GameSign.O ? "O" : "X",
                                                   startDate) );
+            }
+            else
+            {
+                _logger.LogError("Пользователя нет в кеше");
             }
         }
         catch (Exception e)
@@ -107,9 +125,13 @@ public class TicTacToeHub: Hub
         {
             throw new Exception("Игры не нашлось");
         }
+        
 
         var currentSign = game.CurrentSign;
+        _logger.LogInformation("Игра: {Status}", game.Status);
+        _logger.LogInformation("Делается ход для игры {Id} в {X}-{Y} знаком {Sign}", game.Id, x, y, currentSign);
         var stepResult = game.MakeStep(x, y);
+        _logger.LogInformation("Результат хода. End {End}, IsDraw {IsDraw}", stepResult.GameEnded, stepResult.IsDraw);
         await _gameRepository.UpdateGameAsync(game);
         var gameClients = GetGameClients(game);
         await gameClients.SendAsync("MakeStep", x, y, currentSign == GameSign.O
