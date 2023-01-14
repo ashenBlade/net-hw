@@ -101,7 +101,7 @@ const MainPage: FC<MainPageProps> = ({onGameStarted: onGameStartedParent,
             <ul>{
                 allGames.map(g => (
                     <li key={g.id}>
-                        Id: {g.id} - Статус: {g.status} {g.startDate.toString()}
+                        Id: {g.id} - Статус: {g.status} {g.startDate.toLocaleString()}
                         {
                             g.status === GameStatus.Created
                             && <button disabled={freeze || isGameFinding}
