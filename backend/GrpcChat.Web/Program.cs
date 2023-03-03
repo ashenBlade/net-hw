@@ -44,7 +44,7 @@ builder.Services.AddIdentity<User, Role>(identity =>
             identity.User = new UserOptions() {RequireUniqueEmail = true,};
         })
        .AddUserManager<UserManager<User>>()
-       .AddSignInManager<User>()
+       .AddSignInManager<SignInManager<User>>()
        .AddDefaultTokenProviders()
        .AddEntityFrameworkStores<ChatDbContext>();
 
