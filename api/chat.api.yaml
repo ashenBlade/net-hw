@@ -1,0 +1,54 @@
+openapi: 3.0.3
+info:
+  title: Чат
+  description: API приложения чата
+  version: 1.0.0
+paths:
+  /api/token:
+    post: 
+      description: Получить токен доступа
+      requestBody: 
+        content: 
+          application/json:
+            schema: 
+              properties: 
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses: 
+        200:
+          description: Токен доступа успешно создан
+          content: 
+            application/json:
+              schema: 
+                properties: 
+                  accessToken: 
+                    type: string
+        400:
+          description: Неправильный пользователь или пароль
+  /api/users:
+    post:
+      description: Зарегистрироваться
+      requestBody: 
+        content: 
+          application/json:
+            schema:
+              properties: 
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        201:
+          description: Пользователь успешно зарегистрирован
+          content: 
+            application/json:
+              schema: 
+                properties: 
+                  accessToken:
+                    type: string
+        400:
+          description: Ошибка во время регистрации
