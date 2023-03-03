@@ -1,0 +1,16 @@
+version: '3.0'
+
+services:
+  backend:
+    build:
+      context: backend
+      dockerfile: GrpcChat.Web/Dockerfile
+    ports:
+      - '8080:80'
+    environment:
+      JWT__KEY: 'hello, world, this is me'
+      JWT__ISSUER: 'dungeon master'
+      JWT__AUDIENCE: 'http://localhost:8080'
+      
+      DATABASE__CONNECTION_STRING: 'Host=postgres;Database=postgres;User Id=postgres;Password=postgres;Port=5432'
+    

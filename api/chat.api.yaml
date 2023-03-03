@@ -51,4 +51,4 @@ paths:
                   accessToken:
                     type: string
         400:
-          description: Ошибка во время регистрации
+          description: Ошибка во время регистрацииE
