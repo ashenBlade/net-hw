@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace GrpcChat.Web.Options;
+namespace GrpcChat.Auth.Web.Options;
 
 public class JwtOptions
 {

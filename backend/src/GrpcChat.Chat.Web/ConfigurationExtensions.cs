@@ -1,6 +1,6 @@
-using GrpcChat.Web.Options;
+using GrpcChat.Chat.Web.Options;
 
-namespace GrpcChat.Web;
+namespace GrpcChat.Chat.Web;
 
 public static class ConfigurationExtensions
 {

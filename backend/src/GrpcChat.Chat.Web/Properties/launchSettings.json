@@ -1,0 +1,16 @@
+﻿{
+  "profiles": {
+    "GrpcChat.Chat.Web": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5228;https://localhost:7092",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "JWT__KEY": "KEYKEYKEYKEYKEYKEYKEYKEYKEY",
+        "JWT__AUDIENCE": "AUDIENCE",
+        "JWT__ISSUER": "ISSUER"
+      }
+    }
+  }
+}

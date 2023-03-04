@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GrpcChat.Web.Controllers.Authentication.Dto;
+namespace GrpcChat.Auth.Web.Controllers.Authentication.Dto;
 
 public class CreateUserDto
 {

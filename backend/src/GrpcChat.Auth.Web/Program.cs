@@ -2,8 +2,8 @@ using GrpcChat.Database;
 using GrpcChat.Domain;
 using GrpcChat.TokenGenerator;
 using GrpcChat.TokenGenerator.Jwt;
-using GrpcChat.Web;
-using GrpcChat.Web.Options;
+using GrpcChat.Auth.Web;
+using GrpcChat.Auth.Web.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +20,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton(builder.Configuration.GetJwtOptions());
 
-builder.Services.AddOptions<DatabaseOptions>(DatabaseOptions.Key)
+builder.Services.AddOptions<DatabaseOptions>()
+       .Bind(builder.Configuration.GetRequiredSection(DatabaseOptions.Key))
        .ValidateDataAnnotations()
        .ValidateOnStart();
 

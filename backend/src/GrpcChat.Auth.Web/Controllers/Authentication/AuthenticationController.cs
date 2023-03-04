@@ -1,14 +1,15 @@
+using GrpcChat.Auth.Web.Controllers.Authentication.Dto;
 using GrpcChat.Domain;
 using GrpcChat.TokenGenerator;
-using GrpcChat.Web.Controllers.Authentication.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GrpcChat.Web.Controllers.Authentication;
+namespace GrpcChat.Auth.Web.Controllers.Authentication;
 
 [AllowAnonymous]
 [Route("/api")]
+[ApiController]
 public class AuthenticationController: ControllerBase
 {
     private readonly UserManager<User> _userManager;
@@ -24,7 +25,7 @@ public class AuthenticationController: ControllerBase
         _logger = logger;
     }
     
-    [HttpPost("token")]
+    [HttpPost("users")]
     public async Task<IActionResult> CreateUser([FromBody]CreateUserDto dto, CancellationToken token)
     {
         var user = new User() {Email = dto.Email, UserName = dto.Name,};
@@ -37,5 +38,20 @@ public class AuthenticationController: ControllerBase
         _logger.LogInformation("Создан пользователь с именем {UserName}, почта: {Email}", user.UserName, user.Email);
 
         return Ok(new {AccessToken = _tokenGenerator.GenerateToken(user.Email)});
+    }
+
+    [HttpPost("token")]
+    public async Task<IActionResult> CreateToken([FromBody] CreateTokenDto dto, CancellationToken token)
+    {
+        var passwordValid = await _userManager.CheckPasswordAsync(new User()
+                                                                  {
+                                                                      UserName = dto.UserName,
+                                                                  }, dto.Password);
+        if (!passwordValid)
+        {
+            return Unauthorized();
+        }
+
+        return Ok(new {AccessToken = _tokenGenerator.GenerateToken(dto.UserName)});
     }
 }
