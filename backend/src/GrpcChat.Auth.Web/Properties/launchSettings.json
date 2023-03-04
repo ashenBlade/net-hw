@@ -17,7 +17,7 @@
       "applicationUrl": "https://localhost:7286;http://localhost:5030",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "JWT__KEY": "KEYKEYKEYKEYKEYKEYKEYKEYKEY",
+        "JWT__KEY": "sample_key_sample_key_sample_key",
         "JWT__AUDIENCE": "AUDIENCE",
         "JWT__ISSUER": "ISSUER",
         "DATABASE__CONNECTION_STRING": "Host=localhost;Port=5432;Database=postgres;User Id=postgres;Password=postgres;"

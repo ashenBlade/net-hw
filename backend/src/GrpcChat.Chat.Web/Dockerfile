@@ -5,6 +5,8 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
+COPY ["GrpcChat.ChatService/GrpcChat.ChatService.csproj", "GrpcChat.ChatService/GrpcChat.ChatService.csproj"]
+COPY ["GrpcChat.ChatService.Redis/GrpcChat.ChatService.Redis.csproj", "GrpcChat.ChatService.Redis/GrpcChat.ChatService.Redis.csproj"]
 COPY ["GrpcChat.Chat.Web/GrpcChat.Chat.Web.csproj", "GrpcChat.Chat.Web/"]
 RUN dotnet restore "GrpcChat.Chat.Web/GrpcChat.Chat.Web.csproj"
 COPY . .
