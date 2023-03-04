@@ -19,13 +19,15 @@ public class JwtTokenGenerator: ITokenGenerator
                                                                                      SecurityAlgorithms.HmacSha512Signature));
     }
 
-    public string GenerateToken(string subject)
+    public string GenerateToken(string username, string email)
     {
         var tokenDescriptor = new SecurityTokenDescriptor()
                               {
                                   Subject = new ClaimsIdentity(new List<Claim>()
                                                                {
-                                                                   new(JwtRegisteredClaimNames.NameId, subject),
+                                                                   new(JwtRegisteredClaimNames.NameId, username),
+                                                                   new(JwtRegisteredClaimNames.Email, email),
+                                                                   new(JwtRegisteredClaimNames.Name, username),
                                                                }),
                                   Expires = DateTime.Now.Add(_options.Lifetime),
                                   Audience = _options.Audience,
@@ -35,4 +37,5 @@ public class JwtTokenGenerator: ITokenGenerator
         var handler = new JwtSecurityTokenHandler();
         return handler.WriteToken(handler.CreateToken(tokenDescriptor));
     }
+
 }

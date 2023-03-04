@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using GrpcChat.Auth.Web.Controllers.Authentication.Dto;
 using GrpcChat.Domain;
 using GrpcChat.TokenGenerator;
@@ -37,21 +38,24 @@ public class AuthenticationController: ControllerBase
         }
         _logger.LogInformation("Создан пользователь с именем {UserName}, почта: {Email}", user.UserName, user.Email);
 
-        return Ok(new {AccessToken = _tokenGenerator.GenerateToken(user.Email)});
+        return Ok(new {AccessToken = _tokenGenerator.GenerateToken(user.UserName, user.Email)});
     }
 
     [HttpPost("token")]
     public async Task<IActionResult> CreateToken([FromBody] CreateTokenDto dto, CancellationToken token)
     {
-        var passwordValid = await _userManager.CheckPasswordAsync(new User()
-                                                                  {
-                                                                      UserName = dto.UserName,
-                                                                  }, dto.Password);
+        var user = await _userManager.FindByNameAsync(dto.UserName);
+        if (user is null)
+        {
+            return NotFound(user);
+        }
+        
+        var passwordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
         if (!passwordValid)
         {
             return Unauthorized();
         }
 
-        return Ok(new {AccessToken = _tokenGenerator.GenerateToken(dto.UserName)});
+        return Ok(new {AccessToken = _tokenGenerator.GenerateToken(user.UserName, user.Email)});
     }
 }

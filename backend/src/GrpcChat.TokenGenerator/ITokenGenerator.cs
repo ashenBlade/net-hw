@@ -2,5 +2,5 @@
 
 public interface ITokenGenerator
 {
-    string GenerateToken(string subject);
+    string GenerateToken(string username, string email);
 }
