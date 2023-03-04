@@ -33,10 +33,12 @@
     <ProjectReference Include="..\GrpcChat.TokenGenerator\GrpcChat.TokenGenerator.csproj" />
   </ItemGroup>
 
+  
   <ItemGroup>
     <Compile Update="ConfigurationExtensions.cs">
       <DependentUpon>Program.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+  
 
 </Project>

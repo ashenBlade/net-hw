@@ -68,7 +68,6 @@ builder.Services.AddAuthentication(x =>
                                                 ValidateIssuerSigningKey = false
                                             };
         });
-builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton(sp =>
 {
@@ -90,9 +89,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllers();
 
