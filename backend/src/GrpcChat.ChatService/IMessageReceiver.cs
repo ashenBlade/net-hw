@@ -1,6 +1,6 @@
 namespace GrpcChat.ChatService;
 
-public interface IMessageReceiver: IDisposable, IAsyncDisposable
+public interface IMessageReceiver
 {
-    Task<ReceivedMessage> GetNextMessageAsync(CancellationToken token = default);
+    IAsyncEnumerable<ReceivedMessage> GetNextMessageAsync(CancellationToken token = default);
 }

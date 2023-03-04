@@ -31,19 +31,18 @@ public class GrpcChatService: global::ChatService.ChatService.ChatServiceBase
 
     public override async Task GetChatMessages(Empty request, IServerStreamWriter<ChatMessageResponse> responseStream, ServerCallContext context)
     {
+        
         var username = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier);
         _logger.LogInformation("Пользователь {Username} начал получать все сообщения из чата", username);
         try
         {
-            await using var receiver = _chatService.GetMessageReceiver();
+            var receiver = _chatService.CreateMessageReceiver();
             var token = context.CancellationToken;
-            while (!token.IsCancellationRequested)
+            await foreach (var message in receiver.GetNextMessageAsync(token))
             {
-                var nextMessage = await receiver.GetNextMessageAsync(token);
                 await responseStream.WriteAsync(new ChatMessageResponse()
                                                 {
-                                                    Message = nextMessage.Message,
-                                                    UserName = nextMessage.Username
+                                                    Message = message.Message, UserName = message.Username
                                                 });
             }
         }
