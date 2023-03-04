@@ -27,5 +27,9 @@
         <DependentUpon>Program.cs</DependentUpon>
       </Compile>
     </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\GrpcChat.ChatService\GrpcChat.ChatService.csproj" />
+    </ItemGroup>
 
 </Project>
