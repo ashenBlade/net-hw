@@ -13,7 +13,7 @@ public class RedisMessageReceiver: IMessageReceiver
     }
     
 
-    public async IAsyncEnumerable<ReceivedMessage> GetNextMessageAsync(CancellationToken token = default)
+    public async IAsyncEnumerable<ReceivedMessage> ReadMessagesAsync(CancellationToken token = default)
     {
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
         while (!token.IsCancellationRequested)

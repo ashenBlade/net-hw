@@ -38,7 +38,7 @@ public class GrpcChatService: global::ChatService.ChatService.ChatServiceBase
         {
             var receiver = _chatService.CreateMessageReceiver();
             var token = context.CancellationToken;
-            await foreach (var message in receiver.GetNextMessageAsync(token))
+            await foreach (var message in receiver.ReadMessagesAsync(token))
             {
                 await responseStream.WriteAsync(new ChatMessageResponse()
                                                 {
