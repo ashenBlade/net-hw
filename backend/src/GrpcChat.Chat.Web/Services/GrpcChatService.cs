@@ -42,7 +42,8 @@ public class GrpcChatService: global::ChatService.ChatService.ChatServiceBase
             {
                 await responseStream.WriteAsync(new ChatMessageResponse()
                                                 {
-                                                    Message = message.Message, UserName = message.Username
+                                                    Message = message.Message,
+                                                    UserName = message.Username
                                                 });
             }
         }
