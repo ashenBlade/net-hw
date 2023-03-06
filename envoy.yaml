@@ -21,10 +21,21 @@ static_resources:
                       routes:
                         - match: { prefix: "/api/auth" }
                           route: { cluster: auth_api_cluster, prefix_rewrite: '/api' }
+                        - match:  
+                            prefix: '/api/chat/' 
+                            headers:
+                              - name: content-type
+                                string_match:
+                                  exact: application/grpc
+                          route: 
+                            cluster: chat_api_cluster 
+                            prefix_rewrite: '/'
                 http_filters:
+                  - name: envoy.filters.http.grpc_web
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+                      
   clusters:
     - name: auth_api_cluster
       connect_timeout: 0.5s
@@ -39,4 +50,19 @@ static_resources:
                   address:
                     socket_address:
                       address: api
+                      port_value: 80
+    - name: chat_api_cluster
+      connect_timeout: 0.5s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      http2_protocol_options: { }
+      load_assignment:
+        cluster_name: chat_api_cluster
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: chat
                       port_value: 80
