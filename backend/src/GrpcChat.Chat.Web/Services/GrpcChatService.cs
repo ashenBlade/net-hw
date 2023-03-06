@@ -24,6 +24,12 @@ public class GrpcChatService: global::ChatService.ChatService.ChatServiceBase
     public override async Task<Empty> SendMessage(SendMessageRequest request, ServerCallContext context)
     {
         var username = context.GetHttpContext().User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            _logger.LogWarning("У пользователя не указано имя (UserName) в токене");
+            throw new RpcException(new Status(StatusCode.PermissionDenied, "Не указано имя пользователя в токене"));
+        }
+        
         await _chatService.SendMessageAsync(request.Message, username, context.CancellationToken);
         _logger.LogDebug("Пришло сообщение от пользователя {Username}", username);
         return EmptyResponse;
