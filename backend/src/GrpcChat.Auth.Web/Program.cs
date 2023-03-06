@@ -24,7 +24,6 @@ builder.Services.AddOptions<DatabaseOptions>()
        .Bind(builder.Configuration.GetRequiredSection(DatabaseOptions.Key))
        .ValidateDataAnnotations()
        .ValidateOnStart();
-
 builder.Services.AddDbContext<ChatDbContext>((sp, optionsBuilder) =>
 {
     var options = sp.GetRequiredService<IOptions<DatabaseOptions>>();
