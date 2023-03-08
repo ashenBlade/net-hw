@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GrpcChat.Database;
 
-public class ChatDbContext : IdentityDbContext<User, Role, Guid>
+public sealed class ChatDbContext : IdentityDbContext<User, Role, Guid>
 {
     public ChatDbContext(DbContextOptions<ChatDbContext> options)
         :base(options)
-    { }
+    { 
+        Database.EnsureCreated();
+    }
 }

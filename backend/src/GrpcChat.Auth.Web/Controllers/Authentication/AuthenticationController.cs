@@ -29,11 +29,11 @@ public class AuthenticationController: ControllerBase
     [HttpPost("users")]
     public async Task<IActionResult> CreateUser([FromBody]CreateUserDto dto, CancellationToken token)
     {
-        var user = new User() {Email = dto.Email, UserName = dto.Name,};
+        var user = new User() {Email = dto.Email, UserName = dto.UserName,};
         var result = await _userManager.CreateAsync(user, dto.Password);
         if (!result.Succeeded)
         {
-            _logger.LogError("Ошибка во время создания пользователя. Ошибки: {Errors}. Почта: {Email}. Имя: {Name}", result.Errors.Select(x => x.Description), dto.Email, dto.Name);
+            _logger.LogError("Ошибка во время создания пользователя. Ошибки: {Errors}. Почта: {Email}. Имя: {Name}", result.Errors.Select(x => x.Description), dto.Email, dto.UserName);
             return BadRequest(new {Errors = result.Errors.Select(x => x.Description)});
         }
         _logger.LogInformation("Создан пользователь с именем {UserName}, почта: {Email}", user.UserName, user.Email);

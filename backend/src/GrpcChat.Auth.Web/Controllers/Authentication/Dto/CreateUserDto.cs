@@ -6,7 +6,7 @@ public class CreateUserDto
 {
     [Required]
     [MinLength(6)]
-    public string Name { get; set; } = null!;
+    public string UserName { get; set; } = null!;
 
     [Required]
     public string Email { get; set; } = null!;
