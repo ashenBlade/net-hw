@@ -23,14 +23,12 @@ static_resources:
                           route: { cluster: auth_api_cluster, prefix_rewrite: '/api' }
                         - match:  
                             prefix: '/api/chat/' 
-                            grpc: {}
                           route: 
                             cluster: chat_api_cluster 
                             timeout: 0s
                             prefix_rewrite: '/'
                         - match:
                             prefix: '/api/chat'
-                            grpc: {}
                           route:
                             cluster: chat_api_cluster
                             timeout: 0s
