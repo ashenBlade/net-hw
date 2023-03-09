@@ -1,6 +1,13 @@
 version: '3.0'
 
 services:
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - '8082:80'
+  
   api:
     build:
       context: backend/src
