@@ -1,0 +1,71 @@
+version: '3.0'
+
+services:
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - '8082:80'
+  
+  api:
+    build:
+      context: backend/src
+      dockerfile: GrpcChat.Auth.Web/Dockerfile
+    ports:
+      - '8080:80'
+    environment:
+      JWT__KEY: 'sample_key_sample_key_sample_key'
+      JWT__ISSUER: 'dungeon master'
+      JWT__AUDIENCE: 'анимешники'
+      
+      DATABASE__CONNECTION_STRING: 'Host=postgres;Database=postgres;User Id=postgres;Password=postgres;Port=5432'
+  
+  chat:
+    build:
+      context: backend/src
+      dockerfile: GrpcChat.Chat.Web/Dockerfile
+    environment:
+      JWT__KEY: 'sample_key_sample_key_sample_key'
+      JWT__ISSUER: 'dungeon master'
+      JWT__AUDIENCE: 'анимешники'
+      
+      REDIS__SERVERS: 'redis:6379'
+      REDIS__CHANNEL: 'chat_channel'
+    
+    ports:
+      - '8081:80'
+  
+  envoy:
+    image: envoyproxy/envoy-alpine:v1.21-latest
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      - '9901:9901'
+      - '9000:9000'
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+  
+  redis:
+    image: bitnami/redis:latest
+    volumes:
+      - redis-volume:/bitnami/redis/data
+    ports:
+      - '6379:6379'
+    environment:
+      ALLOW_EMPTY_PASSWORD: 'yes'
+  
+volumes:
+  postgres-volume:
+    driver: local
+  redis-volume:
+    driver: local
+    

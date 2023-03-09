@@ -1,0 +1,23 @@
+syntax = 'proto3';
+
+import 'google/protobuf/empty.proto';
+
+package chat;
+
+option csharp_namespace = 'ChatService';
+
+
+
+message SendMessageRequest {
+  string message = 1;
+}
+
+message ChatMessageResponse {
+  string message = 1;
+  string userName = 2;
+}
+
+service ChatService {
+  rpc SendMessage(SendMessageRequest) returns (google.protobuf.Empty);
+  rpc GetChatMessages(google.protobuf.Empty) returns (stream ChatMessageResponse);
+}
