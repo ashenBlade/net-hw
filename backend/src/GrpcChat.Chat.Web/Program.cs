@@ -46,11 +46,23 @@ builder.Services.AddSingleton<IChatService>(sp =>
     return new RedisChatService(multiplexer, redis.Value.Channel);
 });
 
+builder.Services.AddCors(options => options.AddPolicy("grpc-cors-policy", corsPolicyBuilder =>
+{
+    corsPolicyBuilder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
+}));
+
 var app = builder.Build();
+
+app.UseGrpcWeb(); 
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGrpcService<GrpcChatService>();
+app.MapGrpcService<GrpcChatService>().EnableGrpcWeb().RequireCors("grpc-cors-policy");
 
 app.Run();

@@ -84,6 +84,12 @@ builder.Services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();
 
 var app = builder.Build();
 
+app.UseCors(options => options
+    .AllowCredentials()
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .WithOrigins("http://localhost:3000"));
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

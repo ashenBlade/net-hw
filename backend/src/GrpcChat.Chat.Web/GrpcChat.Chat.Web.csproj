@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
+        <PackageReference Include="Grpc.AspNetCore.Web" Version="2.52.0-pre1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.14" />
         <PackageReference Include="StackExchange.Redis" Version="2.6.96" />
         <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="9.1.0" />
